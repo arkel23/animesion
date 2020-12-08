@@ -19,7 +19,7 @@ def train():
     torch.manual_seed(0)
 
     # train constants
-    no_epochs = 3
+    no_epochs = 1000
     save_iter = 10
     epoch_decay = 100 
     batch_size = 256
@@ -74,7 +74,8 @@ def train():
         # calculates mean of losses for current epoch and appends to list of avgs
         training_proc_avg.append(mean(current_losses)) 
 
-        # validates on test set once per epoch
+        # validates on test set once per epoch (or a few no of epochs)
+        # TO DO: ADD EARLY STOPPING IF TEST_PROC_AVG[current]>test_proc[prev] break;
         validate(device=device, batch_size=batch_size, 
         classes=classes,
         model=model, criterion=criterion, no_classes=no_classes, 

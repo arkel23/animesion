@@ -19,7 +19,7 @@ def train():
     torch.manual_seed(0)
 
     # train constants
-    no_epochs = 1000
+    no_epochs = 10
     save_iter = 10
     epoch_decay = 100 
     batch_size = 256

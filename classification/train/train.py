@@ -10,7 +10,7 @@ from torchsummary import summary
 from utils.utils import update_lr, plot_losses, data_loading, show_results
 from models.models import simpleNet
 
-def train():
+def train(dataset_name):
     # trains model from scratch
     
     # Device configuration
@@ -19,7 +19,7 @@ def train():
     torch.manual_seed(0)
 
     # train constants
-    no_epochs = 10
+    no_epochs = 2
     save_iter = 10
     epoch_decay = 100 
     batch_size = 256
@@ -27,7 +27,7 @@ def train():
 
     # dataloader
     # training
-    train_loader, classes = data_loading(batch_size, visualization=True)
+    train_loader, classes = data_loading(dataset_name=dataset_name, split='val', batch_size=batch_size, visualization=True)
     no_classes = len(classes)
     # validation
     # testing

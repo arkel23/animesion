@@ -19,7 +19,7 @@ def train(dataset_name):
     torch.manual_seed(0)
 
     # train constants
-    no_epochs = 2
+    no_epochs = 200
     save_iter = 10
     epoch_decay = 100 
     batch_size = 256
@@ -27,7 +27,7 @@ def train(dataset_name):
 
     # dataloader
     # training
-    train_loader, classes = data_loading(dataset_name=dataset_name, split='val', batch_size=batch_size, visualization=True)
+    train_loader, classes = data_loading(dataset_name=dataset_name, split='train', batch_size=batch_size, visualization=True)
     no_classes = len(classes)
     # validation
     # testing
@@ -80,14 +80,14 @@ def train(dataset_name):
         classes=classes,
         model=model, criterion=criterion, no_classes=no_classes, 
         training_proc_avg=training_proc_avg, test_proc_avg=test_proc_avg, 
-        loader=train_loader, last=False)
+        loader=train_loader, dataset_name=dataset_name, last=False)
 
     # validate on test set and plot results
     validate(device=device, batch_size=batch_size, 
     classes=classes,
     model=model, criterion=criterion, no_classes=no_classes, 
     training_proc_avg=training_proc_avg, test_proc_avg=test_proc_avg, 
-    loader=train_loader, last=True)
+    loader=train_loader, dataset_name=dataset_name, last=True)
 
     # Save the model checkpoint
     results_dir = 'results'
@@ -97,7 +97,7 @@ def train(dataset_name):
     
 def validate(device, batch_size, classes,
 model, criterion, no_classes, 
-training_proc_avg, test_proc_avg, loader, last=False):
+training_proc_avg, test_proc_avg, loader, dataset_name=False, last=False):
     # Test the model (validation set)
     model.eval()  # eval mode (batchnorm uses moving mean/variance instead of mini-batch mean/variance)
     with torch.no_grad():
@@ -131,9 +131,10 @@ training_proc_avg, test_proc_avg, loader, last=False):
         test_proc_avg.append(mean(current_losses_test))
 
         if last==True:
-            for i in range(no_classes):
-                print('Total objects in class no. {} ({}): {:d}. Accuracy: {:.4f}'.format(i, classes[i],
-                int(class_total[i]), 100 * class_correct[i] / class_total[i]))
+            if dataset_name == 'moeImouto':
+                for i in range(no_classes):
+                    print('Total objects in class no. {} ({}): {:d}. Accuracy: {:.4f}'.format(i, classes[i],
+                    int(class_total[i]), 100 * class_correct[i] / class_total[i]))
 
             # plot loss
             plot_losses(training_proc_avg, test_proc_avg)

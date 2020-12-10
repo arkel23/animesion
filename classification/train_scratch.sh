@@ -1,1 +1,1 @@
-nohup python -u main.py > output.log &
+nohup python -u main.py danbooruFacesCrops > output.log &

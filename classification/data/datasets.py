@@ -139,4 +139,17 @@ class danbooruFacesCrops(data.Dataset):
 		print(self.subset_df.head())
 		print(classes_reduced)
 		#calc_stats(self.subset_df.copy(), classes_reduced, self.class_names)
-
+		# total no of classes is 70k
+		# main label file only includes 49k
+		# in training 34k
+		# in val 3.6k
+		# assume training, val and test dont add up to 49k
+		# one alternative is to make a new subset of ids and
+		# traininng, val and test lists into only one
+		# then when needed to split just split like [0.8], [0.1]
+		# alternative is to use the 49 k even if no images in certain classes
+		# good is that when move on to the danbooru512x512 not many
+		# changes are needed, only change the main root directory
+		# and split baased on the heuristics suggested 0.8, 0.1, 0.1
+		# another alternative is to only include ids with more 
+		# than mean no of samples 

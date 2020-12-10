@@ -1,0 +1,1 @@
+START /B python -u main.py moeImouto > output_v2.txt

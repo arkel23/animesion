@@ -5,10 +5,13 @@ from statistics import mean
 
 import torch
 import torch.nn as nn
+import torchvision.transforms as transforms
 from torchsummary import summary
 
 from utils.utils import update_lr, plot_losses, data_loading, show_results
 from models.models import simpleNet
+
+from pytorch_pretrained_vit import ViT
 
 def train(dataset_name):
     # trains model from scratch
@@ -19,25 +22,38 @@ def train(dataset_name):
     torch.manual_seed(0)
 
     # train constants
-    no_epochs = 200
+    no_epochs = 50
     save_iter = 10
-    epoch_decay = 100 
-    batch_size = 256
+    epoch_decay = 10 
+    batch_size = 64
     learning_rate = 0.001
+    image_size = 128
 
     # dataloader
     # training
-    train_loader, classes = data_loading(dataset_name=dataset_name, split='train', batch_size=batch_size, visualization=True)
+    tfms = transforms.Compose([transforms.Resize((image_size, image_size)),
+    transforms.ToTensor(), 
+    transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5])])
+    train_loader, classes = data_loading(dataset_name=dataset_name, 
+    split='train', batch_size=batch_size, visualization=True, transform=tfms)
     no_classes = len(classes)
     # validation
     # testing
 
     # initiates model and loss     
-    model = simpleNet(no_classes).to(device)
+    #model = simpleNet(no_classes).to(device)
+    
+    model_list = ['B_16', 'B_32', 'L_32', 'B_16_imagenet1k',
+    'B_32_imagenet1k', 'L_16_imagenet1k', 'L_32_imagenet1k']
+    model_name = model_list[0]
+    model = ViT(model_name, pretrained=True, 
+    num_classes=no_classes, image_size=image_size)
+    model.to(device)
+
     criterion = nn.CrossEntropyLoss()
     optimizer = torch.optim.Adam(model.parameters(), lr=learning_rate)
     # prints model summary (layers, parameters by giving it a sample input)
-    summary(model, input_size=iter(train_loader).next()[0].shape[1:])
+    #summary(model, input_size=iter(train_loader).next()[0].shape[1:])
     
     # Train the model
     total_step = len(train_loader)

@@ -14,22 +14,22 @@ class moeImoutoDataset():
 	# most images are between 100 to 200 pixels square
 	# resample to 128 for convenience to make same as danbooruFacesCrops
 	def __init__(self, input_size=128,
-	data_path='/home2/edwin_ed520/personal/moeimouto_animefacecharacterdataset/'):
-		self.data_path = os.path.abspath(data_path)
-		self.input_size = input_size
-
-		self.data_transform = transforms.Compose([
-        transforms.Resize((self.input_size, self.input_size)),
+	data_path=r'C:\Users\ED520\edwin\data\moeimouto_animefacecharacterdataset',
+	transform=transforms.Compose([
+        transforms.Resize((128, 128)),
         transforms.RandomHorizontalFlip(),
 		transforms.ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1, hue=0.1),
         transforms.ToTensor(),
         transforms.Normalize(mean=[0.5, 0.5, 0.5],
                              std=[0.5, 0.5, 0.5])
-    	])
+    	])):
+		self.data_path = os.path.abspath(data_path)
+		self.input_size = input_size
+		self.transform = transform
 
 	def getImageFolder(self):
 		self.dataset = datasets.ImageFolder(root=self.data_path, 
-		transform=self.data_transform)
+		transform=self.transform)
 		return self.dataset
 
 class danbooruFacesCrops(data.Dataset):

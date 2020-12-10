@@ -9,10 +9,10 @@ import torchvision
 
 from data.datasets import moeImoutoDataset, danbooruFacesCrops
 
-def data_loading(dataset_name, split, batch_size, visualization=True):
+def data_loading(dataset_name, split, batch_size, visualization=True, transform=False):
 
     if dataset_name == 'moeImouto':
-        dataset = moeImoutoDataset().getImageFolder()
+        dataset = moeImoutoDataset(transform=transform).getImageFolder()
         classes = dataset.classes
     if dataset_name == 'danbooruFacesCrops':
         dataset = danbooruFacesCrops(split=split, transform=True)
@@ -26,7 +26,7 @@ def data_loading(dataset_name, split, batch_size, visualization=True):
 
     if visualization==True:
         classes_print(dataset)
-        img_grid(classes, dataset_loader, batch_size=32)
+        img_grid(classes, dataset_loader, batch_size=2)
 
     return dataset_loader, classes
 
@@ -38,7 +38,7 @@ def classes_print(dataset, no_examples=10):
     print(dataset.samples[0])
     print(dataset.targets[0])
 
-def img_grid(classes, dataset_loader, batch_size=16):
+def img_grid(classes, dataset_loader, batch_size=8):
     # get some random training images
     dataiter = iter(dataset_loader)
     images, labels = dataiter.next()

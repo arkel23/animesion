@@ -22,9 +22,9 @@ def train(dataset_name):
     torch.manual_seed(0)
 
     # train constants
-    no_epochs = 50
+    no_epochs = 10
     save_iter = 10
-    epoch_decay = 10 
+    epoch_decay = 25 
     batch_size = 64
     learning_rate = 0.001
     image_size = 128
@@ -41,13 +41,12 @@ def train(dataset_name):
     # testing
 
     # initiates model and loss     
-    #model = simpleNet(no_classes).to(device)
+    model = simpleNet(no_classes).to(device)
     
     model_list = ['B_16', 'B_32', 'L_32', 'B_16_imagenet1k',
     'B_32_imagenet1k', 'L_16_imagenet1k', 'L_32_imagenet1k']
     model_name = model_list[0]
-    model = ViT(model_name, pretrained=True, 
-    num_classes=no_classes, image_size=image_size)
+    #model = ViT(model_name, pretrained=True, num_classes=no_classes, image_size=image_size)
     model.to(device)
 
     criterion = nn.CrossEntropyLoss()

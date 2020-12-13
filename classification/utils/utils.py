@@ -7,13 +7,16 @@ import torch
 import torch.utils.data as data
 import torchvision
 
-from data.datasets import moeImoutoDataset, danbooruFacesCrops
+from data.datasets import moeImoutoDataset, danbooruFacesCrops, moeImouto
 
 def data_loading(dataset_name, split, batch_size, visualization=True, transform=False):
 
     if dataset_name == 'moeImouto':
-        dataset = moeImoutoDataset(transform=transform).getImageFolder()
+        #dataset = moeImoutoDataset(transform=transform).getImageFolder()
+        dataset = moeImouto(input_size=128, train=False)
+        
         classes = dataset.classes
+        
     if dataset_name == 'danbooruFacesCrops':
         dataset = danbooruFacesCrops(split=split, transform=True)
         classes = dataset.classes
@@ -22,21 +25,21 @@ def data_loading(dataset_name, split, batch_size, visualization=True, transform=
     # https://stackoverflow.com/questions/50544730/how-do-i-split-a-custom-dataset-into-training-and-test-datasets/50544887#50544887
     dataset_loader = data.DataLoader(dataset,
                     batch_size=batch_size, shuffle=True,
-                    num_workers=4)
+                    num_workers=1)
 
     if visualization==True:
         classes_print(dataset)
-        img_grid(classes, dataset_loader, batch_size=2)
+        img_grid(classes, dataset_loader, batch_size=16)
 
     return dataset_loader, classes
 
 def classes_print(dataset, no_examples=10):
     print(dataset)
     print(dataset.classes[:no_examples])
-    print(dict([key, dataset.class_to_idx[key]] for key in dataset.classes[:no_examples]))
+    #print(dict([key, dataset.class_to_idx[key]] for key in dataset.classes[:no_examples]))
     #print(dataset[0])
-    print(dataset.samples[0])
-    print(dataset.targets[0])
+    #print(dataset.samples[0])
+    #print(dataset.targets[0])
 
 def img_grid(classes, dataset_loader, batch_size=8):
     # get some random training images
@@ -101,9 +104,3 @@ def plot_losses(training_proc_avg, test_proc_avg):
     if not os.path.exists(results_dir):
         os.makedirs(results_dir)
     fig.savefig(os.path.join(results_dir, 'training_loss.png'), dpi=300)
-
-
-def update_lr(optimizer, lr): 
-    # For updating learning rate   
-    for param_group in optimizer.param_groups:
-        param_group['lr'] = lr

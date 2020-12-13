@@ -31,23 +31,24 @@ def data_split(data_dic_path, split):
     print(df_test.head())
     print(df_test.shape)
 
-    dataset_name = os.path.basename(os.path.normpath(data_dic_path))
-    df_train_name = dataset_name + '_train.csv'
+    df_train_name = 'train.csv'
     df_train.to_csv(df_train_name, sep=',', header=False, index=False)
 
-    df_test_name = dataset_name + '_test.csv'
+    df_test_name = 'test.csv'
     df_test.to_csv(df_test_name, sep=',', header=False, index=False)
     print('Finished saving train and test split dictionaries.')
     
 
 def main():
-    data_dic_path = os.path.abspath(sys.argv[1])
+    
     try:
+        data_dic_path = os.path.abspath(sys.argv[1])
         split_train = float(sys.argv[2])   # % of data for train (def: 0.8)
         split_test = float(sys.argv[3])     # % of data for val (def: 0.2)
         assert split_train+split_test==1, 'Arguments for split ratios should add up to 1'
         split = [split_train, split_test]
     except:
+        data_dic_path = "/home2/edwin_ed520/pytorch/projects/yuwu/classification/utils/moeimouto_animefacecharacterdataset.csv"
         split = [0.8, 0.2]
     
     print(split)

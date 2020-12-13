@@ -32,6 +32,60 @@ class moeImoutoDataset():
 		transform=self.transform)
 		return self.dataset
 
+class moeImouto(data.Dataset):
+	def __init__(self, input_size=128, train=True,
+	data_path="/home2/edwin_ed520/personal/moeimouto_animefacecharacterdataset/",
+	transform=transforms.Compose([
+        transforms.Resize((128, 128)),
+        transforms.RandomHorizontalFlip(),
+		transforms.ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1, hue=0.1),
+        transforms.ToTensor(),
+        transforms.Normalize(mean=[0.5, 0.5, 0.5],
+                             std=[0.5, 0.5, 0.5])
+    	])):
+		super().__init__()
+		self.data_path = os.path.abspath(data_path)
+		self.input_size = input_size
+		self.transform = transform
+		self.train=train
+
+		if self.train==True:
+			print('Train set')
+			self.set_dir = os.path.join(self.data_path, 'train.csv')
+			self.df = pd.read_csv(self.set_dir, sep=',', header=None, names=['class_id', 'dir'], 
+			dtype={'class_id': 'UInt16', 'dir': 'object'})
+		else:
+			print('Test set')
+			self.set_dir = os.path.join(self.data_path, 'test.csv')
+			self.df = pd.read_csv(self.set_dir, sep=',', header=None, names=['class_id', 'dir'], 
+			dtype={'class_id': 'UInt16', 'dir': 'object'})
+		
+		self.labels = self.df['class_id'].to_numpy()
+		self.img_dirs = self.df['dir'].to_numpy()
+
+		# for compatibility with existing datasets
+		self.classes = self.labels
+		self.no_classes = 173
+
+	def __getitem__(self, idx):
+		
+		if torch.is_tensor(idx):
+			idx = idx.tolist()
+
+		img_dir, label = self.img_dirs[idx], self.labels[idx]
+		img_dir = os.path.join(self.data_path, img_dir)
+		image = Image.open(img_dir)
+
+		if self.transform:
+			#print(image.size)
+			#print(image.mode)
+			image = self.transform(image)
+
+		return image, label
+
+	def __len__(self):
+		return len(self.labels)
+
 class danbooruFacesCrops(data.Dataset):
 	# this dataset is just the crops of the faces to 128x128
 	def __init__(self, split, input_size=128,

@@ -34,7 +34,8 @@ class moeImoutoDataset():
 
 class moeImouto(data.Dataset):
 	def __init__(self, input_size=128, train=True,
-	data_path="/home2/edwin_ed520/personal/moeimouto_animefacecharacterdataset/",
+	data_path = r'C:\Users\ED520\edwin\data\moeimouto_animefacecharacterdataset',
+	#data_path="/home2/edwin_ed520/personal/moeimouto_animefacecharacterdataset/",
 	transform=transforms.Compose([
         transforms.Resize((128, 128)),
         transforms.RandomHorizontalFlip(),

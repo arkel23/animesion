@@ -86,7 +86,7 @@ def show_results(device, loader, model, classes, batch_size=8):
     imshow(torchvision.utils.make_grid(images.cpu()[:batch_size]), 'class_results', bottom_text)
     
 
-def plot_losses(training_proc_avg, test_proc_avg):
+def plot_losses(training_proc_avg, test_proc_avg, results_dir):
     # to plot learning curves
     x = np.arange(1, len(training_proc_avg)+1)
     x_2 = np.linspace(1, len(training_proc_avg)+1, len(test_proc_avg))
@@ -100,7 +100,6 @@ def plot_losses(training_proc_avg, test_proc_avg):
     axs.set_title('Loss as training progresses')
     axs.legend()
     
-    results_dir = 'results'
     if not os.path.exists(results_dir):
         os.makedirs(results_dir)
     fig.savefig(os.path.join(results_dir, 'training_loss.png'), dpi=300)

@@ -1,0 +1,1206 @@
+Train set
+Test set
+Epoch [1/200], Step [1/23] Loss: 11.92468548
+Train set
+Test set
+Epoch [1/200], Step [1/23] Loss: 6.98632717
+Epoch [1/200], Step [6/23] Loss: 4.80102682
+Epoch [1/200], Step [11/23] Loss: 4.35086060
+Epoch [1/200], Step [16/23] Loss: 4.15736818
+Epoch [1/200], Step [21/23] Loss: 3.92466116
+Test Accuracy of the model on the test images: 3.7037 %
+Epoch [2/200], Step [1/23] Loss: 5.78255081
+Epoch [2/200], Step [6/23] Loss: 5.50147295
+Epoch [2/200], Step [11/23] Loss: 5.22082567
+Epoch [2/200], Step [16/23] Loss: 5.09041452
+Epoch [2/200], Step [21/23] Loss: 5.05459023
+Test Accuracy of the model on the test images: 1.4951 %
+Epoch [3/200], Step [1/23] Loss: 4.93244934
+Epoch [3/200], Step [6/23] Loss: 4.88088751
+Epoch [3/200], Step [11/23] Loss: 4.83586979
+Epoch [3/200], Step [16/23] Loss: 4.79764318
+Epoch [3/200], Step [21/23] Loss: 4.68495369
+Test Accuracy of the model on the test images: 2.7183 %
+Epoch [4/200], Step [1/23] Loss: 4.79937696
+Epoch [4/200], Step [6/23] Loss: 4.69493008
+Epoch [4/200], Step [11/23] Loss: 4.67907238
+Epoch [4/200], Step [16/23] Loss: 4.62132883
+Epoch [4/200], Step [21/23] Loss: 4.59891844
+Test Accuracy of the model on the test images: 3.4659 %
+Epoch [5/200], Step [1/23] Loss: 4.54624128
+Epoch [5/200], Step [6/23] Loss: 4.49235344
+Epoch [5/200], Step [11/23] Loss: 4.49743080
+Epoch [5/200], Step [16/23] Loss: 4.33791542
+Epoch [5/200], Step [21/23] Loss: 4.26689148
+Test Accuracy of the model on the test images: 3.9755 %
+Epoch [6/200], Step [1/23] Loss: 4.24022675
+Epoch [6/200], Step [6/23] Loss: 4.16109324
+Epoch [6/200], Step [11/23] Loss: 4.16516829
+Epoch [6/200], Step [16/23] Loss: 4.14252710
+Epoch [6/200], Step [21/23] Loss: 4.11178017
+Test Accuracy of the model on the test images: 6.7958 %
+Epoch [7/200], Step [1/23] Loss: 3.97932076
+Epoch [7/200], Step [6/23] Loss: 4.08570433
+Epoch [7/200], Step [11/23] Loss: 4.10729456
+Epoch [7/200], Step [16/23] Loss: 3.99098134
+Epoch [7/200], Step [21/23] Loss: 4.01155281
+Test Accuracy of the model on the test images: 9.6500 %
+Epoch [8/200], Step [1/23] Loss: 3.86374474
+Epoch [8/200], Step [6/23] Loss: 3.81607175
+Epoch [8/200], Step [11/23] Loss: 3.89927340
+Epoch [8/200], Step [16/23] Loss: 3.80488038
+Epoch [8/200], Step [21/23] Loss: 3.75523806
+Test Accuracy of the model on the test images: 10.8733 %
+Epoch [9/200], Step [1/23] Loss: 3.59058404
+Epoch [9/200], Step [6/23] Loss: 3.70169783
+Epoch [9/200], Step [11/23] Loss: 3.62952447
+Epoch [9/200], Step [16/23] Loss: 3.62975931
+Epoch [9/200], Step [21/23] Loss: 3.59021497
+Test Accuracy of the model on the test images: 13.1838 %
+Epoch [10/200], Step [1/23] Loss: 3.56447029
+Epoch [10/200], Step [6/23] Loss: 3.61624575
+Epoch [10/200], Step [11/23] Loss: 3.61094308
+Epoch [10/200], Step [16/23] Loss: 3.52600360
+Epoch [10/200], Step [21/23] Loss: 3.40357828
+Test Accuracy of the model on the test images: 12.8101 %
+Epoch [11/200], Step [1/23] Loss: 3.55071235
+Epoch [11/200], Step [6/23] Loss: 3.55788660
+Epoch [11/200], Step [11/23] Loss: 3.30506396
+Epoch [11/200], Step [16/23] Loss: 3.49409437
+Epoch [11/200], Step [21/23] Loss: 3.24006557
+Test Accuracy of the model on the test images: 18.1108 %
+Epoch [12/200], Step [1/23] Loss: 3.19606781
+Epoch [12/200], Step [6/23] Loss: 3.26187491
+Epoch [12/200], Step [11/23] Loss: 3.21529794
+Epoch [12/200], Step [16/23] Loss: 3.18093085
+Epoch [12/200], Step [21/23] Loss: 3.19705153
+Test Accuracy of the model on the test images: 20.1495 %
+Epoch [13/200], Step [1/23] Loss: 3.23015285
+Epoch [13/200], Step [6/23] Loss: 3.14425087
+Epoch [13/200], Step [11/23] Loss: 3.05391216
+Epoch [13/200], Step [16/23] Loss: 3.00104070
+Epoch [13/200], Step [21/23] Loss: 2.97554326
+Test Accuracy of the model on the test images: 23.6493 %
+Epoch [14/200], Step [1/23] Loss: 2.92848682
+Epoch [14/200], Step [6/23] Loss: 3.06241632
+Epoch [14/200], Step [11/23] Loss: 2.85977006
+Epoch [14/200], Step [16/23] Loss: 2.82986569
+Epoch [14/200], Step [21/23] Loss: 2.91301847
+Test Accuracy of the model on the test images: 27.2171 %
+Epoch [15/200], Step [1/23] Loss: 2.77741742
+Epoch [15/200], Step [6/23] Loss: 2.67793870
+Epoch [15/200], Step [11/23] Loss: 2.83129263
+Epoch [15/200], Step [16/23] Loss: 2.58271694
+Epoch [15/200], Step [21/23] Loss: 2.96070576
+Test Accuracy of the model on the test images: 27.2851 %
+Epoch [16/200], Step [1/23] Loss: 2.61891079
+Epoch [16/200], Step [6/23] Loss: 2.63083601
+Epoch [16/200], Step [11/23] Loss: 2.57971954
+Epoch [16/200], Step [16/23] Loss: 2.64097714
+Epoch [16/200], Step [21/23] Loss: 2.62645817
+Test Accuracy of the model on the test images: 31.0907 %
+Epoch [17/200], Step [1/23] Loss: 2.35038090
+Epoch [17/200], Step [6/23] Loss: 2.34734988
+Epoch [17/200], Step [11/23] Loss: 2.40428185
+Epoch [17/200], Step [16/23] Loss: 2.21684122
+Epoch [17/200], Step [21/23] Loss: 2.48379779
+Test Accuracy of the model on the test images: 33.5032 %
+Epoch [18/200], Step [1/23] Loss: 2.18886495
+Epoch [18/200], Step [6/23] Loss: 2.23193693
+Epoch [18/200], Step [11/23] Loss: 2.24359775
+Epoch [18/200], Step [16/23] Loss: 2.37929273
+Epoch [18/200], Step [21/23] Loss: 2.02547336
+Test Accuracy of the model on the test images: 34.9643 %
+Epoch [19/200], Step [1/23] Loss: 2.06254339
+Epoch [19/200], Step [6/23] Loss: 2.11459208
+Epoch [19/200], Step [11/23] Loss: 2.00241518
+Epoch [19/200], Step [16/23] Loss: 2.04511309
+Epoch [19/200], Step [21/23] Loss: 2.03113127
+Test Accuracy of the model on the test images: 39.1777 %
+Epoch [20/200], Step [1/23] Loss: 1.82060432
+Epoch [20/200], Step [6/23] Loss: 1.92098677
+Epoch [20/200], Step [11/23] Loss: 1.97204220
+Epoch [20/200], Step [16/23] Loss: 1.78998518
+Epoch [20/200], Step [21/23] Loss: 1.93500412
+Test Accuracy of the model on the test images: 41.1485 %
+Epoch [21/200], Step [1/23] Loss: 1.72147632
+Epoch [21/200], Step [6/23] Loss: 1.66107202
+Epoch [21/200], Step [11/23] Loss: 1.58720696
+Epoch [21/200], Step [16/23] Loss: 1.61435437
+Epoch [21/200], Step [21/23] Loss: 1.64631641
+Test Accuracy of the model on the test images: 44.6143 %
+Epoch [22/200], Step [1/23] Loss: 1.49539077
+Epoch [22/200], Step [6/23] Loss: 1.32889414
+Epoch [22/200], Step [11/23] Loss: 1.44832277
+Epoch [22/200], Step [16/23] Loss: 1.61128807
+Epoch [22/200], Step [21/23] Loss: 1.54656672
+Test Accuracy of the model on the test images: 45.5997 %
+Epoch [23/200], Step [1/23] Loss: 1.28153634
+Epoch [23/200], Step [6/23] Loss: 1.49896526
+Epoch [23/200], Step [11/23] Loss: 1.45880485
+Epoch [23/200], Step [16/23] Loss: 1.33061254
+Epoch [23/200], Step [21/23] Loss: 1.34360981
+Test Accuracy of the model on the test images: 45.3619 %
+Epoch [24/200], Step [1/23] Loss: 1.21606624
+Epoch [24/200], Step [6/23] Loss: 1.27467740
+Epoch [24/200], Step [11/23] Loss: 1.12330091
+Epoch [24/200], Step [16/23] Loss: 1.12359524
+Epoch [24/200], Step [21/23] Loss: 1.20566809
+Test Accuracy of the model on the test images: 48.6239 %
+Epoch [25/200], Step [1/23] Loss: 0.97974873
+Epoch [25/200], Step [6/23] Loss: 0.97784978
+Epoch [25/200], Step [11/23] Loss: 1.29593778
+Epoch [25/200], Step [16/23] Loss: 1.07975912
+Epoch [25/200], Step [21/23] Loss: 1.08892798
+Test Accuracy of the model on the test images: 49.4393 %
+Epoch [26/200], Step [1/23] Loss: 0.90151918
+Epoch [26/200], Step [6/23] Loss: 0.84831750
+Epoch [26/200], Step [11/23] Loss: 0.87410444
+Epoch [26/200], Step [16/23] Loss: 1.03496230
+Epoch [26/200], Step [21/23] Loss: 0.89622909
+Test Accuracy of the model on the test images: 50.0170 %
+Epoch [27/200], Step [1/23] Loss: 0.73532546
+Epoch [27/200], Step [6/23] Loss: 0.80772221
+Epoch [27/200], Step [11/23] Loss: 0.72129792
+Epoch [27/200], Step [16/23] Loss: 0.74289763
+Epoch [27/200], Step [21/23] Loss: 0.84231275
+Test Accuracy of the model on the test images: 49.1675 %
+Epoch [28/200], Step [1/23] Loss: 0.74308199
+Epoch [28/200], Step [6/23] Loss: 0.63360035
+Epoch [28/200], Step [11/23] Loss: 0.56229568
+Epoch [28/200], Step [16/23] Loss: 0.71920621
+Epoch [28/200], Step [21/23] Loss: 0.77300763
+Test Accuracy of the model on the test images: 50.9344 %
+Epoch [29/200], Step [1/23] Loss: 0.55975980
+Epoch [29/200], Step [6/23] Loss: 0.48193669
+Epoch [29/200], Step [11/23] Loss: 0.53903002
+Epoch [29/200], Step [16/23] Loss: 0.56888431
+Epoch [29/200], Step [21/23] Loss: 0.65730757
+Test Accuracy of the model on the test images: 50.0849 %
+Epoch [30/200], Step [1/23] Loss: 0.49699688
+Epoch [30/200], Step [6/23] Loss: 0.46066958
+Epoch [30/200], Step [11/23] Loss: 0.52800143
+Epoch [30/200], Step [16/23] Loss: 0.43721816
+Epoch [30/200], Step [21/23] Loss: 0.50685871
+Test Accuracy of the model on the test images: 50.2209 %
+Epoch [31/200], Step [1/23] Loss: 0.47539699
+Epoch [31/200], Step [6/23] Loss: 0.47495520
+Epoch [31/200], Step [11/23] Loss: 0.45272234
+Epoch [31/200], Step [16/23] Loss: 0.51682156
+Epoch [31/200], Step [21/23] Loss: 0.44029710
+Test Accuracy of the model on the test images: 51.5121 %
+Epoch [32/200], Step [1/23] Loss: 0.38102284
+Epoch [32/200], Step [6/23] Loss: 0.35118434
+Epoch [32/200], Step [11/23] Loss: 0.31359842
+Epoch [32/200], Step [16/23] Loss: 0.36999968
+Epoch [32/200], Step [21/23] Loss: 0.36786103
+Test Accuracy of the model on the test images: 51.8858 %
+Epoch [33/200], Step [1/23] Loss: 0.40769768
+Epoch [33/200], Step [6/23] Loss: 0.36219603
+Epoch [33/200], Step [11/23] Loss: 0.31595245
+Epoch [33/200], Step [16/23] Loss: 0.32134467
+Epoch [33/200], Step [21/23] Loss: 0.29534954
+Test Accuracy of the model on the test images: 52.0217 %
+Epoch [34/200], Step [1/23] Loss: 0.23657514
+Epoch [34/200], Step [6/23] Loss: 0.30230340
+Epoch [34/200], Step [11/23] Loss: 0.28874657
+Epoch [34/200], Step [16/23] Loss: 0.31735533
+Epoch [34/200], Step [21/23] Loss: 0.33758032
+Test Accuracy of the model on the test images: 52.8372 %
+Epoch [35/200], Step [1/23] Loss: 0.26949516
+Epoch [35/200], Step [6/23] Loss: 0.27527991
+Epoch [35/200], Step [11/23] Loss: 0.20365086
+Epoch [35/200], Step [16/23] Loss: 0.18371920
+Epoch [35/200], Step [21/23] Loss: 0.30615425
+Test Accuracy of the model on the test images: 54.2304 %
+Epoch [36/200], Step [1/23] Loss: 0.18961743
+Epoch [36/200], Step [6/23] Loss: 0.28064728
+Epoch [36/200], Step [11/23] Loss: 0.23330811
+Epoch [36/200], Step [16/23] Loss: 0.24335176
+Epoch [36/200], Step [21/23] Loss: 0.24638566
+Test Accuracy of the model on the test images: 52.0897 %
+Epoch [37/200], Step [1/23] Loss: 0.19836855
+Epoch [37/200], Step [6/23] Loss: 0.20226797
+Epoch [37/200], Step [11/23] Loss: 0.18105933
+Epoch [37/200], Step [16/23] Loss: 0.24259989
+Epoch [37/200], Step [21/23] Loss: 0.14851068
+Test Accuracy of the model on the test images: 54.7740 %
+Epoch [38/200], Step [1/23] Loss: 0.15654416
+Epoch [38/200], Step [6/23] Loss: 0.18421179
+Epoch [38/200], Step [11/23] Loss: 0.17822196
+Epoch [38/200], Step [16/23] Loss: 0.17916499
+Epoch [38/200], Step [21/23] Loss: 0.19779114
+Test Accuracy of the model on the test images: 55.4536 %
+Epoch [39/200], Step [1/23] Loss: 0.15769652
+Epoch [39/200], Step [6/23] Loss: 0.17218159
+Epoch [39/200], Step [11/23] Loss: 0.17950630
+Epoch [39/200], Step [16/23] Loss: 0.12929638
+Epoch [39/200], Step [21/23] Loss: 0.15284757
+Test Accuracy of the model on the test images: 54.4003 %
+Epoch [40/200], Step [1/23] Loss: 0.08852021
+Epoch [40/200], Step [6/23] Loss: 0.15759806
+Epoch [40/200], Step [11/23] Loss: 0.13781248
+Epoch [40/200], Step [16/23] Loss: 0.13626139
+Epoch [40/200], Step [21/23] Loss: 0.11796520
+Test Accuracy of the model on the test images: 53.2450 %
+Epoch [41/200], Step [1/23] Loss: 0.12561570
+Epoch [41/200], Step [6/23] Loss: 0.07481951
+Epoch [41/200], Step [11/23] Loss: 0.10858900
+Epoch [41/200], Step [16/23] Loss: 0.11835654
+Epoch [41/200], Step [21/23] Loss: 0.11661544
+Test Accuracy of the model on the test images: 56.4390 %
+Epoch [42/200], Step [1/23] Loss: 0.09413948
+Epoch [42/200], Step [6/23] Loss: 0.17718129
+Epoch [42/200], Step [11/23] Loss: 0.10472628
+Epoch [42/200], Step [16/23] Loss: 0.19613375
+Epoch [42/200], Step [21/23] Loss: 0.10555784
+Test Accuracy of the model on the test images: 52.8712 %
+Epoch [43/200], Step [1/23] Loss: 0.14587943
+Epoch [43/200], Step [6/23] Loss: 0.14483532
+Epoch [43/200], Step [11/23] Loss: 0.08594252
+Epoch [43/200], Step [16/23] Loss: 0.20498811
+Epoch [43/200], Step [21/23] Loss: 0.15991588
+Test Accuracy of the model on the test images: 52.7013 %
+Epoch [44/200], Step [1/23] Loss: 0.13616282
+Epoch [44/200], Step [6/23] Loss: 0.14356133
+Epoch [44/200], Step [11/23] Loss: 0.17187604
+Epoch [44/200], Step [16/23] Loss: 0.13576810
+Epoch [44/200], Step [21/23] Loss: 0.09846207
+Test Accuracy of the model on the test images: 55.4536 %
+Epoch [45/200], Step [1/23] Loss: 0.12362668
+Epoch [45/200], Step [6/23] Loss: 0.09368817
+Epoch [45/200], Step [11/23] Loss: 0.09695511
+Epoch [45/200], Step [16/23] Loss: 0.13435428
+Epoch [45/200], Step [21/23] Loss: 0.10636301
+Test Accuracy of the model on the test images: 53.6867 %
+Epoch [46/200], Step [1/23] Loss: 0.09886435
+Epoch [46/200], Step [6/23] Loss: 0.17284618
+Epoch [46/200], Step [11/23] Loss: 0.12247227
+Epoch [46/200], Step [16/23] Loss: 0.13673878
+Epoch [46/200], Step [21/23] Loss: 0.15337794
+Test Accuracy of the model on the test images: 55.4196 %
+Epoch [47/200], Step [1/23] Loss: 0.08328234
+Epoch [47/200], Step [6/23] Loss: 0.05391729
+Epoch [47/200], Step [11/23] Loss: 0.04582565
+Epoch [47/200], Step [16/23] Loss: 0.12405112
+Epoch [47/200], Step [21/23] Loss: 0.13651620
+Test Accuracy of the model on the test images: 55.3177 %
+Epoch [48/200], Step [1/23] Loss: 0.03960746
+Epoch [48/200], Step [6/23] Loss: 0.06944381
+Epoch [48/200], Step [11/23] Loss: 0.07681054
+Epoch [48/200], Step [16/23] Loss: 0.07566362
+Epoch [48/200], Step [21/23] Loss: 0.09022019
+Test Accuracy of the model on the test images: 54.8760 %
+Epoch [49/200], Step [1/23] Loss: 0.06231638
+Epoch [49/200], Step [6/23] Loss: 0.10673129
+Epoch [49/200], Step [11/23] Loss: 0.09139348
+Epoch [49/200], Step [16/23] Loss: 0.08561546
+Epoch [49/200], Step [21/23] Loss: 0.09564454
+Test Accuracy of the model on the test images: 55.5216 %
+Epoch [50/200], Step [1/23] Loss: 0.08525603
+Epoch [50/200], Step [6/23] Loss: 0.13127828
+Epoch [50/200], Step [11/23] Loss: 0.13906786
+Epoch [50/200], Step [16/23] Loss: 0.16480421
+Epoch [50/200], Step [21/23] Loss: 0.09180123
+Test Accuracy of the model on the test images: 55.5216 %
+Epoch [51/200], Step [1/23] Loss: 0.04297676
+Epoch [51/200], Step [6/23] Loss: 0.11991671
+Epoch [51/200], Step [11/23] Loss: 0.07853206
+Epoch [51/200], Step [16/23] Loss: 0.06341986
+Epoch [51/200], Step [21/23] Loss: 0.05569929
+Test Accuracy of the model on the test images: 54.2983 %
+Epoch [52/200], Step [1/23] Loss: 0.05010685
+Epoch [52/200], Step [6/23] Loss: 0.07768790
+Epoch [52/200], Step [11/23] Loss: 0.07357235
+Epoch [52/200], Step [16/23] Loss: 0.07526369
+Epoch [52/200], Step [21/23] Loss: 0.11080250
+Test Accuracy of the model on the test images: 55.1818 %
+Epoch [53/200], Step [1/23] Loss: 0.04917550
+Epoch [53/200], Step [6/23] Loss: 0.05009020
+Epoch [53/200], Step [11/23] Loss: 0.05583318
+Epoch [53/200], Step [16/23] Loss: 0.08807508
+Epoch [53/200], Step [21/23] Loss: 0.06606857
+Test Accuracy of the model on the test images: 55.2837 %
+Epoch [54/200], Step [1/23] Loss: 0.07058734
+Epoch [54/200], Step [6/23] Loss: 0.09419975
+Epoch [54/200], Step [11/23] Loss: 0.05966564
+Epoch [54/200], Step [16/23] Loss: 0.06935103
+Epoch [54/200], Step [21/23] Loss: 0.10449528
+Test Accuracy of the model on the test images: 55.3857 %
+Epoch [55/200], Step [1/23] Loss: 0.04680273
+Epoch [55/200], Step [6/23] Loss: 0.04947368
+Epoch [55/200], Step [11/23] Loss: 0.03685845
+Epoch [55/200], Step [16/23] Loss: 0.04324797
+Epoch [55/200], Step [21/23] Loss: 0.07425644
+Test Accuracy of the model on the test images: 55.7255 %
+Epoch [56/200], Step [1/23] Loss: 0.04472212
+Epoch [56/200], Step [6/23] Loss: 0.07113954
+Epoch [56/200], Step [11/23] Loss: 0.14431143
+Epoch [56/200], Step [16/23] Loss: 0.12951025
+Epoch [56/200], Step [21/23] Loss: 0.07440869
+Test Accuracy of the model on the test images: 54.8760 %
+Epoch [57/200], Step [1/23] Loss: 0.07463799
+Epoch [57/200], Step [6/23] Loss: 0.08959767
+Epoch [57/200], Step [11/23] Loss: 0.06688041
+Epoch [57/200], Step [16/23] Loss: 0.08419049
+Epoch [57/200], Step [21/23] Loss: 0.07177655
+Test Accuracy of the model on the test images: 55.1138 %
+Epoch [58/200], Step [1/23] Loss: 0.04198192
+Epoch [58/200], Step [6/23] Loss: 0.09008700
+Epoch [58/200], Step [11/23] Loss: 0.04875161
+Epoch [58/200], Step [16/23] Loss: 0.08562343
+Epoch [58/200], Step [21/23] Loss: 0.05557398
+Test Accuracy of the model on the test images: 54.6721 %
+Epoch [59/200], Step [1/23] Loss: 0.08473683
+Epoch [59/200], Step [6/23] Loss: 0.07585812
+Epoch [59/200], Step [11/23] Loss: 0.06929607
+Epoch [59/200], Step [16/23] Loss: 0.04768158
+Epoch [59/200], Step [21/23] Loss: 0.07922446
+Test Accuracy of the model on the test images: 56.2691 %
+Epoch [60/200], Step [1/23] Loss: 0.05637658
+Epoch [60/200], Step [6/23] Loss: 0.05069672
+Epoch [60/200], Step [11/23] Loss: 0.04233792
+Epoch [60/200], Step [16/23] Loss: 0.03235897
+Epoch [60/200], Step [21/23] Loss: 0.05949477
+Test Accuracy of the model on the test images: 54.7061 %
+Epoch [61/200], Step [1/23] Loss: 0.06884991
+Epoch [61/200], Step [6/23] Loss: 0.07954300
+Epoch [61/200], Step [11/23] Loss: 0.07552358
+Epoch [61/200], Step [16/23] Loss: 0.07197403
+Epoch [61/200], Step [21/23] Loss: 0.05536705
+Test Accuracy of the model on the test images: 55.7255 %
+Epoch [62/200], Step [1/23] Loss: 0.07181048
+Epoch [62/200], Step [6/23] Loss: 0.06453037
+Epoch [62/200], Step [11/23] Loss: 0.10678282
+Epoch [62/200], Step [16/23] Loss: 0.09222292
+Epoch [62/200], Step [21/23] Loss: 0.03525919
+Test Accuracy of the model on the test images: 55.5216 %
+Epoch [63/200], Step [1/23] Loss: 0.03499142
+Epoch [63/200], Step [6/23] Loss: 0.12312004
+Epoch [63/200], Step [11/23] Loss: 0.06771907
+Epoch [63/200], Step [16/23] Loss: 0.02732913
+Epoch [63/200], Step [21/23] Loss: 0.08724955
+Test Accuracy of the model on the test images: 54.7401 %
+Epoch [64/200], Step [1/23] Loss: 0.03113122
+Epoch [64/200], Step [6/23] Loss: 0.06460461
+Epoch [64/200], Step [11/23] Loss: 0.04899629
+Epoch [64/200], Step [16/23] Loss: 0.11189047
+Epoch [64/200], Step [21/23] Loss: 0.04052823
+Test Accuracy of the model on the test images: 55.4196 %
+Epoch [65/200], Step [1/23] Loss: 0.05525070
+Epoch [65/200], Step [6/23] Loss: 0.04532462
+Epoch [65/200], Step [11/23] Loss: 0.02713501
+Epoch [65/200], Step [16/23] Loss: 0.02326304
+Epoch [65/200], Step [21/23] Loss: 0.03486826
+Test Accuracy of the model on the test images: 54.8080 %
+Epoch [66/200], Step [1/23] Loss: 0.05325037
+Epoch [66/200], Step [6/23] Loss: 0.08085646
+Epoch [66/200], Step [11/23] Loss: 0.06300967
+Epoch [66/200], Step [16/23] Loss: 0.03808352
+Epoch [66/200], Step [21/23] Loss: 0.03776449
+Test Accuracy of the model on the test images: 57.4584 %
+Epoch [67/200], Step [1/23] Loss: 0.03432665
+Epoch [67/200], Step [6/23] Loss: 0.01782275
+Epoch [67/200], Step [11/23] Loss: 0.04341174
+Epoch [67/200], Step [16/23] Loss: 0.04773963
+Epoch [67/200], Step [21/23] Loss: 0.07891656
+Test Accuracy of the model on the test images: 56.7108 %
+Epoch [68/200], Step [1/23] Loss: 0.02600265
+Epoch [68/200], Step [6/23] Loss: 0.03109498
+Epoch [68/200], Step [11/23] Loss: 0.02090279
+Epoch [68/200], Step [16/23] Loss: 0.07439298
+Epoch [68/200], Step [21/23] Loss: 0.05699693
+Test Accuracy of the model on the test images: 55.6915 %
+Epoch [69/200], Step [1/23] Loss: 0.04591293
+Epoch [69/200], Step [6/23] Loss: 0.05560371
+Epoch [69/200], Step [11/23] Loss: 0.08492634
+Epoch [69/200], Step [16/23] Loss: 0.09332233
+Epoch [69/200], Step [21/23] Loss: 0.06596968
+Test Accuracy of the model on the test images: 55.3177 %
+Epoch [70/200], Step [1/23] Loss: 0.02976738
+Epoch [70/200], Step [6/23] Loss: 0.05998299
+Epoch [70/200], Step [11/23] Loss: 0.05605539
+Epoch [70/200], Step [16/23] Loss: 0.07958266
+Epoch [70/200], Step [21/23] Loss: 0.11735132
+Test Accuracy of the model on the test images: 54.8420 %
+Epoch [71/200], Step [1/23] Loss: 0.02556444
+Epoch [71/200], Step [6/23] Loss: 0.07596822
+Epoch [71/200], Step [11/23] Loss: 0.11960348
+Epoch [71/200], Step [16/23] Loss: 0.06876715
+Epoch [71/200], Step [21/23] Loss: 0.09347945
+Test Accuracy of the model on the test images: 53.5508 %
+Epoch [72/200], Step [1/23] Loss: 0.11174932
+Epoch [72/200], Step [6/23] Loss: 0.08780668
+Epoch [72/200], Step [11/23] Loss: 0.07721501
+Epoch [72/200], Step [16/23] Loss: 0.12013724
+Epoch [72/200], Step [21/23] Loss: 0.04280474
+Test Accuracy of the model on the test images: 54.1624 %
+Epoch [73/200], Step [1/23] Loss: 0.06891431
+Epoch [73/200], Step [6/23] Loss: 0.05561606
+Epoch [73/200], Step [11/23] Loss: 0.06105470
+Epoch [73/200], Step [16/23] Loss: 0.07648338
+Epoch [73/200], Step [21/23] Loss: 0.06206670
+Test Accuracy of the model on the test images: 56.2691 %
+Epoch [74/200], Step [1/23] Loss: 0.06925973
+Epoch [74/200], Step [6/23] Loss: 0.03521236
+Epoch [74/200], Step [11/23] Loss: 0.07522995
+Epoch [74/200], Step [16/23] Loss: 0.05115178
+Epoch [74/200], Step [21/23] Loss: 0.04720959
+Test Accuracy of the model on the test images: 57.0506 %
+Epoch [75/200], Step [1/23] Loss: 0.01858178
+Epoch [75/200], Step [6/23] Loss: 0.05046665
+Epoch [75/200], Step [11/23] Loss: 0.03019126
+Epoch [75/200], Step [16/23] Loss: 0.03770040
+Epoch [75/200], Step [21/23] Loss: 0.03530740
+Test Accuracy of the model on the test images: 56.1672 %
+Epoch [76/200], Step [1/23] Loss: 0.03886523
+Epoch [76/200], Step [6/23] Loss: 0.05179260
+Epoch [76/200], Step [11/23] Loss: 0.06652663
+Epoch [76/200], Step [16/23] Loss: 0.05487060
+Epoch [76/200], Step [21/23] Loss: 0.04225564
+Test Accuracy of the model on the test images: 56.4390 %
+Epoch [77/200], Step [1/23] Loss: 0.03908923
+Epoch [77/200], Step [6/23] Loss: 0.05397072
+Epoch [77/200], Step [11/23] Loss: 0.05853646
+Epoch [77/200], Step [16/23] Loss: 0.03259364
+Epoch [77/200], Step [21/23] Loss: 0.01588854
+Test Accuracy of the model on the test images: 57.3225 %
+Epoch [78/200], Step [1/23] Loss: 0.01461422
+Epoch [78/200], Step [6/23] Loss: 0.05207580
+Epoch [78/200], Step [11/23] Loss: 0.06584408
+Epoch [78/200], Step [16/23] Loss: 0.06047309
+Epoch [78/200], Step [21/23] Loss: 0.05096767
+Test Accuracy of the model on the test images: 56.5070 %
+Epoch [79/200], Step [1/23] Loss: 0.04286553
+Epoch [79/200], Step [6/23] Loss: 0.04082882
+Epoch [79/200], Step [11/23] Loss: 0.04177582
+Epoch [79/200], Step [16/23] Loss: 0.05194902
+Epoch [79/200], Step [21/23] Loss: 0.02611087
+Test Accuracy of the model on the test images: 57.4244 %
+Epoch [80/200], Step [1/23] Loss: 0.03787972
+Epoch [80/200], Step [6/23] Loss: 0.03161491
+Epoch [80/200], Step [11/23] Loss: 0.03048724
+Epoch [80/200], Step [16/23] Loss: 0.02301889
+Epoch [80/200], Step [21/23] Loss: 0.02608795
+Test Accuracy of the model on the test images: 58.1380 %
+Epoch [81/200], Step [1/23] Loss: 0.01967086
+Epoch [81/200], Step [6/23] Loss: 0.04381277
+Epoch [81/200], Step [11/23] Loss: 0.02100481
+Epoch [81/200], Step [16/23] Loss: 0.01536878
+Epoch [81/200], Step [21/23] Loss: 0.01692091
+Test Accuracy of the model on the test images: 58.1040 %
+Epoch [82/200], Step [1/23] Loss: 0.03170869
+Epoch [82/200], Step [6/23] Loss: 0.03947251
+Epoch [82/200], Step [11/23] Loss: 0.03830235
+Epoch [82/200], Step [16/23] Loss: 0.06736416
+Epoch [82/200], Step [21/23] Loss: 0.08431899
+Test Accuracy of the model on the test images: 55.6915 %
+Epoch [83/200], Step [1/23] Loss: 0.02942395
+Epoch [83/200], Step [6/23] Loss: 0.03737379
+Epoch [83/200], Step [11/23] Loss: 0.05063964
+Epoch [83/200], Step [16/23] Loss: 0.06790648
+Epoch [83/200], Step [21/23] Loss: 0.03672490
+Test Accuracy of the model on the test images: 55.9633 %
+Epoch [84/200], Step [1/23] Loss: 0.03808260
+Epoch [84/200], Step [6/23] Loss: 0.01571209
+Epoch [84/200], Step [11/23] Loss: 0.03995151
+Epoch [84/200], Step [16/23] Loss: 0.03862115
+Epoch [84/200], Step [21/23] Loss: 0.06092830
+Test Accuracy of the model on the test images: 55.7594 %
+Epoch [85/200], Step [1/23] Loss: 0.01659575
+Epoch [85/200], Step [6/23] Loss: 0.07943714
+Epoch [85/200], Step [11/23] Loss: 0.04248112
+Epoch [85/200], Step [16/23] Loss: 0.06426051
+Epoch [85/200], Step [21/23] Loss: 0.08767603
+Test Accuracy of the model on the test images: 56.2012 %
+Epoch [86/200], Step [1/23] Loss: 0.03388676
+Epoch [86/200], Step [6/23] Loss: 0.06782239
+Epoch [86/200], Step [11/23] Loss: 0.06998815
+Epoch [86/200], Step [16/23] Loss: 0.04155369
+Epoch [86/200], Step [21/23] Loss: 0.05207106
+Test Accuracy of the model on the test images: 55.0119 %
+Epoch [87/200], Step [1/23] Loss: 0.05801673
+Epoch [87/200], Step [6/23] Loss: 0.08585944
+Epoch [87/200], Step [11/23] Loss: 0.08235833
+Epoch [87/200], Step [16/23] Loss: 0.06500357
+Epoch [87/200], Step [21/23] Loss: 0.05284797
+Test Accuracy of the model on the test images: 54.9439 %
+Epoch [88/200], Step [1/23] Loss: 0.06410161
+Epoch [88/200], Step [6/23] Loss: 0.10493175
+Epoch [88/200], Step [11/23] Loss: 0.06547491
+Epoch [88/200], Step [16/23] Loss: 0.09510243
+Epoch [88/200], Step [21/23] Loss: 0.05840044
+Test Accuracy of the model on the test images: 55.2158 %
+Epoch [89/200], Step [1/23] Loss: 0.06513596
+Epoch [89/200], Step [6/23] Loss: 0.03001891
+Epoch [89/200], Step [11/23] Loss: 0.03247050
+Epoch [89/200], Step [16/23] Loss: 0.07538667
+Epoch [89/200], Step [21/23] Loss: 0.07705051
+Test Accuracy of the model on the test images: 52.2596 %
+Epoch [90/200], Step [1/23] Loss: 0.12133425
+Epoch [90/200], Step [6/23] Loss: 0.10611124
+Epoch [90/200], Step [11/23] Loss: 0.04271310
+Epoch [90/200], Step [16/23] Loss: 0.08355975
+Epoch [90/200], Step [21/23] Loss: 0.02621303
+Test Accuracy of the model on the test images: 54.8760 %
+Epoch [91/200], Step [1/23] Loss: 0.02895105
+Epoch [91/200], Step [6/23] Loss: 0.03942626
+Epoch [91/200], Step [11/23] Loss: 0.06319769
+Epoch [91/200], Step [16/23] Loss: 0.09065520
+Epoch [91/200], Step [21/23] Loss: 0.08294541
+Test Accuracy of the model on the test images: 56.0992 %
+Epoch [92/200], Step [1/23] Loss: 0.03280523
+Epoch [92/200], Step [6/23] Loss: 0.06043271
+Epoch [92/200], Step [11/23] Loss: 0.04427388
+Epoch [92/200], Step [16/23] Loss: 0.03522979
+Epoch [92/200], Step [21/23] Loss: 0.04182058
+Test Accuracy of the model on the test images: 55.7594 %
+Epoch [93/200], Step [1/23] Loss: 0.02264197
+Epoch [93/200], Step [6/23] Loss: 0.02865671
+Epoch [93/200], Step [11/23] Loss: 0.03687332
+Epoch [93/200], Step [16/23] Loss: 0.03767204
+Epoch [93/200], Step [21/23] Loss: 0.05082856
+Test Accuracy of the model on the test images: 54.8420 %
+Epoch [94/200], Step [1/23] Loss: 0.06867916
+Epoch [94/200], Step [6/23] Loss: 0.03292332
+Epoch [94/200], Step [11/23] Loss: 0.06727456
+Epoch [94/200], Step [16/23] Loss: 0.02663554
+Epoch [94/200], Step [21/23] Loss: 0.03957837
+Test Accuracy of the model on the test images: 55.6575 %
+Epoch [95/200], Step [1/23] Loss: 0.03802260
+Epoch [95/200], Step [6/23] Loss: 0.08824088
+Epoch [95/200], Step [11/23] Loss: 0.04637274
+Epoch [95/200], Step [16/23] Loss: 0.04031309
+Epoch [95/200], Step [21/23] Loss: 0.02403978
+Test Accuracy of the model on the test images: 55.0459 %
+Epoch [96/200], Step [1/23] Loss: 0.06260600
+Epoch [96/200], Step [6/23] Loss: 0.04797928
+Epoch [96/200], Step [11/23] Loss: 0.05059528
+Epoch [96/200], Step [16/23] Loss: 0.08282743
+Epoch [96/200], Step [21/23] Loss: 0.03824078
+Test Accuracy of the model on the test images: 57.0166 %
+Epoch [97/200], Step [1/23] Loss: 0.01801843
+Epoch [97/200], Step [6/23] Loss: 0.03006153
+Epoch [97/200], Step [11/23] Loss: 0.03368342
+Epoch [97/200], Step [16/23] Loss: 0.04465298
+Epoch [97/200], Step [21/23] Loss: 0.01558829
+Test Accuracy of the model on the test images: 56.4730 %
+Epoch [98/200], Step [1/23] Loss: 0.04660172
+Epoch [98/200], Step [6/23] Loss: 0.05524467
+Epoch [98/200], Step [11/23] Loss: 0.07318128
+Epoch [98/200], Step [16/23] Loss: 0.08318434
+Epoch [98/200], Step [21/23] Loss: 0.03701941
+Test Accuracy of the model on the test images: 54.2644 %
+Epoch [99/200], Step [1/23] Loss: 0.03827046
+Epoch [99/200], Step [6/23] Loss: 0.03385727
+Epoch [99/200], Step [11/23] Loss: 0.03232343
+Epoch [99/200], Step [16/23] Loss: 0.02959155
+Epoch [99/200], Step [21/23] Loss: 0.04325283
+Test Accuracy of the model on the test images: 56.0313 %
+Epoch [100/200], Step [1/23] Loss: 0.03745574
+Epoch [100/200], Step [6/23] Loss: 0.02318862
+Epoch [100/200], Step [11/23] Loss: 0.04648190
+Epoch [100/200], Step [16/23] Loss: 0.05665076
+Epoch [100/200], Step [21/23] Loss: 0.04410446
+Test Accuracy of the model on the test images: 54.9779 %
+Epoch [101/200], Step [1/23] Loss: 0.04526671
+Epoch [101/200], Step [6/23] Loss: 0.03756754
+Epoch [101/200], Step [11/23] Loss: 0.01982022
+Epoch [101/200], Step [16/23] Loss: 0.03072347
+Epoch [101/200], Step [21/23] Loss: 0.02394249
+Test Accuracy of the model on the test images: 56.9487 %
+Epoch [102/200], Step [1/23] Loss: 0.01005583
+Epoch [102/200], Step [6/23] Loss: 0.01620091
+Epoch [102/200], Step [11/23] Loss: 0.00974986
+Epoch [102/200], Step [16/23] Loss: 0.00990119
+Epoch [102/200], Step [21/23] Loss: 0.00563998
+Test Accuracy of the model on the test images: 58.9534 %
+Epoch [103/200], Step [1/23] Loss: 0.00482621
+Epoch [103/200], Step [6/23] Loss: 0.01552952
+Epoch [103/200], Step [11/23] Loss: 0.00383423
+Epoch [103/200], Step [16/23] Loss: 0.00298360
+Epoch [103/200], Step [21/23] Loss: 0.00407986
+Test Accuracy of the model on the test images: 58.7836 %
+Epoch [104/200], Step [1/23] Loss: 0.00185500
+Epoch [104/200], Step [6/23] Loss: 0.01419192
+Epoch [104/200], Step [11/23] Loss: 0.00565378
+Epoch [104/200], Step [16/23] Loss: 0.00783436
+Epoch [104/200], Step [21/23] Loss: 0.01148136
+Test Accuracy of the model on the test images: 59.2932 %
+Epoch [105/200], Step [1/23] Loss: 0.01348399
+Epoch [105/200], Step [6/23] Loss: 0.00815306
+Epoch [105/200], Step [11/23] Loss: 0.00272295
+Epoch [105/200], Step [16/23] Loss: 0.00521489
+Epoch [105/200], Step [21/23] Loss: 0.00725330
+Test Accuracy of the model on the test images: 58.9874 %
+Epoch [106/200], Step [1/23] Loss: 0.01237861
+Epoch [106/200], Step [6/23] Loss: 0.00551066
+Epoch [106/200], Step [11/23] Loss: 0.00815465
+Epoch [106/200], Step [16/23] Loss: 0.00437691
+Epoch [106/200], Step [21/23] Loss: 0.00654520
+Test Accuracy of the model on the test images: 59.2932 %
+Epoch [107/200], Step [1/23] Loss: 0.00318661
+Epoch [107/200], Step [6/23] Loss: 0.00257439
+Epoch [107/200], Step [11/23] Loss: 0.00350357
+Epoch [107/200], Step [16/23] Loss: 0.00370100
+Epoch [107/200], Step [21/23] Loss: 0.00233176
+Test Accuracy of the model on the test images: 57.7982 %
+Epoch [108/200], Step [1/23] Loss: 0.01123737
+Epoch [108/200], Step [6/23] Loss: 0.00915033
+Epoch [108/200], Step [11/23] Loss: 0.00748758
+Epoch [108/200], Step [16/23] Loss: 0.00568991
+Epoch [108/200], Step [21/23] Loss: 0.01752280
+Test Accuracy of the model on the test images: 58.6137 %
+Epoch [109/200], Step [1/23] Loss: 0.00460619
+Epoch [109/200], Step [6/23] Loss: 0.00174383
+Epoch [109/200], Step [11/23] Loss: 0.00339413
+Epoch [109/200], Step [16/23] Loss: 0.01713990
+Epoch [109/200], Step [21/23] Loss: 0.00887404
+Test Accuracy of the model on the test images: 59.5651 %
+Epoch [110/200], Step [1/23] Loss: 0.00252829
+Epoch [110/200], Step [6/23] Loss: 0.00520792
+Epoch [110/200], Step [11/23] Loss: 0.02080722
+Epoch [110/200], Step [16/23] Loss: 0.00215556
+Epoch [110/200], Step [21/23] Loss: 0.00609686
+Test Accuracy of the model on the test images: 59.2932 %
+Epoch [111/200], Step [1/23] Loss: 0.01195491
+Epoch [111/200], Step [6/23] Loss: 0.01015897
+Epoch [111/200], Step [11/23] Loss: 0.00529091
+Epoch [111/200], Step [16/23] Loss: 0.00835925
+Epoch [111/200], Step [21/23] Loss: 0.01002701
+Test Accuracy of the model on the test images: 59.3612 %
+Epoch [112/200], Step [1/23] Loss: 0.00325188
+Epoch [112/200], Step [6/23] Loss: 0.00456448
+Epoch [112/200], Step [11/23] Loss: 0.00364780
+Epoch [112/200], Step [16/23] Loss: 0.00549614
+Epoch [112/200], Step [21/23] Loss: 0.00588382
+Test Accuracy of the model on the test images: 59.3612 %
+Epoch [113/200], Step [1/23] Loss: 0.00359149
+Epoch [113/200], Step [6/23] Loss: 0.00902444
+Epoch [113/200], Step [11/23] Loss: 0.00583225
+Epoch [113/200], Step [16/23] Loss: 0.00649236
+Epoch [113/200], Step [21/23] Loss: 0.00712360
+Test Accuracy of the model on the test images: 59.2253 %
+Epoch [114/200], Step [1/23] Loss: 0.00650621
+Epoch [114/200], Step [6/23] Loss: 0.00774831
+Epoch [114/200], Step [11/23] Loss: 0.00418165
+Epoch [114/200], Step [16/23] Loss: 0.00172638
+Epoch [114/200], Step [21/23] Loss: 0.00039879
+Test Accuracy of the model on the test images: 59.2932 %
+Epoch [115/200], Step [1/23] Loss: 0.00293459
+Epoch [115/200], Step [6/23] Loss: 0.00807991
+Epoch [115/200], Step [11/23] Loss: 0.01316087
+Epoch [115/200], Step [16/23] Loss: 0.01611178
+Epoch [115/200], Step [21/23] Loss: 0.01044746
+Test Accuracy of the model on the test images: 60.0408 %
+Epoch [116/200], Step [1/23] Loss: 0.00403719
+Epoch [116/200], Step [6/23] Loss: 0.00488665
+Epoch [116/200], Step [11/23] Loss: 0.00499637
+Epoch [116/200], Step [16/23] Loss: 0.01881878
+Epoch [116/200], Step [21/23] Loss: 0.01149120
+Test Accuracy of the model on the test images: 59.2593 %
+Epoch [117/200], Step [1/23] Loss: 0.00276275
+Epoch [117/200], Step [6/23] Loss: 0.00671948
+Epoch [117/200], Step [11/23] Loss: 0.00515271
+Epoch [117/200], Step [16/23] Loss: 0.01121638
+Epoch [117/200], Step [21/23] Loss: 0.01729097
+Test Accuracy of the model on the test images: 59.3612 %
+Epoch [118/200], Step [1/23] Loss: 0.01271097
+Epoch [118/200], Step [6/23] Loss: 0.00603399
+Epoch [118/200], Step [11/23] Loss: 0.00290569
+Epoch [118/200], Step [16/23] Loss: 0.00575313
+Epoch [118/200], Step [21/23] Loss: 0.00876095
+Test Accuracy of the model on the test images: 58.7836 %
+Epoch [119/200], Step [1/23] Loss: 0.00665166
+Epoch [119/200], Step [6/23] Loss: 0.00492439
+Epoch [119/200], Step [11/23] Loss: 0.00934905
+Epoch [119/200], Step [16/23] Loss: 0.00515970
+Epoch [119/200], Step [21/23] Loss: 0.01047717
+Test Accuracy of the model on the test images: 60.0748 %
+Epoch [120/200], Step [1/23] Loss: 0.00925009
+Epoch [120/200], Step [6/23] Loss: 0.01433626
+Epoch [120/200], Step [11/23] Loss: 0.00543414
+Epoch [120/200], Step [16/23] Loss: 0.00319440
+Epoch [120/200], Step [21/23] Loss: 0.00030471
+Test Accuracy of the model on the test images: 60.0408 %
+Epoch [121/200], Step [1/23] Loss: 0.00054294
+Epoch [121/200], Step [6/23] Loss: 0.00547250
+Epoch [121/200], Step [11/23] Loss: 0.00252319
+Epoch [121/200], Step [16/23] Loss: 0.00646784
+Epoch [121/200], Step [21/23] Loss: 0.01304049
+Test Accuracy of the model on the test images: 59.9049 %
+Epoch [122/200], Step [1/23] Loss: 0.00817265
+Epoch [122/200], Step [6/23] Loss: 0.00039906
+Epoch [122/200], Step [11/23] Loss: 0.00285437
+Epoch [122/200], Step [16/23] Loss: 0.00572767
+Epoch [122/200], Step [21/23] Loss: 0.00750339
+Test Accuracy of the model on the test images: 59.9049 %
+Epoch [123/200], Step [1/23] Loss: 0.00583162
+Epoch [123/200], Step [6/23] Loss: 0.00310557
+Epoch [123/200], Step [11/23] Loss: 0.00159434
+Epoch [123/200], Step [16/23] Loss: 0.00060876
+Epoch [123/200], Step [21/23] Loss: 0.00747196
+Test Accuracy of the model on the test images: 59.6330 %
+Epoch [124/200], Step [1/23] Loss: 0.00259120
+Epoch [124/200], Step [6/23] Loss: 0.00189594
+Epoch [124/200], Step [11/23] Loss: 0.00481882
+Epoch [124/200], Step [16/23] Loss: 0.00997114
+Epoch [124/200], Step [21/23] Loss: 0.01192315
+Test Accuracy of the model on the test images: 59.5651 %
+Epoch [125/200], Step [1/23] Loss: 0.00364072
+Epoch [125/200], Step [6/23] Loss: 0.00217686
+Epoch [125/200], Step [11/23] Loss: 0.00080313
+Epoch [125/200], Step [16/23] Loss: 0.00825983
+Epoch [125/200], Step [21/23] Loss: 0.00321975
+Test Accuracy of the model on the test images: 59.7689 %
+Epoch [126/200], Step [1/23] Loss: 0.00794216
+Epoch [126/200], Step [6/23] Loss: 0.00239946
+Epoch [126/200], Step [11/23] Loss: 0.00058540
+Epoch [126/200], Step [16/23] Loss: 0.00226017
+Epoch [126/200], Step [21/23] Loss: 0.00069118
+Test Accuracy of the model on the test images: 59.0894 %
+Epoch [127/200], Step [1/23] Loss: 0.00530911
+Epoch [127/200], Step [6/23] Loss: 0.00142796
+Epoch [127/200], Step [11/23] Loss: 0.00949674
+Epoch [127/200], Step [16/23] Loss: 0.00226478
+Epoch [127/200], Step [21/23] Loss: 0.00943672
+Test Accuracy of the model on the test images: 59.4631 %
+Epoch [128/200], Step [1/23] Loss: 0.00490316
+Epoch [128/200], Step [6/23] Loss: 0.00264106
+Epoch [128/200], Step [11/23] Loss: 0.00565427
+Epoch [128/200], Step [16/23] Loss: 0.01677730
+Epoch [128/200], Step [21/23] Loss: 0.01655093
+Test Accuracy of the model on the test images: 60.1767 %
+Epoch [129/200], Step [1/23] Loss: 0.00193336
+Epoch [129/200], Step [6/23] Loss: 0.00449120
+Epoch [129/200], Step [11/23] Loss: 0.00634666
+Epoch [129/200], Step [16/23] Loss: 0.00365500
+Epoch [129/200], Step [21/23] Loss: 0.01221785
+Test Accuracy of the model on the test images: 59.5990 %
+Epoch [130/200], Step [1/23] Loss: 0.00474580
+Epoch [130/200], Step [6/23] Loss: 0.00409145
+Epoch [130/200], Step [11/23] Loss: 0.00568393
+Epoch [130/200], Step [16/23] Loss: 0.00757157
+Epoch [130/200], Step [21/23] Loss: 0.00157617
+Test Accuracy of the model on the test images: 59.9728 %
+Epoch [131/200], Step [1/23] Loss: 0.00534234
+Epoch [131/200], Step [6/23] Loss: 0.00537185
+Epoch [131/200], Step [11/23] Loss: 0.00224572
+Epoch [131/200], Step [16/23] Loss: 0.00729011
+Epoch [131/200], Step [21/23] Loss: 0.00748172
+Test Accuracy of the model on the test images: 60.0408 %
+Epoch [132/200], Step [1/23] Loss: 0.00224608
+Epoch [132/200], Step [6/23] Loss: 0.00860853
+Epoch [132/200], Step [11/23] Loss: 0.00242529
+Epoch [132/200], Step [16/23] Loss: 0.00057602
+Epoch [132/200], Step [21/23] Loss: 0.00858896
+Test Accuracy of the model on the test images: 59.6670 %
+Epoch [133/200], Step [1/23] Loss: 0.00555290
+Epoch [133/200], Step [6/23] Loss: 0.00763550
+Epoch [133/200], Step [11/23] Loss: 0.00226961
+Epoch [133/200], Step [16/23] Loss: 0.01633951
+Epoch [133/200], Step [21/23] Loss: 0.01298968
+Test Accuracy of the model on the test images: 59.4631 %
+Epoch [134/200], Step [1/23] Loss: 0.00465949
+Epoch [134/200], Step [6/23] Loss: 0.00463155
+Epoch [134/200], Step [11/23] Loss: 0.00434191
+Epoch [134/200], Step [16/23] Loss: 0.00735009
+Epoch [134/200], Step [21/23] Loss: 0.01560851
+Test Accuracy of the model on the test images: 60.4485 %
+Epoch [135/200], Step [1/23] Loss: 0.00484006
+Epoch [135/200], Step [6/23] Loss: 0.01153944
+Epoch [135/200], Step [11/23] Loss: 0.00215114
+Epoch [135/200], Step [16/23] Loss: 0.00425947
+Epoch [135/200], Step [21/23] Loss: 0.00346068
+Test Accuracy of the model on the test images: 59.7010 %
+Epoch [136/200], Step [1/23] Loss: 0.00207300
+Epoch [136/200], Step [6/23] Loss: 0.00326320
+Epoch [136/200], Step [11/23] Loss: 0.00254073
+Epoch [136/200], Step [16/23] Loss: 0.00651606
+Epoch [136/200], Step [21/23] Loss: 0.00031173
+Test Accuracy of the model on the test images: 59.5311 %
+Epoch [137/200], Step [1/23] Loss: 0.00682455
+Epoch [137/200], Step [6/23] Loss: 0.00599357
+Epoch [137/200], Step [11/23] Loss: 0.00727702
+Epoch [137/200], Step [16/23] Loss: 0.01302271
+Epoch [137/200], Step [21/23] Loss: 0.00299434
+Test Accuracy of the model on the test images: 59.6330 %
+Epoch [138/200], Step [1/23] Loss: 0.00284186
+Epoch [138/200], Step [6/23] Loss: 0.00753091
+Epoch [138/200], Step [11/23] Loss: 0.00840261
+Epoch [138/200], Step [16/23] Loss: 0.00526113
+Epoch [138/200], Step [21/23] Loss: 0.00531161
+Test Accuracy of the model on the test images: 60.8902 %
+Epoch [139/200], Step [1/23] Loss: 0.00291922
+Epoch [139/200], Step [6/23] Loss: 0.00602914
+Epoch [139/200], Step [11/23] Loss: 0.00037899
+Epoch [139/200], Step [16/23] Loss: 0.01512805
+Epoch [139/200], Step [21/23] Loss: 0.00335134
+Test Accuracy of the model on the test images: 60.4825 %
+Epoch [140/200], Step [1/23] Loss: 0.03049470
+Epoch [140/200], Step [6/23] Loss: 0.00340955
+Epoch [140/200], Step [11/23] Loss: 0.00915776
+Epoch [140/200], Step [16/23] Loss: 0.01045743
+Epoch [140/200], Step [21/23] Loss: 0.00243491
+Test Accuracy of the model on the test images: 60.2107 %
+Epoch [141/200], Step [1/23] Loss: 0.00836625
+Epoch [141/200], Step [6/23] Loss: 0.00041291
+Epoch [141/200], Step [11/23] Loss: 0.00394109
+Epoch [141/200], Step [16/23] Loss: 0.00998056
+Epoch [141/200], Step [21/23] Loss: 0.00340889
+Test Accuracy of the model on the test images: 60.7883 %
+Epoch [142/200], Step [1/23] Loss: 0.00927047
+Epoch [142/200], Step [6/23] Loss: 0.00583346
+Epoch [142/200], Step [11/23] Loss: 0.00568544
+Epoch [142/200], Step [16/23] Loss: 0.00170695
+Epoch [142/200], Step [21/23] Loss: 0.00614538
+Test Accuracy of the model on the test images: 60.1427 %
+Epoch [143/200], Step [1/23] Loss: 0.00141737
+Epoch [143/200], Step [6/23] Loss: 0.00172692
+Epoch [143/200], Step [11/23] Loss: 0.01078873
+Epoch [143/200], Step [16/23] Loss: 0.00154005
+Epoch [143/200], Step [21/23] Loss: 0.00866871
+Test Accuracy of the model on the test images: 60.1087 %
+Epoch [144/200], Step [1/23] Loss: 0.00034703
+Epoch [144/200], Step [6/23] Loss: 0.00526915
+Epoch [144/200], Step [11/23] Loss: 0.00980649
+Epoch [144/200], Step [16/23] Loss: 0.01193563
+Epoch [144/200], Step [21/23] Loss: 0.00316410
+Test Accuracy of the model on the test images: 60.3466 %
+Epoch [145/200], Step [1/23] Loss: 0.01283087
+Epoch [145/200], Step [6/23] Loss: 0.00132669
+Epoch [145/200], Step [11/23] Loss: 0.00891348
+Epoch [145/200], Step [16/23] Loss: 0.01041550
+Epoch [145/200], Step [21/23] Loss: 0.00124956
+Test Accuracy of the model on the test images: 59.8709 %
+Epoch [146/200], Step [1/23] Loss: 0.00072597
+Epoch [146/200], Step [6/23] Loss: 0.00384188
+Epoch [146/200], Step [11/23] Loss: 0.01283858
+Epoch [146/200], Step [16/23] Loss: 0.02797970
+Epoch [146/200], Step [21/23] Loss: 0.00748233
+Test Accuracy of the model on the test images: 59.9728 %
+Epoch [147/200], Step [1/23] Loss: 0.01621228
+Epoch [147/200], Step [6/23] Loss: 0.00777517
+Epoch [147/200], Step [11/23] Loss: 0.00762587
+Epoch [147/200], Step [16/23] Loss: 0.00217727
+Epoch [147/200], Step [21/23] Loss: 0.01424455
+Test Accuracy of the model on the test images: 59.3272 %
+Epoch [148/200], Step [1/23] Loss: 0.00438025
+Epoch [148/200], Step [6/23] Loss: 0.01418321
+Epoch [148/200], Step [11/23] Loss: 0.00202365
+Epoch [148/200], Step [16/23] Loss: 0.01267869
+Epoch [148/200], Step [21/23] Loss: 0.01268885
+Test Accuracy of the model on the test images: 59.4631 %
+Epoch [149/200], Step [1/23] Loss: 0.00025043
+Epoch [149/200], Step [6/23] Loss: 0.00897375
+Epoch [149/200], Step [11/23] Loss: 0.00187861
+Epoch [149/200], Step [16/23] Loss: 0.01181367
+Epoch [149/200], Step [21/23] Loss: 0.00424921
+Test Accuracy of the model on the test images: 60.0408 %
+Epoch [150/200], Step [1/23] Loss: 0.00169654
+Epoch [150/200], Step [6/23] Loss: 0.00732699
+Epoch [150/200], Step [11/23] Loss: 0.00847124
+Epoch [150/200], Step [16/23] Loss: 0.01390805
+Epoch [150/200], Step [21/23] Loss: 0.00877366
+Test Accuracy of the model on the test images: 59.0214 %
+Epoch [151/200], Step [1/23] Loss: 0.01133948
+Epoch [151/200], Step [6/23] Loss: 0.01037396
+Epoch [151/200], Step [11/23] Loss: 0.00751993
+Epoch [151/200], Step [16/23] Loss: 0.00712512
+Epoch [151/200], Step [21/23] Loss: 0.00496829
+Test Accuracy of the model on the test images: 60.1087 %
+Epoch [152/200], Step [1/23] Loss: 0.00233675
+Epoch [152/200], Step [6/23] Loss: 0.00401917
+Epoch [152/200], Step [11/23] Loss: 0.00808774
+Epoch [152/200], Step [16/23] Loss: 0.00635655
+Epoch [152/200], Step [21/23] Loss: 0.01330196
+Test Accuracy of the model on the test images: 59.8709 %
+Epoch [153/200], Step [1/23] Loss: 0.00525051
+Epoch [153/200], Step [6/23] Loss: 0.00799932
+Epoch [153/200], Step [11/23] Loss: 0.00275261
+Epoch [153/200], Step [16/23] Loss: 0.00512708
+Epoch [153/200], Step [21/23] Loss: 0.00460930
+Test Accuracy of the model on the test images: 60.1767 %
+Epoch [154/200], Step [1/23] Loss: 0.00205499
+Epoch [154/200], Step [6/23] Loss: 0.00720297
+Epoch [154/200], Step [11/23] Loss: 0.00574829
+Epoch [154/200], Step [16/23] Loss: 0.01016458
+Epoch [154/200], Step [21/23] Loss: 0.00177558
+Test Accuracy of the model on the test images: 59.3952 %
+Epoch [155/200], Step [1/23] Loss: 0.00487275
+Epoch [155/200], Step [6/23] Loss: 0.01779872
+Epoch [155/200], Step [11/23] Loss: 0.00323912
+Epoch [155/200], Step [16/23] Loss: 0.00845282
+Epoch [155/200], Step [21/23] Loss: 0.00874899
+Test Accuracy of the model on the test images: 60.2107 %
+Epoch [156/200], Step [1/23] Loss: 0.01110558
+Epoch [156/200], Step [6/23] Loss: 0.00400269
+Epoch [156/200], Step [11/23] Loss: 0.01817345
+Epoch [156/200], Step [16/23] Loss: 0.00029226
+Epoch [156/200], Step [21/23] Loss: 0.00767926
+Test Accuracy of the model on the test images: 60.1767 %
+Epoch [157/200], Step [1/23] Loss: 0.00424257
+Epoch [157/200], Step [6/23] Loss: 0.00258156
+Epoch [157/200], Step [11/23] Loss: 0.00604041
+Epoch [157/200], Step [16/23] Loss: 0.00634164
+Epoch [157/200], Step [21/23] Loss: 0.01440580
+Test Accuracy of the model on the test images: 60.2786 %
+Epoch [158/200], Step [1/23] Loss: 0.00504749
+Epoch [158/200], Step [6/23] Loss: 0.00323593
+Epoch [158/200], Step [11/23] Loss: 0.00415442
+Epoch [158/200], Step [16/23] Loss: 0.00322603
+Epoch [158/200], Step [21/23] Loss: 0.00401280
+Test Accuracy of the model on the test images: 60.5844 %
+Epoch [159/200], Step [1/23] Loss: 0.00376884
+Epoch [159/200], Step [6/23] Loss: 0.00356546
+Epoch [159/200], Step [11/23] Loss: 0.01697211
+Epoch [159/200], Step [16/23] Loss: 0.00037299
+Epoch [159/200], Step [21/23] Loss: 0.00231847
+Test Accuracy of the model on the test images: 59.8709 %
+Epoch [160/200], Step [1/23] Loss: 0.00573861
+Epoch [160/200], Step [6/23] Loss: 0.00316103
+Epoch [160/200], Step [11/23] Loss: 0.00458034
+Epoch [160/200], Step [16/23] Loss: 0.00030421
+Epoch [160/200], Step [21/23] Loss: 0.01029768
+Test Accuracy of the model on the test images: 60.0408 %
+Epoch [161/200], Step [1/23] Loss: 0.00402314
+Epoch [161/200], Step [6/23] Loss: 0.00438384
+Epoch [161/200], Step [11/23] Loss: 0.00556744
+Epoch [161/200], Step [16/23] Loss: 0.00929896
+Epoch [161/200], Step [21/23] Loss: 0.00245178
+Test Accuracy of the model on the test images: 60.3806 %
+Epoch [162/200], Step [1/23] Loss: 0.00484706
+Epoch [162/200], Step [6/23] Loss: 0.00234514
+Epoch [162/200], Step [11/23] Loss: 0.00240247
+Epoch [162/200], Step [16/23] Loss: 0.00673512
+Epoch [162/200], Step [21/23] Loss: 0.00275393
+Test Accuracy of the model on the test images: 59.5311 %
+Epoch [163/200], Step [1/23] Loss: 0.00673283
+Epoch [163/200], Step [6/23] Loss: 0.00224368
+Epoch [163/200], Step [11/23] Loss: 0.00166380
+Epoch [163/200], Step [16/23] Loss: 0.01227549
+Epoch [163/200], Step [21/23] Loss: 0.01123461
+Test Accuracy of the model on the test images: 59.8029 %
+Epoch [164/200], Step [1/23] Loss: 0.00048515
+Epoch [164/200], Step [6/23] Loss: 0.00120801
+Epoch [164/200], Step [11/23] Loss: 0.00394395
+Epoch [164/200], Step [16/23] Loss: 0.01374333
+Epoch [164/200], Step [21/23] Loss: 0.00467169
+Test Accuracy of the model on the test images: 59.9388 %
+Epoch [165/200], Step [1/23] Loss: 0.00682454
+Epoch [165/200], Step [6/23] Loss: 0.00488188
+Epoch [165/200], Step [11/23] Loss: 0.00423508
+Epoch [165/200], Step [16/23] Loss: 0.00571478
+Epoch [165/200], Step [21/23] Loss: 0.00706874
+Test Accuracy of the model on the test images: 60.3126 %
+Epoch [166/200], Step [1/23] Loss: 0.00508207
+Epoch [166/200], Step [6/23] Loss: 0.00600474
+Epoch [166/200], Step [11/23] Loss: 0.00622501
+Epoch [166/200], Step [16/23] Loss: 0.00360064
+Epoch [166/200], Step [21/23] Loss: 0.00859499
+Test Accuracy of the model on the test images: 59.2593 %
+Epoch [167/200], Step [1/23] Loss: 0.00888697
+Epoch [167/200], Step [6/23] Loss: 0.00258399
+Epoch [167/200], Step [11/23] Loss: 0.00337726
+Epoch [167/200], Step [16/23] Loss: 0.01374126
+Epoch [167/200], Step [21/23] Loss: 0.00344343
+Test Accuracy of the model on the test images: 60.7883 %
+Epoch [168/200], Step [1/23] Loss: 0.00641976
+Epoch [168/200], Step [6/23] Loss: 0.00344167
+Epoch [168/200], Step [11/23] Loss: 0.00399411
+Epoch [168/200], Step [16/23] Loss: 0.00057836
+Epoch [168/200], Step [21/23] Loss: 0.00268209
+Test Accuracy of the model on the test images: 60.5844 %
+Epoch [169/200], Step [1/23] Loss: 0.00356016
+Epoch [169/200], Step [6/23] Loss: 0.01071719
+Epoch [169/200], Step [11/23] Loss: 0.00329971
+Epoch [169/200], Step [16/23] Loss: 0.00955593
+Epoch [169/200], Step [21/23] Loss: 0.00019172
+Test Accuracy of the model on the test images: 59.9388 %
+Epoch [170/200], Step [1/23] Loss: 0.00646875
+Epoch [170/200], Step [6/23] Loss: 0.00491100
+Epoch [170/200], Step [11/23] Loss: 0.02953051
+Epoch [170/200], Step [16/23] Loss: 0.00524358
+Epoch [170/200], Step [21/23] Loss: 0.00500740
+Test Accuracy of the model on the test images: 59.6330 %
+Epoch [171/200], Step [1/23] Loss: 0.00311457
+Epoch [171/200], Step [6/23] Loss: 0.00668136
+Epoch [171/200], Step [11/23] Loss: 0.00255303
+Epoch [171/200], Step [16/23] Loss: 0.00938211
+Epoch [171/200], Step [21/23] Loss: 0.00037173
+Test Accuracy of the model on the test images: 59.1233 %
+Epoch [172/200], Step [1/23] Loss: 0.00572508
+Epoch [172/200], Step [6/23] Loss: 0.01620304
+Epoch [172/200], Step [11/23] Loss: 0.00830133
+Epoch [172/200], Step [16/23] Loss: 0.00242344
+Epoch [172/200], Step [21/23] Loss: 0.00579055
+Test Accuracy of the model on the test images: 59.6670 %
+Epoch [173/200], Step [1/23] Loss: 0.00584206
+Epoch [173/200], Step [6/23] Loss: 0.00279288
+Epoch [173/200], Step [11/23] Loss: 0.00470472
+Epoch [173/200], Step [16/23] Loss: 0.00678838
+Epoch [173/200], Step [21/23] Loss: 0.01214631
+Test Accuracy of the model on the test images: 59.8709 %
+Epoch [174/200], Step [1/23] Loss: 0.00598059
+Epoch [174/200], Step [6/23] Loss: 0.00203096
+Epoch [174/200], Step [11/23] Loss: 0.00414234
+Epoch [174/200], Step [16/23] Loss: 0.00752570
+Epoch [174/200], Step [21/23] Loss: 0.00523025
+Test Accuracy of the model on the test images: 60.4145 %
+Epoch [175/200], Step [1/23] Loss: 0.01352546
+Epoch [175/200], Step [6/23] Loss: 0.00185159
+Epoch [175/200], Step [11/23] Loss: 0.00975897
+Epoch [175/200], Step [16/23] Loss: 0.00058785
+Epoch [175/200], Step [21/23] Loss: 0.00406666
+Test Accuracy of the model on the test images: 59.9388 %
+Epoch [176/200], Step [1/23] Loss: 0.00370663
+Epoch [176/200], Step [6/23] Loss: 0.00330507
+Epoch [176/200], Step [11/23] Loss: 0.00291661
+Epoch [176/200], Step [16/23] Loss: 0.00992859
+Epoch [176/200], Step [21/23] Loss: 0.00758277
+Test Accuracy of the model on the test images: 59.6330 %
+Epoch [177/200], Step [1/23] Loss: 0.00072107
+Epoch [177/200], Step [6/23] Loss: 0.00351408
+Epoch [177/200], Step [11/23] Loss: 0.00590452
+Epoch [177/200], Step [16/23] Loss: 0.01509697
+Epoch [177/200], Step [21/23] Loss: 0.01023429
+Test Accuracy of the model on the test images: 60.5844 %
+Epoch [178/200], Step [1/23] Loss: 0.00455436
+Epoch [178/200], Step [6/23] Loss: 0.01062035
+Epoch [178/200], Step [11/23] Loss: 0.00537305
+Epoch [178/200], Step [16/23] Loss: 0.00717333
+Epoch [178/200], Step [21/23] Loss: 0.00339450
+Test Accuracy of the model on the test images: 60.4485 %
+Epoch [179/200], Step [1/23] Loss: 0.00779987
+Epoch [179/200], Step [6/23] Loss: 0.00327311
+Epoch [179/200], Step [11/23] Loss: 0.00390698
+Epoch [179/200], Step [16/23] Loss: 0.01433019
+Epoch [179/200], Step [21/23] Loss: 0.00626191
+Test Accuracy of the model on the test images: 60.4825 %
+Epoch [180/200], Step [1/23] Loss: 0.00687035
+Epoch [180/200], Step [6/23] Loss: 0.00465469
+Epoch [180/200], Step [11/23] Loss: 0.01104592
+Epoch [180/200], Step [16/23] Loss: 0.00439700
+Epoch [180/200], Step [21/23] Loss: 0.00587671
+Test Accuracy of the model on the test images: 60.1767 %
+Epoch [181/200], Step [1/23] Loss: 0.00354886
+Epoch [181/200], Step [6/23] Loss: 0.00337076
+Epoch [181/200], Step [11/23] Loss: 0.00133595
+Epoch [181/200], Step [16/23] Loss: 0.00363839
+Epoch [181/200], Step [21/23] Loss: 0.01172415
+Test Accuracy of the model on the test images: 60.1427 %
+Epoch [182/200], Step [1/23] Loss: 0.00493359
+Epoch [182/200], Step [6/23] Loss: 0.00494671
+Epoch [182/200], Step [11/23] Loss: 0.00351326
+Epoch [182/200], Step [16/23] Loss: 0.00387331
+Epoch [182/200], Step [21/23] Loss: 0.00097674
+Test Accuracy of the model on the test images: 60.5165 %
+Epoch [183/200], Step [1/23] Loss: 0.00413645
+Epoch [183/200], Step [6/23] Loss: 0.00239795
+Epoch [183/200], Step [11/23] Loss: 0.00444433
+Epoch [183/200], Step [16/23] Loss: 0.01008599
+Epoch [183/200], Step [21/23] Loss: 0.01256106
+Test Accuracy of the model on the test images: 59.9728 %
+Epoch [184/200], Step [1/23] Loss: 0.00396820
+Epoch [184/200], Step [6/23] Loss: 0.00468428
+Epoch [184/200], Step [11/23] Loss: 0.00187071
+Epoch [184/200], Step [16/23] Loss: 0.01315947
+Epoch [184/200], Step [21/23] Loss: 0.00236126
+Test Accuracy of the model on the test images: 60.1427 %
+Epoch [185/200], Step [1/23] Loss: 0.00317761
+Epoch [185/200], Step [6/23] Loss: 0.00493988
+Epoch [185/200], Step [11/23] Loss: 0.00529405
+Epoch [185/200], Step [16/23] Loss: 0.01205680
+Epoch [185/200], Step [21/23] Loss: 0.01145718
+Test Accuracy of the model on the test images: 60.4485 %
+Epoch [186/200], Step [1/23] Loss: 0.00207211
+Epoch [186/200], Step [6/23] Loss: 0.00272102
+Epoch [186/200], Step [11/23] Loss: 0.00846608
+Epoch [186/200], Step [16/23] Loss: 0.00827024
+Epoch [186/200], Step [21/23] Loss: 0.00419584
+Test Accuracy of the model on the test images: 61.1621 %
+Epoch [187/200], Step [1/23] Loss: 0.00474774
+Epoch [187/200], Step [6/23] Loss: 0.00084706
+Epoch [187/200], Step [11/23] Loss: 0.00845880
+Epoch [187/200], Step [16/23] Loss: 0.00030815
+Epoch [187/200], Step [21/23] Loss: 0.00571001
+Test Accuracy of the model on the test images: 59.3272 %
+Epoch [188/200], Step [1/23] Loss: 0.00330876
+Epoch [188/200], Step [6/23] Loss: 0.00028221
+Epoch [188/200], Step [11/23] Loss: 0.00566619
+Epoch [188/200], Step [16/23] Loss: 0.01065794
+Epoch [188/200], Step [21/23] Loss: 0.00955814
+Test Accuracy of the model on the test images: 60.6524 %
+Epoch [189/200], Step [1/23] Loss: 0.00422665
+Epoch [189/200], Step [6/23] Loss: 0.00382669
+Epoch [189/200], Step [11/23] Loss: 0.00781392
+Epoch [189/200], Step [16/23] Loss: 0.00884639
+Epoch [189/200], Step [21/23] Loss: 0.00036523
+Test Accuracy of the model on the test images: 59.7689 %
+Epoch [190/200], Step [1/23] Loss: 0.01209955
+Epoch [190/200], Step [6/23] Loss: 0.00446140
+Epoch [190/200], Step [11/23] Loss: 0.00209805
+Epoch [190/200], Step [16/23] Loss: 0.00112069
+Epoch [190/200], Step [21/23] Loss: 0.01352499
+Test Accuracy of the model on the test images: 60.2107 %
+Epoch [191/200], Step [1/23] Loss: 0.00328014
+Epoch [191/200], Step [6/23] Loss: 0.00311179
+Epoch [191/200], Step [11/23] Loss: 0.00369135
+Epoch [191/200], Step [16/23] Loss: 0.01165643
+Epoch [191/200], Step [21/23] Loss: 0.00782549
+Test Accuracy of the model on the test images: 60.3806 %
+Epoch [192/200], Step [1/23] Loss: 0.00735610
+Epoch [192/200], Step [6/23] Loss: 0.00310663
+Epoch [192/200], Step [11/23] Loss: 0.01329244
+Epoch [192/200], Step [16/23] Loss: 0.00454979
+Epoch [192/200], Step [21/23] Loss: 0.00508072
+Test Accuracy of the model on the test images: 60.2107 %
+Epoch [193/200], Step [1/23] Loss: 0.00226628
+Epoch [193/200], Step [6/23] Loss: 0.00475205
+Epoch [193/200], Step [11/23] Loss: 0.00331131
+Epoch [193/200], Step [16/23] Loss: 0.01225291
+Epoch [193/200], Step [21/23] Loss: 0.00462409
+Test Accuracy of the model on the test images: 60.1767 %
+Epoch [194/200], Step [1/23] Loss: 0.00685041
+Epoch [194/200], Step [6/23] Loss: 0.00153461
+Epoch [194/200], Step [11/23] Loss: 0.00517691
+Epoch [194/200], Step [16/23] Loss: 0.00829680
+Epoch [194/200], Step [21/23] Loss: 0.00691243
+Test Accuracy of the model on the test images: 60.1767 %
+Epoch [195/200], Step [1/23] Loss: 0.01372053
+Epoch [195/200], Step [6/23] Loss: 0.00232000
+Epoch [195/200], Step [11/23] Loss: 0.00252415
+Epoch [195/200], Step [16/23] Loss: 0.00340513
+Epoch [195/200], Step [21/23] Loss: 0.00547123
+Test Accuracy of the model on the test images: 60.3806 %
+Epoch [196/200], Step [1/23] Loss: 0.00480656
+Epoch [196/200], Step [6/23] Loss: 0.00139682
+Epoch [196/200], Step [11/23] Loss: 0.00285534
+Epoch [196/200], Step [16/23] Loss: 0.00358211
+Epoch [196/200], Step [21/23] Loss: 0.00837337
+Test Accuracy of the model on the test images: 60.7543 %
+Epoch [197/200], Step [1/23] Loss: 0.00032311
+Epoch [197/200], Step [6/23] Loss: 0.00341033
+Epoch [197/200], Step [11/23] Loss: 0.01346520
+Epoch [197/200], Step [16/23] Loss: 0.00489426
+Epoch [197/200], Step [21/23] Loss: 0.00511733
+Test Accuracy of the model on the test images: 60.0068 %
+Epoch [198/200], Step [1/23] Loss: 0.00464808
+Epoch [198/200], Step [6/23] Loss: 0.00711680
+Epoch [198/200], Step [11/23] Loss: 0.00785113
+Epoch [198/200], Step [16/23] Loss: 0.01072766
+Epoch [198/200], Step [21/23] Loss: 0.01402243
+Test Accuracy of the model on the test images: 60.3806 %
+Epoch [199/200], Step [1/23] Loss: 0.00854946
+Epoch [199/200], Step [6/23] Loss: 0.00022195
+Epoch [199/200], Step [11/23] Loss: 0.00133905
+Epoch [199/200], Step [16/23] Loss: 0.00233125
+Epoch [199/200], Step [21/23] Loss: 0.00674218
+Test Accuracy of the model on the test images: 60.4145 %
+Epoch [200/200], Step [1/23] Loss: 0.00537082
+Epoch [200/200], Step [6/23] Loss: 0.00517792
+Epoch [200/200], Step [11/23] Loss: 0.00212363
+Epoch [200/200], Step [16/23] Loss: 0.00416660
+Epoch [200/200], Step [21/23] Loss: 0.00796416
+Test Accuracy of the model on the test images: 60.5505 %
+Test Accuracy of the model on the test images: 60.7204 %

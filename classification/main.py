@@ -23,8 +23,6 @@ def main():
                         'L_16_imagenet1k', 'L_32_imagenet1k'],
                         default="shallow",
                         help="Which model architecture to use")
-    parser.add_argument("--results_dir", default="results", type=str,
-                        help="The directory where results will be stored")
     parser.add_argument("--image_size", default=128, type=int,
                         help="Image (square) resolution size")
     parser.add_argument("--batch_size", default=512, type=int,
@@ -39,8 +37,10 @@ def main():
                         help="After how many epochs to decay the learning rate once.")
     parser.add_argument("--learning_rate", default=0.001, type=float,
                         help="Initial learning rate.")  
-    parser.add_argument("--pretrained", choices=[True, False],
-                        help="For models with pretrained weights available")                      
+    parser.add_argument("--pretrained", type=bool, default=False,
+                        help="For models with pretrained weights available."
+                        "Default=False."
+                        "If inputs anything (even the flag!) will take it as True")                      
     args = parser.parse_args()
 
     logger.info(args)

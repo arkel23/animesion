@@ -141,7 +141,7 @@ def train(logger, args):
     loader=test_loader, dataset_name=args.dataset_name, last=True)
 
     # Save the model checkpoint
-    results_dir = args.results_dir
+    results_dir = 'results_{}'.format(args.name) 
     if not os.path.exists(results_dir):
         os.makedirs(results_dir)
     torch.save(model.state_dict(), os.path.join(results_dir, 'model.ckpt'))
@@ -186,7 +186,7 @@ training_proc_avg, test_proc_avg, loader, dataset_name=False, last=False):
         if last==True:
             
             # plot loss
-            plot_losses(training_proc_avg, test_proc_avg)
+            plot_losses(training_proc_avg, test_proc_avg, results_dir)
 
             '''
             # NEEDS UPDATING for new modularity and program structure

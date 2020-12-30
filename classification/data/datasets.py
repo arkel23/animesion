@@ -1,92 +1,82 @@
 import os
-import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
 from PIL import Image
 
 import torch
 import torch.utils.data as data
-from torchvision import transforms, datasets
-
-from utils.dataset_stats import calc_stats
-
-class moeImoutoDataset():
-	# most images are between 100 to 200 pixels square
-	# resample to 128 for convenience to make same as danbooruFacesCrops
-	def __init__(self, input_size=128,
-	data_path=r'C:\Users\ED520\edwin\data\moeimouto_animefacecharacterdataset',
-	transform=transforms.Compose([
-        transforms.Resize((128, 128)),
-        transforms.RandomHorizontalFlip(),
-		transforms.ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1, hue=0.1),
-        transforms.ToTensor(),
-        transforms.Normalize(mean=[0.5, 0.5, 0.5],
-                             std=[0.5, 0.5, 0.5])
-    	])):
-		self.data_path = os.path.abspath(data_path)
-		self.input_size = input_size
-		self.transform = transform
-
-	def getImageFolder(self):
-		self.dataset = datasets.ImageFolder(root=self.data_path, 
-		transform=self.transform)
-		return self.dataset
+from torchvision import transforms
 
 class moeImouto(data.Dataset):
-	def __init__(self, input_size=128, train=True,
-	data_path = r'C:\Users\ED520\edwin\data\moeimouto_animefacecharacterdataset',
-	#data_path="/home2/edwin_ed520/personal/moeimouto_animefacecharacterdataset/",
-	transform=transforms.Compose([
-        transforms.Resize((128, 128)),
-        transforms.RandomHorizontalFlip(),
-		transforms.ColorJitter(brightness=0.1, contrast=0.1, saturation=0.1, hue=0.1),
-        transforms.ToTensor(),
-        transforms.Normalize(mean=[0.5, 0.5, 0.5],
-                             std=[0.5, 0.5, 0.5])
-    	])):
+	'''
+	https://www.kaggle.com/mylesoneill/tagged-anime-illustrations/home
+	http://www.nurs.or.jp/~nagadomi/animeface-character-dataset/
+	https://github.com/nagadomi/lbpcascade_animeface
+	'''
+	def __init__(self, root, input_size=224, 
+	train=True, transform=None):
 		super().__init__()
-		self.data_path = os.path.abspath(data_path)
+		self.root = os.path.abspath(root)
 		self.input_size = input_size
+		self.train = train
 		self.transform = transform
-		self.train=train
 
 		if self.train==True:
 			print('Train set')
-			self.set_dir = os.path.join(self.data_path, 'train.csv')
+			self.set_dir = os.path.join(self.root, 'train.csv')
 			self.df = pd.read_csv(self.set_dir, sep=',', header=None, names=['class_id', 'dir'], 
 			dtype={'class_id': 'UInt16', 'dir': 'object'})
+			if self.transform is None:
+				self.transform = transforms.Compose([
+				transforms.Resize((256, 256)),
+				transforms.RandomCrop((self.input_size, self.input_size)),
+				transforms.RandomHorizontalFlip(),
+				transforms.ColorJitter(brightness=0.1, 
+				contrast=0.1, saturation=0.1, hue=0.1),
+				transforms.ToTensor(),
+				transforms.Normalize(mean=[0.5, 0.5, 0.5],
+									std=[0.5, 0.5, 0.5])
+				])
+			
 		else:
 			print('Test set')
-			self.set_dir = os.path.join(self.data_path, 'test.csv')
+			self.set_dir = os.path.join(self.root, 'test.csv')
 			self.df = pd.read_csv(self.set_dir, sep=',', header=None, names=['class_id', 'dir'], 
 			dtype={'class_id': 'UInt16', 'dir': 'object'})
-		
-		self.labels = self.df['class_id'].to_numpy()
-		self.img_dirs = self.df['dir'].to_numpy()
+			if self.transform is None:
+				self.transform = transforms.Compose([
+				transforms.Resize((self.input_size, self.input_size)), 
+				transforms.ToTensor(),
+				transforms.Normalize(mean=[0.5, 0.5, 0.5],
+								std=[0.5, 0.5, 0.5])
+				])
 
-		# for compatibility with existing datasets
-		self.classes = self.labels
-		self.no_classes = 173
+		self.targets = self.df['class_id'].to_numpy()
+		self.data = self.df['dir'].to_numpy()
+		
+		self.classes = pd.read_csv(os.path.join(self.root, 'classid_classname.csv'), 
+		sep=',', header=None, names=['class_id', 'class_name'], 
+		dtype={'class_id': 'UInt16', 'class_name': 'object'})
+		self.no_classes = len(self.classes)
+		
 
 	def __getitem__(self, idx):
 		
 		if torch.is_tensor(idx):
 			idx = idx.tolist()
 
-		img_dir, label = self.img_dirs[idx], self.labels[idx]
-		img_dir = os.path.join(self.data_path, img_dir)
-		image = Image.open(img_dir)
+		img_dir, target = self.data[idx], self.targets[idx]
+		img_dir = os.path.join(self.root, img_dir)
+		img = Image.open(img_dir)
 
 		if self.transform:
-			#print(image.size)
-			#print(image.mode)
-			image = self.transform(image)
+			img = self.transform(img)
 
-		return image, label
+		return img, target
 
 	def __len__(self):
-		return len(self.labels)
+		return len(self.targets)
 
+'''
 class danbooruFacesCrops(data.Dataset):
 	# this dataset is just the crops of the faces to 128x128
 	def __init__(self, split, input_size=128,
@@ -184,6 +174,8 @@ class danbooruFacesCrops(data.Dataset):
 	def no_classes(self):
 		return len(self.class_names)
 
+'''
+'''
 	def stats(self):
 		# for original dataset with 900 k images
 		calc_stats(self.data_dic_pd.copy(), self.no_classes(), self.class_names)
@@ -208,3 +200,4 @@ class danbooruFacesCrops(data.Dataset):
 		# and split baased on the heuristics suggested 0.8, 0.1, 0.1
 		# another alternative is to only include ids with more 
 		# than mean no of samples 
+'''	

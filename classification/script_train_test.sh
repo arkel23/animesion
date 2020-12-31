@@ -1,1 +1,0 @@
-python train.py --name test --dataset_name moeImouto --dataset_path "/home2/yan/disk/edwin/personal/data/personal/moeimouto_animefacecharacterdataset/" --model_type B_16 --train_epochs 20 --pretrained True

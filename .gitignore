@@ -1,6 +1,19 @@
 # weights
 *.ckpt
 
+# logs, results and txt files
+*.txt
+*.log
+*.out
+*.csv
+*.tsv
+
+# temp nfs files
+*.nfs*
+
+# videos
+*.mp4
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

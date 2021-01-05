@@ -15,6 +15,19 @@ from train import data_loading, model_selection, validate
 # PER CLASS_ACCURACY
 # PREVIOUSLY IN VALIDATE AFTER CALCULATING TOP-K ACCURACY
 
+def show_results(device, loader, model, classes, batch_size=8):
+    images, labels = iter(loader).next()[:batch_size]
+    images = images.to(device)
+    labels = labels.to(device)
+    outputs = model(images)
+    _, predicted = torch.max(outputs.data, 1)
+    
+    print('\n'.join('Correct: {}, Predicted: {}'.format(
+    classes[labels[j]], classes[predicted[j]]) for j in range(batch_size)))
+    bottom_text = '\n'.join('Correct: {}, Predicted: {}'.format(
+    classes[labels[j]], classes[predicted[j]]) for j in range(batch_size))
+    imshow(torchvision.utils.make_grid(images.cpu()[:batch_size]), 'class_results', bottom_text)
+
 def test_set():
     # validate on test set and plot results
     validate(device=device, model=model, criterion=criterion,
@@ -87,27 +100,6 @@ def validate(device, model, criterion, no_classes, loader,
 the_model = TheModelClass(*args, **kwargs)
 the_model.load_state_dict(torch.load(PATH))
 
-'''
-def imshow(inp, title=None):
-    """Imshow for Tensor."""
-    inp = inp.numpy().transpose((1, 2, 0))
-    mean = np.array([0.485, 0.456, 0.406])
-    std = np.array([0.229, 0.224, 0.225])
-    inp = std * inp + mean
-    inp = np.clip(inp, 0, 1)
-    plt.imshow(inp)
-    if title is not None:
-        plt.title(title)
-    plt.pause(0.001)  # pause a bit so that plots are updated
-
-# Get a batch of training data
-inputs, classes = next(iter(dataloaders['train']))
-
-# Make a grid from batch
-out = torchvision.utils.make_grid(inputs)
-
-imshow(out, title=[class_names[x] for x in classes])
-'''
 
 '''
 # NEEDS UPDATING

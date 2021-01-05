@@ -1,2 +1,46 @@
-#nohup python -u train.py danbooruFacesCrops > output.log &
-CUDA_VISIBLE_DEVICES=1 nohup python -u train.py --name test_run --train_epochs 10  > output.log &
+CUDA_VISIBLE_DEVICES=1 nohup python -u train.py --dataset_name moeImouto --dataset_path "/edahome/pcslab/pcs05/edwin/data/moeimouto_animefacecharacterdataset/" --batch_size 1024 --model_type shallow --name moeImouto_shallow_ptFalse_batch1024 > moeImouto_shallow_ptFalse_batch1024.txt
+
+CUDA_VISIBLE_DEVICES=1 nohup python -u train.py --dataset_name moeImouto --dataset_path "/edahome/pcslab/pcs05/edwin/data/moeimouto_animefacecharacterdataset/" --batch_size 1024 --model_type resnet18 --name moeImouto_resnet18_ptFalse_batch1024 > moeImouto_resnet18_ptFalse_batch1024.txt
+CUDA_VISIBLE_DEVICES=1 nohup python -u train.py --dataset_name moeImouto --dataset_path "/edahome/pcslab/pcs05/edwin/data/moeimouto_animefacecharacterdataset/" --batch_size 1024 --model_type resnet18 --pretrained True --name moeImouto_resnet18_ptTrue_batch1024 > moeImouto_resnet18_ptTrue_batch1024.txt
+
+CUDA_VISIBLE_DEVICES=1 nohup python -u train.py --dataset_name moeImouto --dataset_path "/edahome/pcslab/pcs05/edwin/data/moeimouto_animefacecharacterdataset/" --batch_size 1024 --model_type resnet152 --name moeImouto_resnet152_ptFalse_batch1024 > moeImouto_resnet152_ptFalse_batch1024.txt
+CUDA_VISIBLE_DEVICES=1 nohup python -u train.py --dataset_name moeImouto --dataset_path "/edahome/pcslab/pcs05/edwin/data/moeimouto_animefacecharacterdataset/" --batch_size 1024 --model_type resnet152 --pretrained True --name moeImouto_resnet152_ptTrue_batch1024 > moeImouto_resnet152_ptTrue_batch1024.txt
+
+CUDA_VISIBLE_DEVICES=1 nohup python -u train.py --dataset_name moeImouto --dataset_path "/edahome/pcslab/pcs05/edwin/data/moeimouto_animefacecharacterdataset/" --batch_size 1024 --model_type B_16 --name moeImouto_b16_ptFalse_batch1024 > moeImouto_b16_ptFalse_batch1024.txt
+CUDA_VISIBLE_DEVICES=1 nohup python -u train.py --dataset_name moeImouto --dataset_path "/edahome/pcslab/pcs05/edwin/data/moeimouto_animefacecharacterdataset/" --batch_size 1024 --model_type B_16 --pretrained True --name moeImouto_b16_ptTrue_batch1024 > moeImouto_b16_ptTrue_batch1024.txt
+
+CUDA_VISIBLE_DEVICES=1 nohup python -u train.py --dataset_name moeImouto --dataset_path "/edahome/pcslab/pcs05/edwin/data/moeimouto_animefacecharacterdataset/" --batch_size 1024 --model_type B_32 --name moeImouto_b32_ptFalse_batch1024 > moeImouto_b32_ptFalse_batch1024.txt
+CUDA_VISIBLE_DEVICES=1 nohup python -u train.py --dataset_name moeImouto --dataset_path "/edahome/pcslab/pcs05/edwin/data/moeimouto_animefacecharacterdataset/" --batch_size 1024 --model_type B_32 --pretrained True --name moeImouto_b32_ptTrue_batch1024 > moeImouto_b32_ptTrue_batch1024.txt
+
+CUDA_VISIBLE_DEVICES=1 nohup python -u train.py --dataset_name moeImouto --dataset_path "/edahome/pcslab/pcs05/edwin/data/moeimouto_animefacecharacterdataset/" --batch_size 1024 --model_type L_16 --name moeImouto_l16_ptFalse_batch1024 > moeImouto_l16_ptFalse_batch1024.txt
+CUDA_VISIBLE_DEVICES=1 nohup python -u train.py --dataset_name moeImouto --dataset_path "/edahome/pcslab/pcs05/edwin/data/moeimouto_animefacecharacterdataset/" --batch_size 1024 --model_type L_16 --pretrained True --name moeImouto_l16_ptTrue_batch1024 > moeImouto_l16_ptTrue_batch1024.txt
+
+CUDA_VISIBLE_DEVICES=1 nohup python -u train.py --dataset_name moeImouto --dataset_path "/edahome/pcslab/pcs05/edwin/data/moeimouto_animefacecharacterdataset/" --batch_size 1024 --model_type L_32 --name moeImouto_l32_ptFalse_batch1024 > moeImouto_l32_ptFalse_batch1024.txt
+CUDA_VISIBLE_DEVICES=1 nohup python -u train.py --dataset_name moeImouto --dataset_path "/edahome/pcslab/pcs05/edwin/data/moeimouto_animefacecharacterdataset/" --batch_size 1024 --model_type L_32 --pretrained True --name moeImouto_l32_ptTrue_batch1024 > moeImouto_l32_ptTrue_batch1024.txt
+
+CUDA_VISIBLE_DEVICES=1 nohup python -u train.py --dataset_name moeImouto --dataset_path "/edahome/pcslab/pcs05/edwin/data/moeimouto_animefacecharacterdataset/" --batch_size 1024 --model_type H_14 --name moeImouto_h14_ptFalse_batch1024 > moeImouto_h14_ptFalse_batch1024.txt
+CUDA_VISIBLE_DEVICES=1 nohup python -u train.py --dataset_name moeImouto --dataset_path "/edahome/pcslab/pcs05/edwin/data/moeimouto_animefacecharacterdataset/" --batch_size 1024 --model_type H_14 --pretrained True --name moeImouto_h14_ptTrue_batch1024 > moeImouto_h14_ptTrue_batch1024.txt
+
+
+CUDA_VISIBLE_DEVICES=1 nohup python -u train.py --dataset_name danbooruFaces --dataset_path "/edahome/pcslab/pcs05/edwin/data/Danbooru2018AnimeCharacterRecognitionDataset_Revamped/" --batch_size 1024 --model_type shallow --name danbooruFaces_shallow_ptFalse_batch1024 > danbooruFaces_shallow_ptFalse_batch1024.txt
+
+CUDA_VISIBLE_DEVICES=1 nohup python -u train.py --dataset_name danbooruFaces --dataset_path "/edahome/pcslab/pcs05/edwin/data/Danbooru2018AnimeCharacterRecognitionDataset_Revamped/" --batch_size 1024 --model_type resnet18 --name danbooruFaces_resnet18_ptFalse_batch1024 > danbooruFaces_resnet18_ptFalse_batch1024.txt
+CUDA_VISIBLE_DEVICES=1 nohup python -u train.py --dataset_name danbooruFaces --dataset_path "/edahome/pcslab/pcs05/edwin/data/Danbooru2018AnimeCharacterRecognitionDataset_Revamped/" --batch_size 1024 --model_type resnet18 --pretrained True --name danbooruFaces_resnet18_ptTrue_batch1024 > danbooruFaces_resnet18_ptTrue_batch1024.txt
+
+CUDA_VISIBLE_DEVICES=1 nohup python -u train.py --dataset_name danbooruFaces --dataset_path "/edahome/pcslab/pcs05/edwin/data/Danbooru2018AnimeCharacterRecognitionDataset_Revamped/" --batch_size 1024 --model_type resnet152 --name danbooruFaces_resnet152_ptFalse_batch1024 > danbooruFaces_resnet152_ptFalse_batch1024.txt
+CUDA_VISIBLE_DEVICES=1 nohup python -u train.py --dataset_name danbooruFaces --dataset_path "/edahome/pcslab/pcs05/edwin/data/Danbooru2018AnimeCharacterRecognitionDataset_Revamped/" --batch_size 1024 --model_type resnet152 --pretrained True --name danbooruFaces_resnet152_ptTrue_batch1024 > danbooruFaces_resnet152_ptTrue_batch1024.txt
+
+CUDA_VISIBLE_DEVICES=1 nohup python -u train.py --dataset_name danbooruFaces --dataset_path "/edahome/pcslab/pcs05/edwin/data/Danbooru2018AnimeCharacterRecognitionDataset_Revamped/" --batch_size 1024 --model_type B_16 --name danbooruFaces_b16_ptFalse_batch1024 > danbooruFaces_b16_ptFalse_batch1024.txt
+CUDA_VISIBLE_DEVICES=1 nohup python -u train.py --dataset_name danbooruFaces --dataset_path "/edahome/pcslab/pcs05/edwin/data/Danbooru2018AnimeCharacterRecognitionDataset_Revamped/" --batch_size 1024 --model_type B_16 --pretrained True --name danbooruFaces_b16_ptTrue_batch1024 > danbooruFaces_b16_ptTrue_batch1024.txt
+
+CUDA_VISIBLE_DEVICES=1 nohup python -u train.py --dataset_name danbooruFaces --dataset_path "/edahome/pcslab/pcs05/edwin/data/Danbooru2018AnimeCharacterRecognitionDataset_Revamped/" --batch_size 1024 --model_type B_32 --name danbooruFaces_b32_ptFalse_batch1024 > danbooruFaces_b32_ptFalse_batch1024.txt
+CUDA_VISIBLE_DEVICES=1 nohup python -u train.py --dataset_name danbooruFaces --dataset_path "/edahome/pcslab/pcs05/edwin/data/Danbooru2018AnimeCharacterRecognitionDataset_Revamped/" --batch_size 1024 --model_type B_32 --pretrained True --name danbooruFaces_b32_ptTrue_batch1024 > danbooruFaces_b32_ptTrue_batch1024.txt
+
+CUDA_VISIBLE_DEVICES=1 nohup python -u train.py --dataset_name danbooruFaces --dataset_path "/edahome/pcslab/pcs05/edwin/data/Danbooru2018AnimeCharacterRecognitionDataset_Revamped/" --batch_size 1024 --model_type L_16 --name danbooruFaces_l16_ptFalse_batch1024 > danbooruFaces_l16_ptFalse_batch1024.txt
+CUDA_VISIBLE_DEVICES=1 nohup python -u train.py --dataset_name danbooruFaces --dataset_path "/edahome/pcslab/pcs05/edwin/data/Danbooru2018AnimeCharacterRecognitionDataset_Revamped/" --batch_size 1024 --model_type L_16 --pretrained True --name danbooruFaces_l16_ptTrue_batch1024 > danbooruFaces_l16_ptTrue_batch1024.txt
+
+CUDA_VISIBLE_DEVICES=1 nohup python -u train.py --dataset_name danbooruFaces --dataset_path "/edahome/pcslab/pcs05/edwin/data/Danbooru2018AnimeCharacterRecognitionDataset_Revamped/" --batch_size 1024 --model_type L_32 --name danbooruFaces_l32_ptFalse_batch1024 > danbooruFaces_l32_ptFalse_batch1024.txt
+CUDA_VISIBLE_DEVICES=1 nohup python -u train.py --dataset_name danbooruFaces --dataset_path "/edahome/pcslab/pcs05/edwin/data/Danbooru2018AnimeCharacterRecognitionDataset_Revamped/" --batch_size 1024 --model_type L_32 --pretrained True --name danbooruFaces_l32_ptTrue_batch1024 > danbooruFaces_l32_ptTrue_batch1024.txt
+
+CUDA_VISIBLE_DEVICES=1 nohup python -u train.py --dataset_name danbooruFaces --dataset_path "/edahome/pcslab/pcs05/edwin/data/Danbooru2018AnimeCharacterRecognitionDataset_Revamped/" --batch_size 1024 --model_type H_14 --name danbooruFaces_h14_ptFalse_batch1024 > danbooruFaces_h14_ptFalse_batch1024.txt
+CUDA_VISIBLE_DEVICES=1 nohup python -u train.py --dataset_name danbooruFaces --dataset_path "/edahome/pcslab/pcs05/edwin/data/Danbooru2018AnimeCharacterRecognitionDataset_Revamped/" --batch_size 1024 --model_type H_14 --pretrained True --name danbooruFaces_h14_ptTrue_batch1024 > danbooruFaces_h14_ptTrue_batch1024.txt

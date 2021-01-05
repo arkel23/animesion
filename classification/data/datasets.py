@@ -65,7 +65,7 @@ class moeImouto(data.Dataset):
 			idx = idx.tolist()
 
 		img_dir, target = self.data[idx], self.targets[idx]
-		img_dir = os.path.join(self.root, img_dir)
+		img_dir = os.path.join(self.root, 'data', img_dir)
 		img = Image.open(img_dir)
 
 		if self.transform:

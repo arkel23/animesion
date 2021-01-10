@@ -27,7 +27,7 @@ class moeImouto(data.Dataset):
 			dtype={'class_id': 'UInt16', 'dir': 'object'})
 			if self.transform is None:
 				self.transform = transforms.Compose([
-				transforms.Resize((256, 256)),
+				transforms.Resize((self.input_size+32, self.input_size+32)),
 				transforms.RandomCrop((self.input_size, self.input_size)),
 				transforms.RandomHorizontalFlip(),
 				transforms.ColorJitter(brightness=0.1, 
@@ -95,7 +95,7 @@ class danbooruFaces(data.Dataset):
 			dtype={'class_id': 'UInt16', 'dir': 'object'})
 			if self.transform is None:
 				self.transform = transforms.Compose([
-				transforms.Resize((256, 256)),
+				transforms.Resize((self.input_size+32, self.input_size+32)),
 				transforms.RandomCrop((self.input_size, self.input_size)),
 				transforms.RandomHorizontalFlip(),
 				transforms.ColorJitter(brightness=0.1, 

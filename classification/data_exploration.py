@@ -3,6 +3,7 @@ import glob
 import argparse
 import cv2
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt 
 
 import torch
@@ -22,8 +23,12 @@ def imshow(inp, out_name, title=None):
         plt.title(title, fontsize=4, wrap=True)
     plt.tight_layout()
     plt.savefig('{}'.format(out_name), dpi=300)
-    
-def data_visualization(args):
+
+def load_dataset(args, split=None):
+
+    if split==None:
+        split = args.split
+
     # set all images to 128x128 for visualization purposes
     img_size = 128
     transform = transforms.Compose([
@@ -32,11 +37,17 @@ def data_visualization(args):
 
     if args.dataset_name=='moeImouto':
         dataset = datasets.moeImouto(root=args.dataset_path,
-        split=args.split, transform=transform)
+        split=split, transform=transform)
     elif args.dataset_name == 'danbooruFaces':
         dataset = datasets.danbooruFaces(root=args.dataset_path,
-        split=args.split, transform=transform)
+        split=split, transform=transform)
     
+    return dataset
+
+def data_visualization(args):
+    
+    dataset = load_dataset(args)
+
     if args.data_vis_full:
         dataset_loader = data.DataLoader(dataset, batch_size=args.batch_size, 
         shuffle=False, num_workers=4)
@@ -109,53 +120,79 @@ def video_from_frames(args):
         os.remove(curr_path)
     video_out.release()
 
-def data_stats(samples_per_class, no_classes, class_names):
-	samples_per_class = samples_per_class.groupby('class_id', as_index=True).count()['dir'].squeeze()
-		
-	set_mean = samples_per_class.mean()
-	set_median = samples_per_class.median()
-	set_std = samples_per_class.std()
-	print('Dataset no of classes: {}\n'
-	'Mean number of samples per class: {}\n'
+def data_stats(args):
+    
+    if args.stats_partial:
+        dataset = load_dataset(args)
+        no_samples = len(dataset)
+        df = dataset.df
+    else:
+        if args.dataset_name=='moeImouto':
+            dataset_train = load_dataset(args, split='train')
+            dataset_test = load_dataset(args, split='test')
+            no_samples = len(dataset_train) + len(dataset_test)
+            df_train = dataset_train.df
+            df_test = dataset_test.df
+            df = pd.concat([df_train, df_test])
+        elif args.dataset_name == 'danbooruFaces':
+            dataset_train = load_dataset(args, split='train')
+            dataset_val = load_dataset(args, split='val')
+            dataset_test = load_dataset(args, split='test')
+            no_samples = len(dataset_train) + len(dataset_val) + len(dataset_test)
+            df_train = dataset_train.df
+            df_val = dataset_val.df
+            df_test = dataset_test.df
+            df = pd.concat([df_train, df_val, df_test])
+
+    classid_classname_dic = dataset_train.classes
+    no_classes = dataset_train.no_classes
+
+    samples_per_class = df.groupby('class_id', as_index=True).count()['dir'].squeeze()
+    
+    set_mean = samples_per_class.mean()
+    set_median = samples_per_class.median()
+    set_std = samples_per_class.std()
+    print('Dataset: {}\n'
+    'Total number of samples: {}\n'
+	'Number of classes: {}\n'
+    'Mean number of samples per class: {}\n'
 	'Median number of samples per class: {}\n'
 	'Standard deviation of samples per class: {}'.format(
-	no_classes, set_mean, set_median, set_std))
+	args.dataset_name, no_samples, no_classes, set_mean, set_median, set_std))
 
-	samples_per_class_ordered = samples_per_class.sort_values(0, ascending=False)
-	print(samples_per_class_ordered.head())
-	print('Shape of samples per class df:')
-	print(samples_per_class_ordered.shape)
+    samples_per_class_ordered = samples_per_class.sort_values(0, ascending=False)
+    print(samples_per_class_ordered.head())
+	
+    print('Characters with most number of samples: ')
+    for i in range(10):
+            current_id = samples_per_class_ordered.index[i]
+            current_class = classid_classname_dic.loc[classid_classname_dic['class_id']==current_id]['class_name'].item()
+            print('No. {}: {} (Class ID: {}) with {} samples'.format(
+            i+1, current_class, current_id, samples_per_class_ordered.iloc[i]
+            ))
+	
+    print('Characters with least number of samples: ')
+    for i in range(10):
+            current_id = samples_per_class_ordered.index[-1-i]
+            current_class = classid_classname_dic.loc[classid_classname_dic['class_id']==current_id]['class_name'].item()
+            print('No. {}: {} (Class ID: {}) with {} samples'.format(
+            i+1, current_class, current_id, samples_per_class_ordered.iloc[-1-i]
+            ))
 
-	print('Characters with most number of samples: ')
-	print('\t'.join('No. {}: {} (Class ID: {}) with {} samples'.format(
-    j+1, class_names[samples_per_class_ordered.index[j], 0], 
-	class_names[samples_per_class_ordered.index[j], 1], 
-	samples_per_class_ordered.iloc[j]) for j in range(10)))
-
-	print('\nCharacters with least number of samples: ')
-	print('\t'.join('No. {}: {} (Class ID: {}) with {} samples'.format(
-    j+1, class_names[samples_per_class_ordered.index[-1-j], 0], 
-	class_names[samples_per_class_ordered.index[-1-j], 1], 
-	samples_per_class_ordered.iloc[-1-j]) for j in range(10)))
-
-	fig, axs = plt.subplots(1)
-	fig.suptitle('Histogram of Classes for DanbooruFace Dataset')
+    fig, axs = plt.subplots(1)
+    fig.suptitle('Histogram of Classes for {} Dataset'.format(args.dataset_name))
 
 	# only plot first 100
-	bins = 100
-	axs.bar(np.arange(bins), samples_per_class_ordered.iloc[0:bins].to_numpy())
+    bins = 100
+    axs.bar(np.arange(bins), samples_per_class_ordered.iloc[0:bins].to_numpy())
 		
-	axs.set_ylabel('No. of samples per class')
-	axs.set_title('Ordered based on no. of samples')
-		
-	results_dir = 'results'
-	if not os.path.exists(results_dir):
-		os.makedirs(results_dir)
-	fig.savefig(os.path.join(results_dir, 
-	'histogram_danbooruFacesCrops.png'), dpi=300)
+    axs.set_ylabel('No. of samples per class')
+    axs.set_title('Ordered based on no. of samples')
 
-def data_stats(args, dataset):
-    pass
+    if not os.path.exists(args.results_dir):
+        os.makedirs(args.results_dir)	
+    fig.savefig(os.path.join(args.results_dir, 
+	'histogram_{}.pdf'.format(args.dataset_name)), dpi=300)
 
 def main():
     torch.manual_seed(0)
@@ -174,10 +211,16 @@ def main():
                         help="Split to visualize") 
     parser.add_argument("--labels", type=bool, default=False,
                         help="Include labels as title during the visualization video (requires a LOT more time).")
+    parser.add_argument("--data_vis_partial", type=bool, default=False,
+                        help="If not skips to data_stats function.")
+    parser.add_argument("--stats_partial", type=bool, default=False,
+                        help="If true will display stats for a certain subset instead of the whole.")
     args = parser.parse_args()
     
-    dataset = data_visualization(args)
-    data_stats(args, dataset)
+    
+    if args.data_vis_partial:
+        data_visualization(args)
+    data_stats(args)
 
 if __name__ == '__main__':
     main()

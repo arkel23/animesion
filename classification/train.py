@@ -39,7 +39,7 @@ def data_loading(args, split):
     if args.model_type == 'resnet18' or args.model_type == 'resnet152':
         if split=='train':
             transform = transforms.Compose([
-                transforms.Resize((256, 256)),
+                transforms.Resize((args.image_size+32, args.image_size+32)),
                 transforms.RandomCrop((args.image_size, args.image_size)),
                 transforms.RandomHorizontalFlip(),
                 transforms.ColorJitter(brightness=0.1,
@@ -64,7 +64,8 @@ def data_loading(args, split):
         input_size=args.image_size, split=split, transform=transform)
     
     dataset_loader = data.DataLoader(dataset, batch_size=args.batch_size, 
-    shuffle=True, num_workers=4)
+        shuffle=True, num_workers=4)
+
 
     return dataset, dataset_loader
 
@@ -238,7 +239,7 @@ def main():
                         'L_16_imagenet1k', 'L_32_imagenet1k'],
                         default="shallow",
                         help="Which model architecture to use")
-    parser.add_argument("--results_dir", default="results", type=str,
+    parser.add_argument("--results_dir", default="results_training", type=str,
                         help="The directory where results will be stored")
     parser.add_argument("--image_size", default=224, type=int,
                         help="Image (square) resolution size")

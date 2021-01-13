@@ -101,6 +101,27 @@ def train_main(logger, args):
     # model
     model = model_selection(args, no_classes)
     model.to(device)
+    if args.checkpoint_path:
+        state_dict = torch.load(args.checkpoint_path)
+        if args.transfer_learning:
+            # Modifications to load partial state dict
+            expected_missing_keys = []
+            '''
+            if ('patch_embedding.weight' in state_dict):
+                expected_missing_keys += ['patch_embedding.weight', 'patch_embedding.bias']
+            if ('pre_logits.weight' in state_dict):
+                expected_missing_keys += ['pre_logits.weight', 'pre_logits.bias']
+            
+            for key in state_dict.keys():
+                print(key)
+            '''
+            if ('model.fc.weight' in state_dict):
+                expected_missing_keys += ['model.fc.weight', 'model.fc.bias']
+            for key in expected_missing_keys:
+                state_dict.pop(key)
+                #print(key)
+        model.load_state_dict(state_dict, strict=False)
+        print('Loaded from custom checkpoint.')
     # prints model summary (layers, parameters by giving it a sample input)
     summary(model, input_size=iter(train_loader).next()[0].shape[1:])
     
@@ -253,8 +274,14 @@ def main():
                         help="Initial learning rate.")  
     parser.add_argument("--pretrained", type=bool, default=False,
                         help="For models with pretrained weights available"
-                        "Default=False"
-                        "If inputs anything (even the flag!) will take as True")                      
+                        "Default=False")
+    parser.add_argument("--checkpoint_path", type=str, 
+                        default=None)     
+    parser.add_argument("--transfer_learning", type=bool, default=False,
+                        help="Load partial state dict for transfer learning"
+                        "Resets the [embeddings, logits and] fc layer for ViT"
+                        "Resets the fc layer for Resnets"
+                        "Default=False")            
     args = parser.parse_args()
 
     logger.info(args)

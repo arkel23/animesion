@@ -35,7 +35,7 @@ def update_lr(optimizer, lr):
     for param_group in optimizer.param_groups:
         param_group['lr'] = lr
 
-def data_loading(args, split, inference=False):
+def data_loading(args, split):
     if args.model_type == 'resnet18' or args.model_type == 'resnet152':
         if split=='train':
             transform = transforms.Compose([
@@ -62,18 +62,13 @@ def data_loading(args, split, inference=False):
     elif args.dataset_name == 'danbooruFaces':
         dataset = datasets.danbooruFaces(root=args.dataset_path,
         input_size=args.image_size, split=split, transform=transform)
+    elif args.dataset_name == 'cartoonFace':
+        dataset = datasets.cartoonFace(root=args.dataset_path,
+        input_size=args.image_size, split=split, transform=transform)    
     
-<<<<<<< HEAD
-    if inference == False:
-        dataset_loader = data.DataLoader(dataset, batch_size=args.batch_size, 
-        shuffle=True, num_workers=4)
-    else:
-        dataset_loader = None
-=======
     dataset_loader = data.DataLoader(dataset, batch_size=args.batch_size, 
         shuffle=True, num_workers=4)
 
->>>>>>> 092563651ee2caee8ef7ef9ac44eeea58e4555a2
 
     return dataset, dataset_loader
 
@@ -258,7 +253,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--name", required=True,
                         help="Name of this run. Used for monitoring.")
-    parser.add_argument("--dataset_name", choices=["moeImouto", "danbooruFaces"], 
+    parser.add_argument("--dataset_name", choices=["moeImouto", "danbooruFaces", "cartoonFace"], 
                         default="moeImouto", help="Which dataset to use.")
     parser.add_argument("--dataset_path", required=True,
                         help="Path for the dataset.")

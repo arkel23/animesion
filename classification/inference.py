@@ -1,9 +1,16 @@
 import os
+import logging
 import argparse
+import pandas as pd
+from statistics import mean
+from PIL import Image
 
 import torch
+import torch.utils.data as data
+import torchvision.transforms as transforms
+from torchsummary import summary
 
-from train import data_loading, model_selection, validate
+from train import data_loading, model_selection
 
 # take main from train.py and modify it for inference (choose model and checkpoint or not)
 # input an image (or a dataset)
@@ -97,10 +104,6 @@ def validate(device, model, criterion, no_classes, loader,
         return curr_top1_acc
 
 
-the_model = TheModelClass(*args, **kwargs)
-the_model.load_state_dict(torch.load(PATH))
-
-
 '''
 # NEEDS UPDATING
 if visualization==True:
@@ -123,3 +126,71 @@ if visualization==True:
             # show examples of classified images
             show_results(device, loader, model, classes)
 '''
+def inference(args):
+    # makes results_dir if doesn't exist
+    results_dir = args.results_dir
+    if not os.path.exists(results_dir):
+        os.makedirs(results_dir)
+
+    # Device configuration
+    device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+    
+    # General dataset
+    data_set, _ = data_loading(args, split='test', inference=True)
+    no_classes = data_set.no_classes
+    classid_classname_dic = data_set.classes
+
+    # Image to be tested
+    transform = data_set.transform
+    image = Image.open(args.image_path)
+    image_transformed = transform(image)
+    image_batch = torch.unsqueeze(image_transformed, 0).to(device)
+    print(image.size, image_transformed.shape, image_batch.shape)
+
+    # model
+    model = model_selection(args, no_classes)
+    model.to(device)    
+    model.load_state_dict(torch.load(args.checkpoint_path))
+    # prints model summary (layers, parameters by giving it a sample input)
+    if args.vis_arch:
+        summary(model, input_size=image_batch.shape[1:])
+
+    # don't calculate gradients and put model into evaluation mode (no dropout/batch norm/etc)
+    model.eval()
+    with torch.no_grad():
+        outputs = model(image_batch).squeeze(0)
+        for i, idx in enumerate(torch.topk(outputs, k=5).indices.tolist()):
+            prob = torch.softmax(outputs, -1)[idx].item() * 100
+            class_name = classid_classname_dic.loc[classid_classname_dic['class_id']==idx, 'class_name'].item()
+            print('Prediction No. {}: {} [ID: {}], Confidence: {}'.format(i+1, class_name, idx, prob))
+
+def main():
+  
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--dataset_name", choices=["moeImouto", "danbooruFaces"], 
+                        required=True, help="Which dataset to use (for no. of classes/loading model).")
+    parser.add_argument("--dataset_path", required=True,
+                        help="Path for the dataset.")
+    parser.add_argument("--image_path", required=True,
+                        help="Path for the image to be tested.")
+    parser.add_argument("--image_size", choices=[128, 224], default=128, type=int,
+                        help="Image (square) resolution size")
+    parser.add_argument("--model_type", choices=["shallow", 'resnet18', 'resnet152', 
+                        'B_16', 'B_32', 'L_16', 'L_32'],
+                        required=True,
+                        help="Which model architecture to use")
+    parser.add_argument("--checkpoint_path", type=str, required=True,
+                        help="Path for model checkpoint to load.")    
+    parser.add_argument("--results_dir", default="results_inference", type=str,
+                        help="The directory where results will be stored.")
+    parser.add_argument("--pretrained", type=bool, default=True,
+                        help="DON'T CHANGE! Always true since always loading when doing inference.")
+    parser.add_argument("--vis_arch", type=bool, default=False,
+                        help="Visualize architecture through model summary.")
+               
+    args = parser.parse_args()
+
+    inference(args)            
+
+if __name__ == '__main__':
+    main()

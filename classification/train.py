@@ -63,11 +63,17 @@ def data_loading(args, split, inference=False):
         dataset = datasets.danbooruFaces(root=args.dataset_path,
         input_size=args.image_size, split=split, transform=transform)
     
+<<<<<<< HEAD
     if inference == False:
         dataset_loader = data.DataLoader(dataset, batch_size=args.batch_size, 
         shuffle=True, num_workers=4)
     else:
         dataset_loader = None
+=======
+    dataset_loader = data.DataLoader(dataset, batch_size=args.batch_size, 
+        shuffle=True, num_workers=4)
+
+>>>>>>> 092563651ee2caee8ef7ef9ac44eeea58e4555a2
 
     return dataset, dataset_loader
 
@@ -103,6 +109,27 @@ def train_main(logger, args):
     # model
     model = model_selection(args, no_classes)
     model.to(device)
+    if args.checkpoint_path:
+        state_dict = torch.load(args.checkpoint_path)
+        if args.transfer_learning:
+            # Modifications to load partial state dict
+            expected_missing_keys = []
+            '''
+            if ('patch_embedding.weight' in state_dict):
+                expected_missing_keys += ['patch_embedding.weight', 'patch_embedding.bias']
+            if ('pre_logits.weight' in state_dict):
+                expected_missing_keys += ['pre_logits.weight', 'pre_logits.bias']
+            
+            for key in state_dict.keys():
+                print(key)
+            '''
+            if ('model.fc.weight' in state_dict):
+                expected_missing_keys += ['model.fc.weight', 'model.fc.bias']
+            for key in expected_missing_keys:
+                state_dict.pop(key)
+                #print(key)
+        model.load_state_dict(state_dict, strict=False)
+        print('Loaded from custom checkpoint.')
     # prints model summary (layers, parameters by giving it a sample input)
     summary(model, input_size=iter(train_loader).next()[0].shape[1:])
     
@@ -241,7 +268,7 @@ def main():
                         'L_16_imagenet1k', 'L_32_imagenet1k'],
                         default="shallow",
                         help="Which model architecture to use")
-    parser.add_argument("--results_dir", default="results", type=str,
+    parser.add_argument("--results_dir", default="results_training", type=str,
                         help="The directory where results will be stored")
     parser.add_argument("--image_size", default=224, type=int,
                         help="Image (square) resolution size")
@@ -255,8 +282,14 @@ def main():
                         help="Initial learning rate.")  
     parser.add_argument("--pretrained", type=bool, default=False,
                         help="For models with pretrained weights available"
-                        "Default=False"
-                        "If inputs anything (even the flag!) will take as True")                      
+                        "Default=False")
+    parser.add_argument("--checkpoint_path", type=str, 
+                        default=None)     
+    parser.add_argument("--transfer_learning", type=bool, default=False,
+                        help="Load partial state dict for transfer learning"
+                        "Resets the [embeddings, logits and] fc layer for ViT"
+                        "Resets the fc layer for Resnets"
+                        "Default=False")            
     args = parser.parse_args()
 
     logger.info(args)

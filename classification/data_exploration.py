@@ -29,8 +29,13 @@ def load_dataset(args, split=None):
     if split==None:
         split = args.split
 
+<<<<<<< HEAD
     # set all images to a certain size for visualization purposes
     img_size = args.image_size
+=======
+    # set all images to 128x128 for visualization purposes
+    img_size = 128
+>>>>>>> 092563651ee2caee8ef7ef9ac44eeea58e4555a2
     transform = transforms.Compose([
                 transforms.Resize((img_size, img_size)),
                 transforms.ToTensor()])
@@ -224,6 +229,10 @@ def main():
     print(args)
     
     
+<<<<<<< HEAD
+=======
+    
+>>>>>>> 092563651ee2caee8ef7ef9ac44eeea58e4555a2
     if args.data_vis_partial:
         data_visualization(args)
     data_stats(args)

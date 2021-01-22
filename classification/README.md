@@ -138,9 +138,9 @@ To check if a particular character was in the dataset, take a look at this file 
 
 We also tried it for people (and a cat), so hopefully I'll be able to post some results of that later. What came to me as interesting is that for the cat, it predicted `Naruto`, I guess based on the whiskers. Also, for a friend with curly hair, among the predictions included `Yamagishi Yukako`, a character with similar characteristics. 
 
+![](https://github.com/arkel23/animesion/blob/main/classification/results_inference/muffin.jpg)
+
 While the results were certainly far from perfect, this can serve as a basis for more studies on domain adaptation from natural images to sketches and drawn media.
-
-
 
 # Extras
 

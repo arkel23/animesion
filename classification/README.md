@@ -25,6 +25,11 @@ Checkpoints: [Google Drive](https://drive.google.com/drive/folders/15H1A5KoBQHQh
  
 This script takes as input a certain of hyperparameters (dataset to use, model, batch and image size, among others) and trains the model, either from scratch, or from a checkpoint. If training from a checkpoint, it can also use it to do knowledge transfer between datasets, by for example using a checkpoint trained on *DAF:re* to classify images according to the characters in *moeImouto*.
 
+Note: for ViT models it requires installing the Vision Transformer repository. It can be cloned and then installed through `pip install -e .` following instructions on either of these two repositories:
+* https://github.com/arkel23/PyTorch-Pretrained-ViT
+* https://github.com/lukemelas/PyTorch-Pretrained-ViT
+The main difference is that for mine it allows to setup the Vision Transformer to keep the representation layer, a fully-connected layer used during pre-training, that's usually dropped when doing downstream tasks. If you're only doing inference the original [lukemelas](https://github.com/lukemelas/PyTorch-Pretrained-ViT) repository should be enough and more convenient, since it can be download and installed directly in one line `pip install pytorch_pretrained_vit`.
+
 ```
 usage: train.py [-h] --name NAME [--dataset_name {moeImouto,danbooruFaces,cartoonFace}] --dataset_path DATASET_PATH
                 [--model_type {shallow,resnet18,resnet152,B_16,B_32,L_16,L_32,H_14,B_16_imagenet1k,B_32_imagenet1k,L_16_imagenet1k,L_32_imagenet1k}] [--results_dir RESULTS_DIR]

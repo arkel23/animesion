@@ -167,16 +167,16 @@ Holds the classes for the datasets. The structure is straightforward and allows 
 ## data/
 ### moeImouto
 For the moeImouto dataset here's a sample of how the images look along with their classes. For the training and testing split files: [moeImouto repo](https://github.com/arkel23/moeimouto_animefacecharacterdataset)
-![](https://github.com/arkel23/animesion/blob/main/classification/data_exploration/moeImouto_train.pdf)
+![](https://github.com/arkel23/animesion/blob/main/classification/data_exploration/moeImouto_train.png)
 Histogram of classes with most samples.
-![](https://github.com/arkel23/animesion/blob/main/classification/data_exploration/histogram_moeImouto.pdf)
+![](https://github.com/arkel23/animesion/blob/main/classification/data_exploration/histogram_moeImouto.png)
 The dataset itself can be downloaded from [Kaggle](https://www.kaggle.com/mylesoneill/tagged-anime-illustrations/home) then stored in a folder containing the rest of the files, following the structure `moeImoutoDataset/data/`, where `data/` contains the folders containing images divided by class and the base folder `moeImoutoDataset/` contains the files included in the [repo](https://github.com/arkel23/moeimouto_animefacecharacterdataset) I described previously (`train.csv`, `test.csv`, and `classid_classname.csv`).
 
 ### DAF:re
 Similarly, for DAF:re. Also, here's the repo for some more details on the dataset along with the files for training, testing and validation: [DAF:re repo](https://github.com/arkel23/Danbooru2018AnimeCharacterRecognitionDataset_Revamped)
-![](https://github.com/arkel23/animesion/blob/main/classification/data_exploration/danbooruFaces_train.pdf)
+![](https://github.com/arkel23/animesion/blob/main/classification/data_exploration/danbooruFaces_train.png)
 Histogram of classes with most samples. It's clear that the distribution is very long-tailed.
-![](https://github.com/arkel23/animesion/blob/main/classification/data_exploration/histogram_danbooruFaces.pdf)
+![](https://github.com/arkel23/animesion/blob/main/classification/data_exploration/histogram_danbooruFaces.png)
 The dataset itself can be downloaded using `rsync`:
 ```
 rsync --verbose rsync://78.46.86.149:873/biggan/2019-07-27-grapeot-danbooru2018-animecharacterrecognition.tar ./

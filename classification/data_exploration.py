@@ -29,8 +29,13 @@ def load_dataset(args, split=None):
     if split==None:
         split = args.split
 
+<<<<<<< HEAD
+    # set all images to a certain size for visualization purposes
+    img_size = args.image_size
+=======
     # set all images to 128x128 for visualization purposes
     img_size = 128
+>>>>>>> 092563651ee2caee8ef7ef9ac44eeea58e4555a2
     transform = transforms.Compose([
                 transforms.Resize((img_size, img_size)),
                 transforms.ToTensor()])
@@ -97,9 +102,12 @@ def data_visualization(args):
             if i%8 == 0:
                 class_list.append('\n')
         class_list = '  '.join(class_list)
-        grid = torchvision.utils.make_grid(images)
+        grid = torchvision.utils.make_grid(images, nrow=8)
         out_name = os.path.join(args.results_dir, 
         '{}_{}.pdf'.format(args.dataset_name, args.split))
+        # just displays the images
+        #torchvision.utils.save_image(grid, out_name)
+        # displays classes names
         imshow(grid, out_name, title=class_list)
 
 def video_from_frames(args):
@@ -205,6 +213,8 @@ def main():
                         help="Path for the results.")
     parser.add_argument("--batch_size", default=64, type=int,
                         help="Batch size for visualization.")
+    parser.add_argument("--image_size", default=128, type=int,
+                        help="Image (square) resolution size")
     parser.add_argument("--data_vis_full", type=bool, default=False,
                         help="Save all images into a video.")  
     parser.add_argument("--split", default='test', type=str,
@@ -216,8 +226,13 @@ def main():
     parser.add_argument("--stats_partial", type=bool, default=False,
                         help="If true will display stats for a certain subset instead of the whole.")
     args = parser.parse_args()
+    print(args)
     
     
+<<<<<<< HEAD
+=======
+    
+>>>>>>> 092563651ee2caee8ef7ef9ac44eeea58e4555a2
     if args.data_vis_partial:
         data_visualization(args)
     data_stats(args)

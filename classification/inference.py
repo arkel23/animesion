@@ -1,4 +1,5 @@
 import os
+import logging
 import argparse
 from PIL import Image
 import numpy as np

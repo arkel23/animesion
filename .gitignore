@@ -18,6 +18,7 @@
 **/results/
 **/results_fail/
 #**/results_inference/
+**/attention/
 
 # temp nfs files
 *.nfs*

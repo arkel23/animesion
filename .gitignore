@@ -1,12 +1,23 @@
 # weights
 *.ckpt
 
-# logs, results and txt files
-*.txt
+# scripts
+*.sh
+*.bat
+
+# logs, results, txt files
 *.log
 *.out
+*.txt
 *.csv
 *.tsv
+
+# directories
+**/test_images/
+**/results_training/
+**/results/
+**/results_fail/
+**/results_inference/
 
 # temp nfs files
 *.nfs*

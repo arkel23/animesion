@@ -82,10 +82,19 @@ class VisionTransformer(nn.Module):
     def __init__(self, num_classes, args):
         super(VisionTransformer, self).__init__()
         self.num_classes = num_classes
-        base_model = ViT(name=args.model_type,
-        pretrained = args.pretrained, 
-        num_classes = self.num_classes,
-        image_size = args.image_size)
+
+        if hasattr(args, 'vis_attention'):
+            base_model = ViT(name=args.model_type,
+            pretrained = args.pretrained, 
+            num_classes = self.num_classes,
+            image_size = args.image_size,
+            visualize=True)
+        else:
+            base_model = ViT(name=args.model_type,
+            pretrained = args.pretrained, 
+            num_classes = self.num_classes,
+            image_size = args.image_size)
+        
         self.model = base_model
         
     def forward(self, x):

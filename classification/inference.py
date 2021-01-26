@@ -99,7 +99,10 @@ def environment_loader(args):
         os.makedirs(results_dir)
 
     # Device configuration
-    device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+    if hasattr(args, 'vis_attention'):
+        device = torch.device('cpu')
+    else:
+        device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     # Controlling source of randomness: pytorch RNG
     torch.manual_seed(0)
     

@@ -9,7 +9,7 @@ import torchvision
 import torchvision.transforms as transforms
 from torchsummary import summary
 
-from train import data_loading, model_selection, accuracy
+from train import accuracy
 from inference import environment_loader
 
 def evaluate(args, device, model, data_set, data_loader):

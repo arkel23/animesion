@@ -14,7 +14,7 @@
 
 # directories
 **/test_images/
-!classification/test_images/.gitkeep
+!./classification/test_images/.gitkeep
 **/results_training/
 **/results/
 **/results_fail/

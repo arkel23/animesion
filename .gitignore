@@ -13,17 +13,17 @@
 *.tsv
 
 # directories
-**/test_images/
-!./classification/test_images/.gitkeep
+**/test_images/*
+!**/test_images/.gitkeep
 **/results_training/
 **/results/
 **/results_fail/
-**/results_inference/
-!classification/results_inference/muffin*
-!classification/results_inference/rei*
-!classification/results_inference/dva*
-!classification/results_inference/kirito*
-!classification/results_inference/homura_top*
+**/results_inference/*
+!**/results_inference/muffin*
+!**/results_inference/rei*
+!**/results_inference/dva*
+!**/results_inference/kirito*
+!**/results_inference/homura_top*
 **/attention/
 
 # temp nfs files

@@ -13,10 +13,6 @@ Checkpoints: [Google Drive](https://drive.google.com/drive/folders/15H1A5KoBQHQh
 * Pre-trained models for each of these architectures for image sizes of 128x128 or 224x224, trained for 50 or 200 epochs.
 * Supporting scripts for making, visualization and stats for datasets.
 * Scripts for training from scratch, evaluation (accuracy of a model with a certain set and pretrained weights), and inference (classifies all images in `test_images/` folder)
-
-# To do
-* Better documentation and organize the repo folder structure and files.
-* Change train.py to log losses and accuracies into same file.
  
  # How to use
  The main scripts in this repo are the `train.py`, `evaluate.py` and `inference.py`. These are all supported by `models/models.py` and `data/datasets.py`.

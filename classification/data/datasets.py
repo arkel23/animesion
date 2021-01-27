@@ -1,3 +1,11 @@
+import os
+import pandas as pd
+from PIL import Image
+
+import torch
+import torch.utils.data as data
+from torchvision import transforms
+
 class moeImouto(data.Dataset):
 	'''
 	https://www.kaggle.com/mylesoneill/tagged-anime-illustrations/home

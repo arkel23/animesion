@@ -11,6 +11,8 @@
 *.txt
 *.csv
 *.tsv
+# exception
+!requirements.txt
 
 # directories
 **/test_images/*

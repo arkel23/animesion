@@ -18,11 +18,11 @@ def evaluate(args, device, model, data_set, data_loader):
     f = open(os.path.join(args.results_dir, '{}'.format(file_name)), 'w')
 
     # related to dataset
-    no_classes = data_set.no_classes
+    num_classes = data_set.num_classes
     classid_classname_dic = data_set.classes
     total_step = len(data_loader)
     curr_line = 'Total no. of samples in test set: {}\nTotal no. of classes: {}\n'.format(
-        len(data_set), no_classes)
+        len(data_set), num_classes)
     print(curr_line)
     f.write(curr_line)
     
@@ -39,8 +39,8 @@ def evaluate(args, device, model, data_set, data_loader):
         correct_5 = 0
         total = 0
 
-        class_correct = list(0. for i in range(no_classes))
-        class_total = list(0. for i in range(no_classes))
+        class_correct = list(0. for i in range(num_classes))
+        class_total = list(0. for i in range(num_classes))
         
         for i, (images, labels) in enumerate(data_loader):
 
@@ -80,7 +80,7 @@ def evaluate(args, device, model, data_set, data_loader):
         f.write(curr_line)
 
         # compute per class accuracy
-        for i in range(no_classes):
+        for i in range(num_classes):
             class_accuracy = 100 * class_correct[i] / class_total[i]
             class_name = classid_classname_dic.loc[classid_classname_dic['class_id']==i, 'class_name'].item()
             curr_line = 'Total objects in class no. {} ({}): {}. Top-1 Accuracy: {}\n'.format(
@@ -100,7 +100,7 @@ def main():
                         help="Path for the dataset.")
     parser.add_argument("--image_size", choices=[128, 224], default=128, type=int,
                         help="Image (square) resolution size")
-    parser.add_argument("--model_type", choices=["shallow", 'resnet18', 'resnet152', 
+    parser.add_argument("--model_name", choices=["shallow", 'resnet18', 'resnet152', 
                         'B_16', 'B_32', 'L_16', 'L_32'], default='L_32',
                         help="Which model architecture to use")
     parser.add_argument("--checkpoint_path", type=str, 
@@ -114,12 +114,13 @@ def main():
                         help="Batch size for train/val/test.")                        
     parser.add_argument("--vis_arch", type=bool, default=True,
                         help="Visualize architecture through model summary.")
-
                
     args = parser.parse_args()
+    args.load_partial_mode = None
+    args.transfer_learning = False
     print(args)
 
-    device, model, data_set, data_loader = environment_loader(args) 
+    device, model, data_set, data_loader = environment_loader(args)
 
     evaluate(args, device, model, data_set, data_loader)
               

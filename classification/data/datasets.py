@@ -56,7 +56,7 @@ class moeImouto(data.Dataset):
 		self.classes = pd.read_csv(os.path.join(self.root, 'classid_classname.csv'), 
 		sep=',', header=None, names=['class_id', 'class_name'], 
 		dtype={'class_id': 'UInt16', 'class_name': 'object'})
-		self.no_classes = len(self.classes)
+		self.num_classes = len(self.classes)
 		
 
 	def __getitem__(self, idx):
@@ -135,7 +135,7 @@ class danbooruFaces(data.Dataset):
 		self.classes = pd.read_csv(os.path.join(self.root, 'classid_classname.csv'), 
 		sep=',', header=None, names=['class_id', 'class_name'], 
 		dtype={'class_id': 'UInt16', 'class_name': 'object'})
-		self.no_classes = len(self.classes)
+		self.num_classes = len(self.classes)
 		
 	def __getitem__(self, idx):
 		
@@ -203,7 +203,7 @@ class cartoonFace(data.Dataset):
 		self.classes = pd.read_csv(os.path.join(self.root, 'classid_classname.csv'), 
 		sep=',', header=None, names=['class_id', 'class_name'], 
 		dtype={'class_id': 'UInt16', 'class_name': 'object'})
-		self.no_classes = len(self.classes)
+		self.num_classes = len(self.classes)
 		
 
 	def __getitem__(self, idx):

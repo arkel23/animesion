@@ -36,7 +36,7 @@ def update_lr(optimizer, lr):
         param_group['lr'] = lr
 
 def data_loading(args, split):
-    if args.model_type == 'resnet18' or args.model_type == 'resnet152':
+    if args.model_name == 'resnet18' or args.model_name == 'resnet152':
         if split=='train':
             transform = transforms.Compose([
                 transforms.Resize((args.image_size+32, args.image_size+32)),
@@ -72,14 +72,14 @@ def data_loading(args, split):
 
     return dataset, dataset_loader
 
-def model_selection(args, no_classes):
+def model_selection(args):
     # initiates model and loss     
-    if args.model_type=='shallow':
-        model = models.ShallowNet(no_classes)
-    elif args.model_type=='resnet18' or args.model_type=='resnet152':
-        model = models.ResNet(no_classes, args)
+    if args.model_name=='shallow':
+        model = models.ShallowNet(args)
+    elif args.model_name=='resnet18' or args.model_name=='resnet152':
+        model = models.ResNet(args)
     else:
-        model = models.VisionTransformer(no_classes, args)
+        model = models.VisionTransformer(args)
     return model
 
 def train_main(logger, args):
@@ -98,34 +98,14 @@ def train_main(logger, args):
     train_set, train_loader = data_loading(args, split='train')
     _, val_loader = data_loading(args, split='val')
     _, test_loader = data_loading(args, split='test')
-    no_classes = train_set.no_classes
+    args.num_classes = train_set.num_classes
     classid_classname_dic = train_set.classes
 
     # model
-    model = model_selection(args, no_classes)
+    model = model_selection(args)
+    print(str(model.configuration))
+    f.write(str(model.configuration))
     model.to(device)
-    if args.checkpoint_path:
-        state_dict = torch.load(args.checkpoint_path)
-        if args.transfer_learning:
-            # Modifications to load partial state dict
-            expected_missing_keys = []
-            '''
-            if ('patch_embedding.weight' in state_dict):
-                expected_missing_keys += ['patch_embedding.weight', 'patch_embedding.bias']
-            if ('pre_logits.weight' in state_dict):
-                expected_missing_keys += ['pre_logits.weight', 'pre_logits.bias']
-            
-            for key in state_dict.keys():
-                print(key)
-            '''
-            if ('model.fc.weight' in state_dict):
-                expected_missing_keys += ['model.fc.weight', 'model.fc.bias']
-            for key in expected_missing_keys:
-                state_dict.pop(key)
-                #print(key)
-        model.load_state_dict(state_dict, strict=False)
-        print('Loaded from custom checkpoint.')
-    # prints model summary (layers, parameters by giving it a sample input)
     summary(model, input_size=iter(train_loader).next()[0].shape[1:])
     
     # loss and optimizer
@@ -257,7 +237,7 @@ def main():
                         default="moeImouto", help="Which dataset to use.")
     parser.add_argument("--dataset_path", required=True,
                         help="Path for the dataset.")
-    parser.add_argument("--model_type", choices=["shallow", 'resnet18', 'resnet152', 
+    parser.add_argument("--model_name", choices=["shallow", 'resnet18', 'resnet152', 
                         'B_16', 'B_32', 'L_16', 'L_32', 'H_14',
                         'B_16_imagenet1k', 'B_32_imagenet1k', 
                         'L_16_imagenet1k', 'L_32_imagenet1k'],
@@ -284,7 +264,10 @@ def main():
                         help="Load partial state dict for transfer learning"
                         "Resets the [embeddings, logits and] fc layer for ViT"
                         "Resets the fc layer for Resnets"
-                        "Default=False")            
+                        "Default=False")    
+    parser.add_argument("--load_partial_mode", choices=['full_tokenizer', 'patchprojection', 'posembeddings', 'clstoken', 
+        'patchandposembeddings', 'patchandclstoken', 'posembeddingsandclstoken', None], default=None,
+                        help="Load pre-processing components to speed up training")        
     args = parser.parse_args()
 
     logger.info(args)

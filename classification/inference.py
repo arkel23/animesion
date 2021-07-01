@@ -109,10 +109,10 @@ def environment_loader(args):
     
     # General dataset
     data_set, data_loader = data_loading(args, split='test')
-    no_classes = data_set.no_classes
+    args.num_classes = data_set.num_classes
 
     # model
-    model = model_selection(args, no_classes)
+    model = model_selection(args)
     model.to(device)    
     model.load_state_dict(torch.load(args.checkpoint_path))
 
@@ -129,11 +129,11 @@ def main():
                         help="Path for the images to be tested.")
     parser.add_argument("--image_size", choices=[128, 224], default=128, type=int,
                         help="Image (square) resolution size")
-    parser.add_argument("--model_type", choices=["shallow", 'resnet18', 'resnet152', 
-                        'B_16', 'B_32', 'L_16', 'L_32'], default='L_32',
+    parser.add_argument("--model_name", choices=["shallow", 'resnet18', 'resnet152', 
+                        'B_16', 'B_32', 'L_16', 'L_32'], default='L_16',
                         help="Which model architecture to use")
     parser.add_argument("--checkpoint_path", type=str, 
-                        default="checkpoints/danbooruFaces_l32_ptTrue_batch64_imageSize128_50epochs_epochDecay20.ckpt",
+                        default="./checkpoints/verify_danbooruFaces_l16_ptTrue_batch16_imageSize128_50epochs_epochDecay20.ckpt",
                         help="Path for model checkpoint to load.")    
     parser.add_argument("--results_dir", default="results_inference", type=str,
                         help="The directory where results will be stored.")
@@ -142,11 +142,13 @@ def main():
     parser.add_argument("--batch_size", default=64, type=int,
                         help="Batch size for train/val/test. Just for loading the dataset.")
     parser.add_argument("--save_results", type=bool, default=True,
-                        help="Save the images after transform and with label results.")
-               
+                        help="Save the images after transform and with label results.")         
     args = parser.parse_args()
+    args.load_partial_mode = None
+    args.transfer_learning = False
 
-    device, model, data_set, data_loader = environment_loader(args) 
+    device, model, data_set, data_loader = environment_loader(args)
+
 
     inference(args, device, model, data_set)           
 

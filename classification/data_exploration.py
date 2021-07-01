@@ -29,13 +29,8 @@ def load_dataset(args, split=None):
     if split==None:
         split = args.split
 
-<<<<<<< HEAD
     # set all images to a certain size for visualization purposes
     img_size = args.image_size
-=======
-    # set all images to 128x128 for visualization purposes
-    img_size = 128
->>>>>>> 092563651ee2caee8ef7ef9ac44eeea58e4555a2
     transform = transforms.Compose([
                 transforms.Resize((img_size, img_size)),
                 transforms.ToTensor()])
@@ -60,10 +55,10 @@ def data_visualization(args):
         dataset_loader = data.DataLoader(dataset, batch_size=args.batch_size, 
         shuffle=True, num_workers=4)
 
-    no_classes = dataset.no_classes
+    num_classes = dataset.num_classes
     classid_classname_dic = dataset.classes
     print('Total number of images: {}, Total number of classes: {}'.format(
-    len(dataset), no_classes))
+    len(dataset), num_classes))
 
     if not os.path.exists(args.results_dir):
         os.makedirs(args.results_dir)
@@ -153,7 +148,7 @@ def data_stats(args):
             df = pd.concat([df_train, df_val, df_test])
 
     classid_classname_dic = dataset_train.classes
-    no_classes = dataset_train.no_classes
+    num_classes = dataset_train.num_classes
 
     samples_per_class = df.groupby('class_id', as_index=True).count()['dir'].squeeze()
     
@@ -166,7 +161,7 @@ def data_stats(args):
     'Mean number of samples per class: {}\n'
 	'Median number of samples per class: {}\n'
 	'Standard deviation of samples per class: {}'.format(
-	args.dataset_name, no_samples, no_classes, set_mean, set_median, set_std))
+	args.dataset_name, no_samples, num_classes, set_mean, set_median, set_std))
 
     samples_per_class_ordered = samples_per_class.sort_values(0, ascending=False)
     print(samples_per_class_ordered.head())
@@ -228,11 +223,6 @@ def main():
     args = parser.parse_args()
     print(args)
     
-    
-<<<<<<< HEAD
-=======
-    
->>>>>>> 092563651ee2caee8ef7ef9ac44eeea58e4555a2
     if args.data_vis_partial:
         data_visualization(args)
     data_stats(args)

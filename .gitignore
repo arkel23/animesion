@@ -1,5 +1,6 @@
 # weights
 *.ckpt
+*.zip
 
 # scripts
 *.sh
@@ -16,7 +17,6 @@
 
 # directories
 **/test_images/*
-!**/test_images/.gitkeep
 **/results_training/
 **/results/
 **/results_fail/

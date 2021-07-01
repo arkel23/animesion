@@ -96,15 +96,15 @@ def main():
     parser.add_argument("--dataset_name", choices=["moeImouto", "danbooruFaces"], default='danbooruFaces',
                         help="Which dataset to use (for no. of classes/loading model).")
     parser.add_argument("--dataset_path", 
-                        default="/home2/yan/disk/edwin/personal/data/Danbooru2018AnimeCharacterRecognitionDataset_Revamped/",
+                        default="/hdd/edwin/data/Danbooru2018AnimeCharacterRecognitionDataset_Revamped/",
                         help="Path for the dataset.")
     parser.add_argument("--image_size", choices=[128, 224], default=128, type=int,
                         help="Image (square) resolution size")
     parser.add_argument("--model_name", choices=["shallow", 'resnet18', 'resnet152', 
-                        'B_16', 'B_32', 'L_16', 'L_32'], default='L_32',
+                        'B_16', 'B_32', 'L_16', 'L_32'], default='L_16',
                         help="Which model architecture to use")
     parser.add_argument("--checkpoint_path", type=str, 
-                        default="checkpoints/danbooruFaces_l32_ptTrue_batch64_imageSize128_50epochs_epochDecay20.ckpt",
+                        default="./checkpoints/verify_danbooruFaces_l16_ptTrue_batch16_imageSize128_50epochs_epochDecay20.ckpt",
                         help="Path for model checkpoint to load.")    
     parser.add_argument("--results_dir", default="results_inference", type=str,
                         help="The directory where results will be stored.")

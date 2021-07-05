@@ -49,49 +49,58 @@ def imshow(inp, out_name, title=None, imagenet_values=False, save_results=False)
         plt.title(title, fontsize=10, wrap=True)
     plt.tight_layout()
     plt.show(block=False)
-    plt.pause(5)
-    if save_results:
-        plt.savefig('{}'.format(out_name), dpi=300)
+    inp = input('Press anything to keep visualizing: ')
+    #plt.pause(5)
+    #if save_results:
+    #    plt.savefig('{}'.format(out_name), dpi=300)
     plt.close()
 
-def inference(args, device, model, data_set):
-    classid_classname_dic = data_set.classes
-    transform = data_set.transform
+def evaluate_imagebyimage(args, device, model, data_set, data_loader):
     
-    # Images to be tested
-    file_list = [os.path.join(args.images_path, f) for f in os.listdir(args.images_path) if os.path.isfile(
-        os.path.join(args.images_path, f))]
+    # related to dataset
+    num_classes = data_set.num_classes
+    classid_classname_dic = data_set.classes
+    total_step = len(data_loader)
+    curr_line = 'Total no. of samples in test set: {}\nTotal no. of classes: {}\n'.format(
+        len(data_set), num_classes)
+    print(curr_line)
     
     # don't calculate gradients and put model into evaluation mode (no dropout/batch norm/etc)
     model.eval()
     with torch.no_grad():
-        for image_dir in file_list:
-            # read image one by one and apply transforms
-            file_name_no_ext = os.path.splitext(os.path.split(image_dir)[1])[0]
-            out_name = os.path.join(args.results_dir, '{}.jpg'.format(file_name_no_ext))
-            image = Image.open(image_dir)
-            if image.mode != 'RGB':
-                print("Image {} should be RGB".format(image_dir))
-                continue
-            image_transformed = torch.unsqueeze(transform(image), 0).to(device)
-            print('File: {}, Original image size: {}, Size after reshaping and unsqueezing: {}'.format(
-                image_dir, image.size, image_transformed.shape))
+        #for image_dir in file_list:
+        for i, (images, labels) in enumerate(data_loader):
+            # prints current evaluation step after each 10 steps
+            if (i % 10) == 0:
+                print ("Step [{}/{}]".format(i+1, total_step))
+            images = images.to(device)
+            labels = labels.to(device)
 
-            # calculate outputs for each image
-            outputs = model(image_transformed).squeeze(0)
-            classes_predicted = []
-            classes_predicted.append(file_name_no_ext)
-            classes_predicted.append('\n')
-            for i, idx in enumerate(torch.topk(outputs, k=5).indices.tolist()):
-                prob = torch.softmax(outputs, -1)[idx].item() * 100
-                class_name = classid_classname_dic.loc[classid_classname_dic['class_id']==idx, 'class_name'].item()
-                predict_text = 'Prediction No. {}: {} [ID: {}], Confidence: {}\n'.format(i+1, class_name, idx, prob)
-                classes_predicted.append(predict_text)
-                print(predict_text, end='')
+            for j in range(len(images)):
 
-            classes_predicted = '  '.join(classes_predicted)
-            grid = torchvision.utils.make_grid(image_transformed)
-            imshow(grid, out_name, title=classes_predicted, save_results=args.save_results)
+                outputs = model(images[j, :].unsqueeze(0)).squeeze(0)
+                label_class_name = classid_classname_dic.loc[classid_classname_dic['class_id']==labels[j].item(), 'class_name'].item()
+                
+                predict_top1 = torch.topk(outputs, k=1).indices
+                if (predict_top1 == labels[j].item()):
+                    continue
+                
+                print('Ground truth label: ', label_class_name)
+                
+                classes_predicted = []
+                classes_predicted.append('{}'.format(label_class_name))
+                classes_predicted.append('\n')
+                
+                for i, idx in enumerate(torch.topk(outputs, k=5).indices.tolist()):
+                    prob = torch.softmax(outputs, -1)[idx].item() * 100
+                    class_name = classid_classname_dic.loc[classid_classname_dic['class_id']==idx, 'class_name'].item()
+                    predict_text = 'Prediction No. {}: {} [ID: {}], Confidence: {}\n'.format(i+1, class_name, idx, prob)
+                    classes_predicted.append(predict_text)
+                    print(predict_text, end='')
+
+                classes_predicted = '  '.join(classes_predicted)
+                grid = torchvision.utils.make_grid(images[j, :])
+                imshow(grid, out_name='placeholder', title=classes_predicted, save_results=args.save_results)
 
 def environment_loader(args):
     # makes results_dir if doesn't exist
@@ -123,7 +132,8 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--dataset_name", choices=["moeImouto", "danbooruFaces", "danbooruFull"], default='danbooruFaces',
                         help="Which dataset to use (for no. of classes/loading model).")
-    parser.add_argument("--dataset_path", default="data/danbooruFaces/",
+    parser.add_argument("--dataset_path", 
+                        default="/hdd/edwin/data/Danbooru2018AnimeCharacterRecognitionDataset_Revamped/",
                         help="Path for the dataset.")
     parser.add_argument("--images_path", default='test_images',
                         help="Path for the images to be tested.")
@@ -141,16 +151,17 @@ def main():
                         help="DON'T CHANGE! Always true since always loading when doing inference.")
     parser.add_argument("--batch_size", default=64, type=int,
                         help="Batch size for train/val/test. Just for loading the dataset.")
-    parser.add_argument("--save_results", type=bool, default=True,
-                        help="Save the images after transform and with label results.")         
+    parser.add_argument("--save_results", type=bool, default=False,
+                        help="Save the images after transform and with label results.")  
+                               
     args = parser.parse_args()
     args.load_partial_mode = None
     args.transfer_learning = False
+    print(args)
 
     device, model, data_set, data_loader = environment_loader(args)
 
-
-    inference(args, device, model, data_set)           
+    evaluate_imagebyimage(args, device, model, data_set, data_loader)           
 
 if __name__ == '__main__':
     main()

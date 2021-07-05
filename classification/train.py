@@ -64,10 +64,13 @@ def data_loading(args, split):
         input_size=args.image_size, split=split, transform=transform)
     elif args.dataset_name == 'cartoonFace':
         dataset = datasets.cartoonFace(root=args.dataset_path,
-        input_size=args.image_size, split=split, transform=transform)    
+        input_size=args.image_size, split=split, transform=transform)
+    elif args.dataset_name == 'danbooruFull':
+        dataset = datasets.danbooruFull(root=args.dataset_path,
+        input_size=args.image_size, split=split, transform=transform)   
     
     dataset_loader = data.DataLoader(dataset, batch_size=args.batch_size, 
-        shuffle=True, num_workers=4)
+        shuffle=True, num_workers=8)
 
 
     return dataset, dataset_loader
@@ -104,7 +107,7 @@ def train_main(logger, args):
     # model
     model = model_selection(args)
     print(str(model.configuration))
-    f.write(str(model.configuration))
+    #f.write(str(model.configuration))
     model.to(device)
     summary(model, input_size=iter(train_loader).next()[0].shape[1:])
     
@@ -233,7 +236,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--name", required=True,
                         help="Name of this run. Used for monitoring.")
-    parser.add_argument("--dataset_name", choices=["moeImouto", "danbooruFaces", "cartoonFace"], 
+    parser.add_argument("--dataset_name", choices=["moeImouto", "danbooruFaces", "cartoonFace", "danbooruFull"], 
                         default="moeImouto", help="Which dataset to use.")
     parser.add_argument("--dataset_path", required=True,
                         help="Path for the dataset.")

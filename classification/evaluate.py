@@ -2,6 +2,7 @@ import os
 import argparse
 from PIL import Image
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt 
 
 import torch
@@ -14,8 +15,9 @@ from inference import environment_loader
 
 def evaluate(args, device, model, data_set, data_loader):
     
-    file_name = 'evaluate_{}.txt'.format(os.path.splitext(os.path.split(args.checkpoint_path)[1])[0])
-    f = open(os.path.join(args.results_dir, '{}'.format(file_name)), 'w')
+    og_file_name = '{}'.format(os.path.splitext(os.path.split(args.checkpoint_path)[1])[0])
+    log_file_name = 'evaluate_{}.txt'.format(og_file_name)
+    f = open(os.path.join(args.results_dir, '{}'.format(log_file_name)), 'w')
 
     # related to dataset
     num_classes = data_set.num_classes
@@ -80,6 +82,8 @@ def evaluate(args, device, model, data_set, data_loader):
         f.write(curr_line)
 
         # compute per class accuracy
+        class_id_name_nosamples_classacc_dic = {}
+
         for i in range(num_classes):
             class_accuracy = 100 * class_correct[i] / class_total[i]
             class_name = classid_classname_dic.loc[classid_classname_dic['class_id']==i, 'class_name'].item()
@@ -88,12 +92,23 @@ def evaluate(args, device, model, data_set, data_loader):
             print(curr_line)
             f.write(curr_line)
 
+            class_id_name_nosamples_classacc_dic[i] = [class_name, class_total[i], class_accuracy]
+    
+    df = pd.DataFrame.from_dict(class_id_name_nosamples_classacc_dic, orient='index', 
+    columns=['class_name', 'num_samples', 'class_accuracy'])
+    df['id'] = df.index
+    print(df.head())
+    df.sort_values(by=['num_samples', 'class_accuracy'], inplace=True, ascending=False)
+    print(df.head())
+    classes_results_file_name = 'classes_results_{}.csv'.format(og_file_name)
+    df.to_csv(os.path.join(args.results_dir, '{}'.format(classes_results_file_name)), index=False, header=True)
+    
     f.close()
 
 def main():
   
     parser = argparse.ArgumentParser()
-    parser.add_argument("--dataset_name", choices=["moeImouto", "danbooruFaces"], default='danbooruFaces',
+    parser.add_argument("--dataset_name", choices=["moeImouto", "danbooruFaces", "danbooruFull"], default='danbooruFaces',
                         help="Which dataset to use (for no. of classes/loading model).")
     parser.add_argument("--dataset_path", 
                         default="/hdd/edwin/data/Danbooru2018AnimeCharacterRecognitionDataset_Revamped/",

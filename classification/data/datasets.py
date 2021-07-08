@@ -168,7 +168,7 @@ class danbooruFull(data.Dataset):
 
 		if self.split=='train':
 			print('Train set')
-			self.set_dir = os.path.join(self.root, 'dafre', 'train_dafre.csv')
+			self.set_dir = os.path.join(self.root, 'dafre', 'train.csv')
 			self.df = pd.read_csv(self.set_dir, sep=',', header=None, names=['class_id', 'dir'], 
 			dtype={'class_id': 'UInt16', 'dir': 'object'})
 			if self.transform is None:
@@ -184,7 +184,7 @@ class danbooruFull(data.Dataset):
 				])
 		elif self.split=='val':
 			print('Validation set')
-			self.set_dir = os.path.join(self.root, 'dafre', 'val_dafre.csv')
+			self.set_dir = os.path.join(self.root, 'dafre', 'val.csv')
 			self.df = pd.read_csv(self.set_dir, sep=',', header=None, names=['class_id', 'dir'], 
 			dtype={'class_id': 'UInt16', 'dir': 'object'})
 			if self.transform is None:
@@ -196,7 +196,7 @@ class danbooruFull(data.Dataset):
 				])	
 		else:
 			print('Test set')
-			self.set_dir = os.path.join(self.root, 'dafre', 'test_dafre.csv')
+			self.set_dir = os.path.join(self.root, 'dafre', 'test.csv')
 			self.df = pd.read_csv(self.set_dir, sep=',', header=None, names=['class_id', 'dir'], 
 			dtype={'class_id': 'UInt16', 'dir': 'object'})
 			if self.transform is None:

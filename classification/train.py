@@ -132,6 +132,7 @@ def train_main(logger, args):
     top_acc = 0
 
     for epoch in range(args.train_epochs):
+        model.train()
         current_losses = []
         for i, (images, labels) in enumerate(train_loader):
             images = images.to(device)

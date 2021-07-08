@@ -102,6 +102,7 @@ class VisionTransformer(nn.Module):
                 pretrained_image_size=self.configuration.pretrained_image_size, 
                 pretrained_mode=args.load_partial_mode, verbose=True)
             else:
+                # state_dict = torch.load(args.checkpoint_path, map_location=torch.device('cpu')) if loading on CPU?
                 state_dict = torch.load(args.checkpoint_path)
                 if args.transfer_learning:
                     # Modifications to load partial state dict

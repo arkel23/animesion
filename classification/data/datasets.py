@@ -210,7 +210,7 @@ class danbooruFull(data.Dataset):
 		self.targets = self.df['class_id'].to_numpy()
 		self.data = self.df['dir'].to_numpy()
 		
-		self.classes = pd.read_csv(os.path.join(self.root, 'classid_classname.csv'), 
+		self.classes = pd.read_csv(os.path.join(self.root, 'dafre', 'classid_classname.csv'), 
 		sep=',', header=None, names=['class_id', 'class_name'], 
 		dtype={'class_id': 'UInt16', 'class_name': 'object'})
 		self.num_classes = len(self.classes)

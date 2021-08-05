@@ -1,6 +1,5 @@
 import os
 import argparse
-from PIL import Image
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt 
@@ -10,8 +9,70 @@ import torchvision
 import torchvision.transforms as transforms
 from torchsummary import summary
 
-from train import accuracy
-from inference import environment_loader
+import models.models as models
+import data.datasets as datasets
+import utils.utilities as utilities
+
+def imshow(inp, out_name, title=None, imagenet_values=False, save_results=False):
+    '''Imshow for Tensor.
+    # pretrained on imagenet (resnets)
+    # std=(0.229, 0.224, 0.225)
+    # mean=(0.485, 0.456, 0.406)
+
+    # others:
+    # std=(0.5, 0.5, 0.5)
+    # mean=(0.5, 0.5, 0.5)
+    '''
+    if imagenet_values:
+        inv_normalize = transforms.Normalize(
+        mean=[-0.485/0.229, -0.456/0.224, -0.406/0.225],
+        std=[1/0.229, 1/0.224, 1/0.255])
+    else:
+        inv_normalize = transforms.Normalize(
+        mean=[-0.5/0.5, -0.5/0.5, -0.5/0.5],
+        std=[1/0.5, 1/0.5, 1/0.5])
+
+    inv_tensor = inv_normalize(inp)
+    inp = inv_tensor.to('cpu').numpy().transpose((1, 2, 0))
+    inp = np.uint8(np.clip(inp, 0, 1) * 255)
+
+    plt.imshow(inp)
+    if title is not None:
+        plt.title(title, fontsize=10, wrap=True)
+    plt.tight_layout()
+    plt.show(block=False)
+    inp = input('Press anything to keep visualizing: ')
+    #plt.pause(5)
+    #if save_results:
+    #    plt.savefig('{}'.format(out_name), dpi=300)
+    plt.close()
+    
+
+def environment_loader(args):
+    # makes results_dir if doesn't exist
+    results_dir = args.results_dir
+    if not os.path.exists(results_dir):
+        os.makedirs(results_dir)
+
+    # Device configuration
+    if hasattr(args, 'vis_attention'):
+        device = torch.device('cpu')
+    else:
+        device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+    # Controlling source of randomness: pytorch RNG
+    torch.manual_seed(0)
+    
+    # General dataset
+    data_set, data_loader = datasets.data_loading(args, split='test')
+    args.num_classes = data_set.num_classes
+
+    # model
+    model = models.model_selection(args)
+    model.to(device)    
+    model.load_state_dict(torch.load(args.checkpoint_path))
+
+    return device, model, data_set, data_loader
+
 
 def evaluate(args, device, model, data_set, data_loader):
     
@@ -105,6 +166,55 @@ def evaluate(args, device, model, data_set, data_loader):
     
     f.close()
 
+
+def evaluate_imagebyimage(args, device, model, data_set, data_loader):
+    
+    # related to dataset
+    num_classes = data_set.num_classes
+    classid_classname_dic = data_set.classes
+    total_step = len(data_loader)
+    curr_line = 'Total no. of samples in test set: {}\nTotal no. of classes: {}\n'.format(
+        len(data_set), num_classes)
+    print(curr_line)
+    
+    # don't calculate gradients and put model into evaluation mode (no dropout/batch norm/etc)
+    model.eval()
+    with torch.no_grad():
+        #for image_dir in file_list:
+        for i, (images, labels) in enumerate(data_loader):
+            # prints current evaluation step after each 10 steps
+            if (i % 10) == 0:
+                print ("Step [{}/{}]".format(i+1, total_step))
+            images = images.to(device)
+            labels = labels.to(device)
+
+            for j in range(len(images)):
+
+                outputs = model(images[j, :].unsqueeze(0)).squeeze(0)
+                label_class_name = classid_classname_dic.loc[classid_classname_dic['class_id']==labels[j].item(), 'class_name'].item()
+                
+                predict_top1 = torch.topk(outputs, k=1).indices
+                if (predict_top1 == labels[j].item()):
+                    continue
+                
+                print('Ground truth label: ', label_class_name)
+                
+                classes_predicted = []
+                classes_predicted.append('{}'.format(label_class_name))
+                classes_predicted.append('\n')
+                
+                for i, idx in enumerate(torch.topk(outputs, k=5).indices.tolist()):
+                    prob = torch.softmax(outputs, -1)[idx].item() * 100
+                    class_name = classid_classname_dic.loc[classid_classname_dic['class_id']==idx, 'class_name'].item()
+                    predict_text = 'Prediction No. {}: {} [ID: {}], Confidence: {}\n'.format(i+1, class_name, idx, prob)
+                    classes_predicted.append(predict_text)
+                    print(predict_text, end='')
+
+                classes_predicted = '  '.join(classes_predicted)
+                grid = torchvision.utils.make_grid(images[j, :])
+                imshow(grid, out_name='placeholder', title=classes_predicted, save_results=args.save_results)
+
+
 def main():
   
     parser = argparse.ArgumentParser()
@@ -129,7 +239,11 @@ def main():
                         help="Batch size for train/val/test.")                        
     parser.add_argument("--vis_arch", type=bool, default=True,
                         help="Visualize architecture through model summary.")
-               
+    parser.add_argument("--save_results", type=bool, default=False,
+                        help="Save the images after transform and with label results.")
+    parser.add_argument("--eval_type", choices=['all', 'image_by_image'], default='all',
+                        help="Evaluate all or image by image")
+
     args = parser.parse_args()
     args.load_partial_mode = None
     args.transfer_learning = False
@@ -137,8 +251,10 @@ def main():
 
     device, model, data_set, data_loader = environment_loader(args)
 
-    evaluate(args, device, model, data_set, data_loader)
-              
+    if args.eval_type == 'all':
+        evaluate(args, device, model, data_set, data_loader)
+    else:
+        evaluate_imagebyimage(args, device, model, data_set, data_loader)          
 
 if __name__ == '__main__':
     main()

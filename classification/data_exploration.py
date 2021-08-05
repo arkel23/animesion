@@ -1,6 +1,8 @@
+import re
 import os
 import glob
 import argparse
+import math
 import cv2
 import numpy as np
 import pandas as pd
@@ -21,6 +23,7 @@ def imshow(inp, out_name, title=None):
     plt.imshow(inp)
     if title is not None:
         plt.title(title, fontsize=4, wrap=True)
+    plt.axis('off')
     plt.tight_layout()
     plt.savefig('{}'.format(out_name), dpi=300)
 
@@ -40,6 +43,9 @@ def load_dataset(args, split=None):
         split=split, transform=transform)
     elif args.dataset_name == 'danbooruFaces':
         dataset = datasets.danbooruFaces(root=args.dataset_path,
+        split=split, transform=transform)
+    elif args.dataset_name == 'danbooruFull':
+        dataset = datasets.danbooruFull(root=args.dataset_path, 
         split=split, transform=transform)
     
     return dataset
@@ -63,6 +69,8 @@ def data_visualization(args):
     if not os.path.exists(args.results_dir):
         os.makedirs(args.results_dir)
 
+    nrows = math.floor(math.sqrt(args.batch_size))
+
     if args.data_vis_full:
         for i, (images, labels) in enumerate(dataset_loader):
             out_name = os.path.join(args.results_dir, '{}.png'.format(i))
@@ -74,39 +82,40 @@ def data_visualization(args):
                     if current_class not in class_unique:
                         class_unique.append(current_class)
 
-                grid = torchvision.utils.make_grid(images)
+                grid = torchvision.utils.make_grid(images, nrow=nrows)
                 imshow(grid, out_name, title=class_unique)
             else:
-                torchvision.utils.save_image(images, out_name)
+                torchvision.utils.save_image(images, out_name, nrow=nrows)
             
         print('Finished saving images.')
         video_from_frames(args)
         print('Finished writing video.')
 
-        return dataset
-
     else:
         images, labels = iter(dataset_loader).next()
-        # Make a grid from batch
-        class_list = []
-        i = 0
-        for x in labels:
-            current_class = classid_classname_dic.loc[classid_classname_dic['class_id']==x.item()]['class_name'].item()
-            class_list.append(current_class)
-            i += 1
-            if i%8 == 0:
-                class_list.append('\n')
-        class_list = '  '.join(class_list)
-        grid = torchvision.utils.make_grid(images, nrow=8)
         out_name = os.path.join(args.results_dir, 
-        '{}_{}.pdf'.format(args.dataset_name, args.split))
-        # just displays the images
-        #torchvision.utils.save_image(grid, out_name)
-        # displays classes names
-        imshow(grid, out_name, title=class_list)
-
+        '{}_{}_labels{}.png'.format(args.dataset_name, args.split, args.labels))
+        # Make a grid from batch
+        grid = torchvision.utils.make_grid(images, nrow=nrows)
+        if args.labels:
+            class_list = []
+            i = 0
+            for x in labels:
+                current_class = classid_classname_dic.loc[classid_classname_dic['class_id']==x.item()]['class_name'].item()
+                class_list.append(current_class)
+                i += 1
+                if i%nrows == 0:
+                    class_list.append('\n')
+            class_list = '  '.join(class_list)
+            # displays classes names
+            imshow(grid, out_name, title=class_list)
+        else:
+            # just displays the images
+            torchvision.utils.save_image(grid, out_name, nrow=nrows)
+        
 def video_from_frames(args):
     images_paths = glob.glob(os.path.join(args.results_dir, '*.png'))
+    images_paths = [p for p in images_paths if re.search("[0-9]+(.png)", p)]
     no_images = len(images_paths)
     print(no_images)
     img_sample = cv2.imread(images_paths[0])
@@ -114,7 +123,7 @@ def video_from_frames(args):
     
     height, width = img_sample.shape[0:2]
     video_out_name = os.path.join(args.results_dir, 
-    '{}_{}_labels={}.mp4'.format(args.dataset_name, args.split, args.labels))
+    '{}_{}_labels{}.mp4'.format(args.dataset_name, args.split, args.labels))
     video_out = cv2.VideoWriter(video_out_name, cv2.VideoWriter_fourcc(*'mp4v'), 1.0, (width, height))
     for i in range(no_images):
         curr_path = os.path.join(args.results_dir, '{}.png'.format(i))
@@ -137,18 +146,19 @@ def data_stats(args):
             df_train = dataset_train.df
             df_test = dataset_test.df
             df = pd.concat([df_train, df_test])
-        elif args.dataset_name == 'danbooruFaces':
+        elif args.dataset_name == 'danbooruFaces' or args.dataset_name == 'danbooruFull':
             dataset_train = load_dataset(args, split='train')
             dataset_val = load_dataset(args, split='val')
             dataset_test = load_dataset(args, split='test')
+            dataset = dataset_train
             no_samples = len(dataset_train) + len(dataset_val) + len(dataset_test)
             df_train = dataset_train.df
             df_val = dataset_val.df
             df_test = dataset_test.df
             df = pd.concat([df_train, df_val, df_test])
 
-    classid_classname_dic = dataset_train.classes
-    num_classes = dataset_train.num_classes
+    classid_classname_dic = dataset.classes
+    num_classes = dataset.num_classes
 
     samples_per_class = df.groupby('class_id', as_index=True).count()['dir'].squeeze()
     
@@ -193,21 +203,21 @@ def data_stats(args):
     axs.set_title('Ordered based on no. of samples')
 
     if not os.path.exists(args.results_dir):
-        os.makedirs(args.results_dir)	
-    fig.savefig(os.path.join(args.results_dir, 
-	'histogram_{}.pdf'.format(args.dataset_name)), dpi=300)
+        os.makedirs(args.results_dir)
+    file_name = os.path.join(args.results_dir, 'histogram_{}.pdf'.format(args.dataset_name))	
+    fig.savefig(file_name, dpi=300)
 
 def main():
     torch.manual_seed(0)
     parser = argparse.ArgumentParser()
-    parser.add_argument("--dataset_name", choices=["moeImouto", "danbooruFaces"], 
+    parser.add_argument("--dataset_name", choices=["moeImouto", "danbooruFaces", "danbooruFull"], 
                         default="moeImouto", help="Which dataset to use.")
     parser.add_argument("--dataset_path", required=True,
                         help="Path for the dataset.")
     parser.add_argument("--results_dir", default='data_exploration', type=str,
                         help="Path for the results.")
     parser.add_argument("--batch_size", default=64, type=int,
-                        help="Batch size for visualization.")
+                        help="Batch size for visualization. Don't use more than 64 if using labels.")
     parser.add_argument("--image_size", default=128, type=int,
                         help="Image (square) resolution size")
     parser.add_argument("--data_vis_full", type=bool, default=False,
@@ -216,14 +226,14 @@ def main():
                         help="Split to visualize") 
     parser.add_argument("--labels", type=bool, default=False,
                         help="Include labels as title during the visualization video (requires a LOT more time).")
-    parser.add_argument("--data_vis_partial", type=bool, default=False,
-                        help="If not skips to data_stats function.")
+    parser.add_argument("--display_images", type=bool, default=False,
+                        help="If False skips to data_stats function else display images as single plot or video.")
     parser.add_argument("--stats_partial", type=bool, default=False,
                         help="If true will display stats for a certain subset instead of the whole.")
     args = parser.parse_args()
     print(args)
     
-    if args.data_vis_partial:
+    if args.display_images:
         data_visualization(args)
     data_stats(args)
 

@@ -16,6 +16,7 @@
 !requirements.txt
 
 # directories
+**/wandb/
 **/test_images/*
 **/results_training/
 **/results/

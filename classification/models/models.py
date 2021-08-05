@@ -1,12 +1,59 @@
 import torch 
 import torch.nn as nn
+import torch.nn.functional as F
 import torchvision.models as models
 
+import einops
+from einops.layers.torch import Rearrange
+
 from pytorch_pretrained_vit import ViT, ViTConfigExtended, PRETRAINED_CONFIGS
+
+def model_selection(args, device):
+    # initiates model and loss     
+    if args.model_name=='shallow':
+        model = ShallowNet(args)
+    elif args.model_name=='resnet18' or args.model_name=='resnet152':
+        model = ResNet(args)
+    else:
+        model = VisionTransformer(args)
+
+    if args.checkpoint_path:
+            if args.load_partial_mode:
+                model.model.load_partial(weights_path=args.checkpoint_path, 
+                pretrained_image_size=self.configuration.pretrained_image_size, 
+                pretrained_mode=args.load_partial_mode, verbose=True)
+            else:
+                state_dict = torch.load(args.checkpoint_path, map_location=torch.device('cpu'))
+                #state_dict = torch.load(args.checkpoint_path)
+                expected_missing_keys = []
+                if args.transfer_learning:
+                    # Modifications to load partial state dict
+                    '''
+                    if ('patch_embedding.weight' in state_dict and self.configuration.num_channels != self.configuration.pretrained_num_channels):
+                        expected_missing_keys += ['model.patch_embedding.weight', 'model.patch_embedding.bias']
+                    if ('pre_logits.weight' in state_dict and load_repr_layer==False):
+                        expected_missing_keys += ['model.pre_logits.weight', 'model.pre_logits.bias']
+                    '''
+                    if ('model.fc.weight' in state_dict):
+                        expected_missing_keys += ['model.fc.weight', 'model.fc.bias']
+                    for key in expected_missing_keys:
+                        state_dict.pop(key)
+                        #print(key)
+                ret = model.load_state_dict(state_dict, strict=False)
+                print('''Missing keys when loading pretrained weights: {}
+                    Expected missing keys: {}'''.format(ret.missing_keys, expected_missing_keys))
+                print('Unexpected keys when loading pretrained weights: {}'.format(ret.unexpected_keys))
+                print('Loaded from custom checkpoint.')
+
+    model.to(device)
+
+    return model
+    
 
 def freeze_layers(model):
     for param in model.parameters():
         param.requires_grad = False
+
 
 class ShallowNet(nn.Module):
     def __init__(self, args, fc_neurons=512):
@@ -93,35 +140,39 @@ class VisionTransformer(nn.Module):
             base_model = ViT(self.configuration, name=args.model_name, 
             pretrained=args.pretrained, ret_attn_scores=True)
         else:
-            base_model = ViT(self.configuration, name=args.model_name, pretrained=args.pretrained)
+            base_model = ViT(self.configuration, name=args.model_name, pretrained=args.pretrained, 
+            load_fc_layer=not(args.interm_features_fc), ret_interm_repr=args.interm_features_fc)
         self.model = base_model
 
-        if args.checkpoint_path:
-            if args.load_partial_mode:
-                self.model.load_partial(weights_path=args.checkpoint_path, 
-                pretrained_image_size=self.configuration.pretrained_image_size, 
-                pretrained_mode=args.load_partial_mode, verbose=True)
-            else:
-                # state_dict = torch.load(args.checkpoint_path, map_location=torch.device('cpu')) if loading on CPU?
-                state_dict = torch.load(args.checkpoint_path)
-                if args.transfer_learning:
-                    # Modifications to load partial state dict
-                    expected_missing_keys = []
-                    '''
-                    if ('patch_embedding.weight' in state_dict and num_channels is different):
-                        expected_missing_keys += ['patch_embedding.weight', 'patch_embedding.bias']
-                    if ('pre_logits.weight' in state_dict and load_repr_layer==False):
-                        expected_missing_keys += ['pre_logits.weight', 'pre_logits.bias']
-                    '''
-                    if ('model.fc.weight' in state_dict):
-                        expected_missing_keys += ['model.fc.weight', 'model.fc.bias']
-                    for key in expected_missing_keys:
-                        state_dict.pop(key)
-                        #print(key)
-                self.model.load_state_dict(state_dict, strict=False)
-                curr_line = '\nLoaded from custom checkpoint: {}.\n'.format(args.checkpoint_path)
-                print(curr_line)
-            
+        if args.interm_features_fc:
+            self.class_head = nn.Sequential(
+                        nn.Linear(self.configuration.num_hidden_layers, 1),
+                        Rearrange(' b d 1 -> b d'),
+                        nn.ReLU(),
+                        nn.LayerNorm(self.configuration.hidden_size, eps=self.configuration.layer_norm_eps),
+                        nn.Linear(self.configuration.hidden_size, self.configuration.num_classes)
+                    )
+            if args.exclusion_loss:
+                self.exclusion_loss = nn.KLDivLoss(reduction='batchmean')
+                self.temperature = args.temperature if args.temperature else 1
+                
     def forward(self, x):
-        out = self.model(x)
-        return out
+        exclusion_loss = 0
+        if hasattr(self, 'class_head'):
+            x, interm_features = self.model(x)
+        else:
+            x = self.model(x)
+        
+        if hasattr(self, 'class_head'):
+            if hasattr(self, 'exclusion_loss'):
+                for i in range(len(interm_features) - 1):
+                    exclusion_loss += self.exclusion_loss(
+                        F.log_softmax(interm_features[:, i, 0]/self.temperature, dim=1), 
+                        F.softmax(interm_features[:, i+1, 0]/self.temperature, dim=1)
+                        ) *
+            interm_features = torch.stack(interm_features, dim=-1)
+            x = self.class_head(interm_features[:, 0])
+        
+        if exclusion_loss:
+            return x, exclusion_loss
+        return x

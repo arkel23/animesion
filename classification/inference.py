@@ -9,7 +9,8 @@ import torch
 import torchvision
 import torchvision.transforms as transforms
 
-from train import data_loading, model_selection
+from evaluate import environment_loader
+import utils.utilities as utilities
 
 # take main from train.py and modify it for inference (choose model and checkpoint or not)
 # input an image (or a dataset)
@@ -77,46 +78,46 @@ def inference(args, device, model, data_set):
             print('File: {}, Original image size: {}, Size after reshaping and unsqueezing: {}'.format(
                 image_dir, image.size, image_transformed.shape))
 
-            # calculate outputs for each image
-            outputs = model(image_transformed).squeeze(0)
-            classes_predicted = []
-            classes_predicted.append(file_name_no_ext)
-            classes_predicted.append('\n')
-            for i, idx in enumerate(torch.topk(outputs, k=5).indices.tolist()):
-                prob = torch.softmax(outputs, -1)[idx].item() * 100
-                class_name = classid_classname_dic.loc[classid_classname_dic['class_id']==idx, 'class_name'].item()
-                predict_text = 'Prediction No. {}: {} [ID: {}], Confidence: {}\n'.format(i+1, class_name, idx, prob)
-                classes_predicted.append(predict_text)
-                print(predict_text, end='')
+            if args.ret_attn_scores:
+                # calculate outputs for each image
+                #outputs = model(image_transformed).squeeze(0)
+                outputs, att_mat = model(image_transformed)
+                outputs = outputs.squeeze(0)
+                utilities.vis_attention(args, image, outputs, att_mat, file_name_no_ext)
 
-            classes_predicted = '  '.join(classes_predicted)
-            grid = torchvision.utils.make_grid(image_transformed)
-            imshow(grid, out_name, title=classes_predicted, save_results=args.save_results)
+                
+                classes_predicted = []
+                classes_predicted.append(file_name_no_ext)
+                classes_predicted.append('\n')
+                for i, idx in enumerate(torch.topk(outputs, k=5).indices.tolist()):
+                    prob = torch.softmax(outputs, -1)[idx].item() * 100
+                    class_name = classid_classname_dic.loc[classid_classname_dic['class_id']==idx, 'class_name'].item()
+                    predict_text = 'Prediction No. {}: {} [ID: {}], Confidence: {}\n'.format(i+1, class_name, idx, prob)
+                    classes_predicted.append(predict_text)
+                    print(predict_text, end='')
+                '''
+                classes_predicted = '  '.join(classes_predicted)
+                grid = torchvision.utils.make_grid(image_transformed)
+                imshow(grid, out_name, title=classes_predicted, save_results=args.save_results)
+                '''
+            else:
+                # calculate outputs for each image
+                outputs = model(image_transformed).squeeze(0)
+                classes_predicted = []
+                classes_predicted.append(file_name_no_ext)
+                classes_predicted.append('\n')
+                for i, idx in enumerate(torch.topk(outputs, k=5).indices.tolist()):
+                    prob = torch.softmax(outputs, -1)[idx].item() * 100
+                    class_name = classid_classname_dic.loc[classid_classname_dic['class_id']==idx, 'class_name'].item()
+                    predict_text = 'Prediction No. {}: {} [ID: {}], Confidence: {}\n'.format(i+1, class_name, idx, prob)
+                    classes_predicted.append(predict_text)
+                    print(predict_text, end='')
 
-def environment_loader(args):
-    # makes results_dir if doesn't exist
-    results_dir = args.results_dir
-    if not os.path.exists(results_dir):
-        os.makedirs(results_dir)
+                classes_predicted = '  '.join(classes_predicted)
+                grid = torchvision.utils.make_grid(image_transformed)
+                imshow(grid, out_name, title=classes_predicted, save_results=args.save_results)
 
-    # Device configuration
-    if hasattr(args, 'vis_attention'):
-        device = torch.device('cpu')
-    else:
-        device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-    # Controlling source of randomness: pytorch RNG
-    torch.manual_seed(0)
-    
-    # General dataset
-    data_set, data_loader = data_loading(args, split='test')
-    args.num_classes = data_set.num_classes
 
-    # model
-    model = model_selection(args)
-    model.to(device)    
-    model.load_state_dict(torch.load(args.checkpoint_path))
-
-    return device, model, data_set, data_loader
 
 def main():
   
@@ -142,7 +143,10 @@ def main():
     parser.add_argument("--batch_size", default=64, type=int,
                         help="Batch size for train/val/test. Just for loading the dataset.")
     parser.add_argument("--save_results", type=bool, default=True,
-                        help="Save the images after transform and with label results.")         
+                        help="Save the images after transform and with label results.")   
+    #parser.add_argument("--ret_attn_scores", type=bool, default=True,
+    #                    help="Saves attention maps.")
+
     args = parser.parse_args()
     args.load_partial_mode = None
     args.transfer_learning = False

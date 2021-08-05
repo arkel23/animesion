@@ -167,12 +167,12 @@ class VisionTransformer(nn.Module):
             if hasattr(self, 'exclusion_loss'):
                 for i in range(len(interm_features) - 1):
                     exclusion_loss += self.exclusion_loss(
-                        F.log_softmax(interm_features[:, i, 0]/self.temperature, dim=1), 
-                        F.softmax(interm_features[:, i+1, 0]/self.temperature, dim=1)
-                        ) *
+                        F.log_softmax(interm_features[i][:, 0, :]/self.temperature, dim=1), 
+                        F.softmax(interm_features[i+1][:, 0, :]/self.temperature, dim=1)
+                        )
             interm_features = torch.stack(interm_features, dim=-1)
             x = self.class_head(interm_features[:, 0])
         
-        if exclusion_loss:
+        if hasattr(self, 'exclusion_loss'):
             return x, exclusion_loss
         return x

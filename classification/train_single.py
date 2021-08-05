@@ -179,17 +179,18 @@ def main():
                         help='If true then shortens the training/val loops to log_freq*3.')
     parser.add_argument('--exclusion_loss', type=bool, default=False, help='Use layer-wise exclusion loss')
     parser.add_argument('--temperature', type=float, default=1.0, help='Temperature for exclusion loss')
-    parser.add_argument('--exclusion_weight', type=float, default=0.1, help='Weight for exclusion loss')
+    parser.add_argument('--exclusion_weight', type=float, default=0.01, help='Weight for exclusion loss')
+    parser.add_argument('--exc_layers_dist', type=int, default=2, help='Number of layers in between to calculate exclusion')
     args = parser.parse_args()
 
     if args.exclusion_loss and not args.interm_features_fc:
         args.exclusion_loss = False
 
-    args.run_name = '{}_{}_image{}_batch{}_SGDlr{}_pt{}_pl{}_seed{}_epochs{}_{}_warmup{}_epochDecay{}_interFeatClassHead{}_excLoss{}'.format(
+    args.run_name = '{}_{}_image{}_batch{}_SGDlr{}_pt{}_pl{}_seed{}_epochs{}_{}_warmup{}_epochDecay{}_interFeatClassHead{}_excLoss{}_excWeight{}_excLayers{}'.format(
     args.dataset_name, args.model_name, args.image_size, args.batch_size, 
     args.learning_rate, args.pretrained, args.load_partial_mode, args.seed, 
     args.no_epochs, args.lr_scheduler, args.warmup_steps, args.epoch_decay, 
-    args.interm_features_fc, args.exclusion_loss)
+    args.interm_features_fc, args.exclusion_loss, args.exclusion_weight, args.exc_layers_dist)
 
     logger.info(args)
 

@@ -154,7 +154,8 @@ class VisionTransformer(nn.Module):
                     )
             if args.exclusion_loss:
                 self.exclusion_loss = nn.KLDivLoss(reduction='batchmean')
-                self.temperature = args.temperature if args.temperature else 1
+                self.temperature = args.temperature
+                self.exc_layers_dist = args.exc_layers_dist
                 
     def forward(self, x):
         exclusion_loss = 0
@@ -165,10 +166,10 @@ class VisionTransformer(nn.Module):
         
         if hasattr(self, 'class_head'):
             if hasattr(self, 'exclusion_loss'):
-                for i in range(len(interm_features) - 1):
+                for i in range(len(interm_features) - self.exc_layers_dist):
                     exclusion_loss += self.exclusion_loss(
                         F.log_softmax(interm_features[i][:, 0, :]/self.temperature, dim=1), 
-                        F.softmax(interm_features[i+1][:, 0, :]/self.temperature, dim=1)
+                        F.softmax(interm_features[i+self.exc_layers_dist][:, 0, :]/self.temperature, dim=1)
                         )
             interm_features = torch.stack(interm_features, dim=-1)
             x = self.class_head(interm_features[:, 0])

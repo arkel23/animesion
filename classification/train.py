@@ -94,15 +94,14 @@ def train_one_epoch(args, f, epoch, global_step, model, device, tokenizer,
         labels = labels.to(device)
 
         # return new masks according to schedule
-        if mask_scheduler:
-            masks = mask_scheduler.ret_mask(global_step)
-            if masks is not None:
-                # 0 is [PAD], 101 is [CLS], 102 is [SEP]
-                labels_text = torch.where((captions==0) | (captions==101) | (captions==102), -100, captions)
-                labels_text = labels_text.to(device)
-                masks = masks.to(device)                
-                labels_text = torch.where(masks[:, -args.max_text_seq_len:]==1, -100, labels_text)
-                
+        masks = mask_scheduler.ret_mask(global_step)
+        if masks is not None:
+            # 0 is [PAD], 101 is [CLS], 102 is [SEP]
+            labels_text = torch.where((captions==0) | (captions==101) | (captions==102), -100, captions)
+            labels_text = labels_text.to(device)
+            masks = masks.to(device)                
+            labels_text = torch.where(masks[:, -args.max_text_seq_len:]==1, -100, labels_text)
+        
         # Forward pass
         if args.multimodal and args.mask_schedule and args.exclusion_loss:
             outputs, outputs_text, exclusion_loss = model(images, text=captions, mask=masks)
@@ -186,16 +185,14 @@ def validate(args, f, global_step, model, device, tokenizer, loader,
             images = images.to(device)
             labels = labels.to(device)
                 
-            # return new masks according to schedule
-            if mask_scheduler:
-                masks = mask_scheduler.ret_mask(global_step)
-                if masks is not None:
-                    # 0 is [PAD], 101 is [CLS], 102 is [SEP]
-                    labels_text = torch.where((captions==0) | (captions==101) | (captions==102), -100, captions)
-                    labels_text = labels_text.to(device)
-                    masks = masks.to(device)                
-                    labels_text = torch.where(masks[:, -args.max_text_seq_len:]==1, -100, labels_text)
-                    
+            masks = mask_scheduler.ret_mask(global_step)
+            if masks is not None:
+                # 0 is [PAD], 101 is [CLS], 102 is [SEP]
+                labels_text = torch.where((captions==0) | (captions==101) | (captions==102), -100, captions)
+                labels_text = labels_text.to(device)
+                masks = masks.to(device)                
+                labels_text = torch.where(masks[:, -args.max_text_seq_len:]==1, -100, labels_text)
+                        
             # Forward pass
             if args.multimodal and args.mask_schedule and args.exclusion_loss:
                 outputs, outputs_text, exclusion_loss = model(images, text=captions, mask=masks)

@@ -64,6 +64,7 @@ def ret_args():
                         default=None, help='Scheduler for masking language tokens.')
     parser.add_argument('--mask_wucd_percent', type=float, default=0.2, 
                         help='Percentage of training steps for warmup and cooldown')
+    parser.add_argument('--ret_attn_scores', action='store_true', help='Returns attention scores for visualization')
     args = parser.parse_args()
 
     if args.model_name == 'B_16' or args.model_name == 'L_16':
@@ -73,6 +74,7 @@ def ret_args():
 
     if not args.multimodal:
         args.max_text_seq_len = None
+        args.mask_schedule = None
     elif (args.multimodal) and (not args.max_text_seq_len):
         args.max_text_seq_len = int(((args.image_size // args.patch_size)**2) / 4)
     else:

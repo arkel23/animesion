@@ -137,40 +137,44 @@ class VisionTransformer(nn.Module):
         self.configuration.image_size = args.image_size
         self.configuration.max_text_seq_len = args.max_text_seq_len
         
-        if hasattr(args, 'vis_attention'):
-            base_model = ViT(self.configuration, name=args.model_name, 
-            pretrained=args.pretrained, ret_attn_scores=True)
-        else:
-            load_fc_layer = not(args.interm_features_fc) and not(args.multimodal)
-            base_model = ViT(self.configuration, name=args.model_name, pretrained=args.pretrained, 
+        load_fc_layer = not(args.interm_features_fc) and not(args.mask_schedule)
+        self.configuration.load_fc_layer = load_fc_layer
+
+        base_model = ViT(self.configuration, name=args.model_name, pretrained=args.pretrained, 
             load_fc_layer=load_fc_layer, ret_interm_repr=args.interm_features_fc,
-            multimodal=args.multimodal)
+            multimodal=args.multimodal, ret_attn_scores=args.ret_attn_scores)
         self.model = base_model
 
-        if args.interm_features_fc:
-            self.class_head = nn.Sequential(
-                        nn.Linear(self.configuration.num_hidden_layers, 1),
-                        Rearrange(' b d 1 -> b d'),
-                        nn.ReLU(),
-                        nn.LayerNorm(self.configuration.hidden_size, eps=self.configuration.layer_norm_eps),
-                        nn.Linear(self.configuration.hidden_size, self.configuration.num_classes)
+        if not load_fc_layer:
+            if args.interm_features_fc:
+                self.inter_class_head = nn.Sequential(
+                            nn.Linear(self.configuration.num_hidden_layers, 1),
+                            Rearrange(' b d 1 -> b d'),
+                            nn.ReLU(),
+                            nn.LayerNorm(self.configuration.hidden_size, eps=self.configuration.layer_norm_eps),
+                            nn.Linear(self.configuration.hidden_size, self.configuration.num_classes)
+                        )
+                if args.exclusion_loss:
+                    self.exclusion_loss = nn.KLDivLoss(reduction='batchmean')
+                    self.temperature = args.temperature
+                    self.exc_layers_dist = args.exc_layers_dist
+            else: # original cls head but also doing mlm
+                self.class_head = nn.Sequential(
+                    nn.LayerNorm(self.configuration.hidden_size, eps=self.configuration.layer_norm_eps),
+                    nn.Linear(self.configuration.hidden_size, self.configuration.num_classes)
                     )
-            if args.exclusion_loss:
-                self.exclusion_loss = nn.KLDivLoss(reduction='batchmean')
-                self.temperature = args.temperature
-                self.exc_layers_dist = args.exc_layers_dist
-        
-        if args.mask_schedule:
-            # https://github.com/dhlee347/pytorchic-bert/blob/master/pretrain.py
-            self.mlm_head = nn.Sequential(
-                nn.Linear(self.configuration.hidden_size, self.configuration.hidden_size),
-                nn.GELU(),
-                nn.LayerNorm(self.configuration.hidden_size, eps=self.configuration.layer_norm_eps),
-                )
-            self.text_decoder = nn.Linear(self.configuration.hidden_size, self.configuration.vocab_size, bias=False)
-            self.text_decoder.weight = self.model.text_embeddings.word_embeddings.weight
-            self.decoder_bias = nn.Parameter(torch.zeros(self.configuration.vocab_size))
-            
+
+            if args.mask_schedule:
+                # https://github.com/dhlee347/pytorchic-bert/blob/master/pretrain.py
+                self.mlm_head = nn.Sequential(
+                    nn.Linear(self.configuration.hidden_size, self.configuration.hidden_size),
+                    nn.GELU(),
+                    nn.LayerNorm(self.configuration.hidden_size, eps=self.configuration.layer_norm_eps),
+                    )
+                self.text_decoder = nn.Linear(self.configuration.hidden_size, self.configuration.vocab_size, bias=False)
+                self.text_decoder.weight = self.model.text_embeddings.word_embeddings.weight
+                self.decoder_bias = nn.Parameter(torch.zeros(self.configuration.vocab_size))
+                
     def forward(self, images, text=None, mask=None):
         """Breaks image into patches, applies transformer, applies MLP head.
         Args:
@@ -181,12 +185,14 @@ class VisionTransformer(nn.Module):
         
         exclusion_loss = 0
         
-        if hasattr(self, 'class_head'):
+        if hasattr(self, 'inter_class_head'):
             features, interm_features = self.model(images, text, mask)
+        elif hasattr(self, 'class_head'):
+            features = self.model(images, text, mask)
         else:
-            logits = self.model(images)
+            logits = self.model(images, text)
         
-        if hasattr(self, 'class_head'):
+        if hasattr(self, 'inter_class_head'):
             if hasattr(self, 'exclusion_loss'):
                 for i in range(len(interm_features) - self.exc_layers_dist):
                     exclusion_loss += self.exclusion_loss(
@@ -194,12 +200,14 @@ class VisionTransformer(nn.Module):
                         F.softmax(interm_features[i+self.exc_layers_dist][:, 0, :]/self.temperature, dim=1)
                         )
             interm_features = torch.stack(interm_features, dim=-1)
-            logits = self.class_head(interm_features[:, 0])
+            logits = self.inter_class_head(interm_features[:, 0])
+        elif hasattr(self, 'class_head'):
+            logits = self.class_head(features[:, 0])
+            
+        if hasattr(self, 'text_decoder'):
+            predicted_text = self.mlm_head(features[:, -self.configuration.max_text_seq_len:, :])
+            predicted_text = self.text_decoder(predicted_text) + self.decoder_bias
 
-            if hasattr(self, 'text_decoder'):
-                predicted_text = self.mlm_head(features[:, -self.configuration.max_text_seq_len:, :])
-                predicted_text = self.text_decoder(predicted_text) + self.decoder_bias
-        
         if hasattr(self, 'text_decoder') and hasattr(self, 'exclusion_loss'):
             return logits, predicted_text, exclusion_loss
         elif hasattr(self, 'text_decoder'):

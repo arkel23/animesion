@@ -11,7 +11,7 @@ import wandb
 
 import models.models as models
 import data.datasets as datasets
-import utils.utilities as utilities
+import utilities.utilities as utilities
 from engine import train_one_epoch, validate
 
 logger = logging.getLogger(__name__)
@@ -39,7 +39,7 @@ def train_main(logger, args):
     # model
     model = models.model_selection(args, device)
     utilities.print_write(f, str(model.configuration))
-    if not args.interm_features_fc:
+    if (not args.interm_features_fc) and (not args.multimodal):
         summary(model, input_size=iter(train_loader).next()[0].shape[1:])
     
     # loss and optimizer
@@ -143,25 +143,25 @@ def main():
                         help='Which model architecture to use')
     parser.add_argument('--results_dir', default='results_training', type=str,
                         help='The directory where results will be stored')
-    parser.add_argument('--image_size', default=224, type=int,
+    parser.add_argument('--image_size', default=128, type=int,
                         help='Image (square) resolution size')
-    parser.add_argument('--batch_size', default=256, type=int,
+    parser.add_argument('--batch_size', default=16, type=int,
                         help='Batch size for train/val/test.')
-    parser.add_argument('--no_epochs', default=200, type=int,
+    parser.add_argument('--no_epochs', default=50, type=int,
                         help='Total number of epochs for training.')                         
     parser.add_argument('--learning_rate', default=0.001, type=float,
                         help='Initial learning rate.')  
     parser.add_argument('--lr_scheduler', type=str, choices=['warmupCosine', 'epochDecayConstant'], 
                         default='epochDecayConstant', help='LR scheduler.')
-    parser.add_argument('--epoch_decay', default=50, type=int,
+    parser.add_argument('--epoch_decay', default=20, type=int,
                         help='After how many epochs to decay the learning rate once.')
     parser.add_argument('--warmup_steps', type=int, default=1000, help='Warmup steps for LR scheduler.')
-    parser.add_argument('--pretrained', type=bool, default=False,
+    parser.add_argument('--pretrained',action='store_true',
                         help='For models with pretrained weights available'
                         'Default=False')
     parser.add_argument('--checkpoint_path', type=str, 
                         default=None)     
-    parser.add_argument('--transfer_learning', type=bool, default=False,
+    parser.add_argument('--transfer_learning', action='store_true',
                         help='Load partial state dict for transfer learning'
                         'Resets the [embeddings, logits and] fc layer for ViT'
                         'Resets the fc layer for Resnets'
@@ -173,24 +173,39 @@ def main():
                         help='Frequency in steps to print results (and save images if needed).')        
     parser.add_argument('--no_cpu_workers', type=int, default=8, help='CPU workers for data loading.')
     parser.add_argument('--seed', type=int, default=0, help='random seed for initialization')
-    parser.add_argument('--interm_features_fc', type=bool, default=False, 
-                        help='Create FC using intermediate features instead of only last layer.')
-    parser.add_argument('--debugging', type=bool, default=False,
-                        help='If true then shortens the training/val loops to log_freq*3.')
-    parser.add_argument('--exclusion_loss', type=bool, default=False, help='Use layer-wise exclusion loss')
+    parser.add_argument('--interm_features_fc', action='store_true', 
+                        help='If use this flag creates FC using intermediate features instead of only last layer.')
+    parser.add_argument('--debugging', action='store_true',
+                        help='If use this flag then shortens the training/val loops to log_freq*3.')
+    parser.add_argument('--exclusion_loss', action='store_true', help='Use layer-wise exclusion loss')
     parser.add_argument('--temperature', type=float, default=1.0, help='Temperature for exclusion loss')
     parser.add_argument('--exclusion_weight', type=float, default=0.01, help='Weight for exclusion loss')
     parser.add_argument('--exc_layers_dist', type=int, default=2, help='Number of layers in between to calculate exclusion')
+    parser.add_argument('--multimodal', action='store_true', help='Vision+tags if true')  
+    parser.add_argument('--max_text_seq_len', default=None, required=False, 
+                        help='Length for text sequence (for padding and truncation). Default uses same as image.') 
     args = parser.parse_args()
+
+    if args.model_name == 'B_16' or args.model_name == 'L_16':
+        args.patch_size = 16
+    elif args.model_name == 'B_32' or args.model_name == 'L_32':
+        args.patch_size = 32
+
+    if not args.multimodal:
+        args.max_text_seq_len = None
+    elif (args.multimodal) and (not args.max_text_seq_len):
+        args.max_text_seq_len = (args.image_size // args.patch_size)**2
+    else:
+        args.max_text_seq_len = int(args.max_text_seq_len)
 
     if args.exclusion_loss and not args.interm_features_fc:
         args.exclusion_loss = False
 
-    args.run_name = '{}_{}_image{}_batch{}_SGDlr{}_pt{}_pl{}_seed{}_epochs{}_{}_warmup{}_epochDecay{}_interFeatClassHead{}_excLoss{}_excWeight{}_excLayers{}'.format(
+    args.run_name = '{}_{}_image{}_batch{}_SGDlr{}_pt{}_pl{}_seed{}_{}_interFeatClassHead{}_mm{}_textLen{}_excLoss{}_excWeight{}_excLayers{}'.format(
     args.dataset_name, args.model_name, args.image_size, args.batch_size, 
     args.learning_rate, args.pretrained, args.load_partial_mode, args.seed, 
-    args.no_epochs, args.lr_scheduler, args.warmup_steps, args.epoch_decay, 
-    args.interm_features_fc, args.exclusion_loss, args.exclusion_weight, args.exc_layers_dist)
+    args.lr_scheduler, args.interm_features_fc, args.multimodal, args.max_text_seq_len,
+    args.exclusion_loss, args.exclusion_weight, args.exc_layers_dist)
 
     logger.info(args)
 

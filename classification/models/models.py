@@ -135,13 +135,16 @@ class VisionTransformer(nn.Module):
         self.configuration = ViTConfigExtended(**def_config)
         self.configuration.num_classes = args.num_classes
         self.configuration.image_size = args.image_size
+        self.configuration.max_text_seq_len = args.max_text_seq_len
         
         if hasattr(args, 'vis_attention'):
             base_model = ViT(self.configuration, name=args.model_name, 
             pretrained=args.pretrained, ret_attn_scores=True)
         else:
+            load_fc_layer = not(args.interm_features_fc) or args.multimodal
             base_model = ViT(self.configuration, name=args.model_name, pretrained=args.pretrained, 
-            load_fc_layer=not(args.interm_features_fc), ret_interm_repr=args.interm_features_fc)
+            load_fc_layer=load_fc_layer, ret_interm_repr=args.interm_features_fc,
+            multimodal=args.multimodal)
         self.model = base_model
 
         if args.interm_features_fc:
@@ -157,12 +160,20 @@ class VisionTransformer(nn.Module):
                 self.temperature = args.temperature
                 self.exc_layers_dist = args.exc_layers_dist
                 
-    def forward(self, x):
+    def forward(self, images, text=None, mask=None):
+        """Breaks image into patches, applies transformer, applies MLP head.
+        Args:
+            images (tensor): `b,c,fh,fw`
+            text (tensor): b, max_text_seq_len
+            mask (bool tensor): (B(batch_size) x S(seq_len))
+        """
+        
         exclusion_loss = 0
+        
         if hasattr(self, 'class_head'):
-            x, interm_features = self.model(x)
+            x, interm_features = self.model(images, text, mask)
         else:
-            x = self.model(x)
+            x = self.model(images)
         
         if hasattr(self, 'class_head'):
             if hasattr(self, 'exclusion_loss'):

@@ -3,7 +3,7 @@ from statistics import mean
 import torch
 import wandb
 
-import utils.utilities as utilities
+import utilities.utilities as utilities
 
 def train_one_epoch(args, f, epoch, model, device, 
     criterion, optimizer, lr_scheduler, train_loader, train_loss_avg):
@@ -12,12 +12,22 @@ def train_one_epoch(args, f, epoch, model, device,
     current_losses = []
     steps_per_epoch = len(train_loader)
 
-    for i, (images, labels) in enumerate(train_loader):
+    for i, batch in enumerate(train_loader):
+
+        if args.multimodal:
+            images, labels, captions = batch
+            captions = captions.squeeze(dim=1).to(device)
+        else:
+            images, labels = batch
         images = images.to(device)
         labels = labels.to(device)
-            
+    
         # Forward pass
-        if args.exclusion_loss:
+        if args.multimodal and args.exclusion_loss:
+            outputs, exclusion_loss = model(images, captions)
+        elif args.multimodal:
+            outputs = model(images, captions)
+        elif args.exclusion_loss:
             outputs, exclusion_loss = model(images)
         else:
             outputs = model(images)
@@ -74,12 +84,21 @@ def validate(args, f, device, model, criterion, loader,
         current_losses = []
         steps_per_epoch = len(loader)
 
-        for i, (images, labels) in enumerate(loader):
+        for i, batch in enumerate(loader):
+            if args.multimodal:
+                images, labels, captions = batch
+                captions = captions.squeeze(dim=1).to(device)
+            else:
+                images, labels = batch
             images = images.to(device)
             labels = labels.to(device)
-            
+                
             # Forward pass
-            if args.exclusion_loss:
+            if args.multimodal and args.exclusion_loss:
+                outputs, exclusion_loss = model(images, captions)
+            elif args.multimodal:
+                outputs = model(images, captions)
+            elif args.exclusion_loss:
                 outputs, exclusion_loss = model(images)
             else:
                 outputs = model(images)

@@ -138,8 +138,11 @@ class EffNet(nn.Module):
     def __init__(self, args):
         super(EffNet, self).__init__()
         
-        self.model = EfficientNet.from_pretrained('efficientnet-b0')
-        
+        if args.pretrained:
+            self.model = EfficientNet.from_pretrained('efficientnet-b0')
+        else:
+            self.model = EfficientNet.from_name('efficientnet-b0')
+
         if not args.pretrained:
             self.init_weights()
         

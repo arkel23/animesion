@@ -12,25 +12,8 @@ from transformers import BertTokenizer
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
 def load_data(args, split):
-    if args.model_name in ['resnet18', 'resnet50', 'resnet152']:
-        if split=='train':
-            transform = transforms.Compose([
-                transforms.Resize((args.image_size+32, args.image_size+32)),
-                transforms.RandomCrop((args.image_size, args.image_size)),
-                transforms.RandomHorizontalFlip(),
-                transforms.ColorJitter(brightness=0.1,
-                                       contrast=0.1, saturation=0.1, hue=0.1),
-                transforms.ToTensor(),
-                transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
-            ])
-        else:
-            transform = transforms.Compose([
-                transforms.Resize((args.image_size, args.image_size)),
-                transforms.ToTensor(),
-                transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
-                ])
-    else:
-        transform = None
+	
+    transform = None
 
     if args.dataset_name == 'moeImouto':    
         dataset = moeImouto(root=args.dataset_path,

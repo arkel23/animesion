@@ -37,7 +37,8 @@ def environment_loader(args):
 
     # model
     model = utilities.model_selection.load_model(args, device)
-    utilities.misc.print_write(f, str(model.configuration))
+    if args.model_name not in ['shallow', 'efficientnetb0', 'resnet18', 'resnet50', 'resnet152']:
+        utilities.misc.print_write(f, str(model.configuration))
     if (not args.interm_features_fc) and (not args.multimodal):
         summary(model, input_size=iter(train_loader).next()[0].shape[1:])
     
@@ -57,11 +58,14 @@ def environment_loader(args):
         lr_scheduler=None
     
     # mask scheduler
-    mask_wucd_steps = int(total_steps * args.mask_wucd_percent)
-    mask_scheduler = utilities.scheduler.MasksSchedule(mask_schedule=args.mask_schedule, batch_size=args.batch_size, 
-        total_seq_len=model.configuration.seq_len, max_text_seq_len=args.max_text_seq_len,
-        warmup_steps=mask_wucd_steps, cooldown_steps=mask_wucd_steps, total_steps=total_steps,
-        cycles=.5)
+    if args.model_name not in ['shallow', 'efficientnetb0', 'resnet18', 'resnet50', 'resnet152']:
+        mask_wucd_steps = int(total_steps * args.mask_wucd_percent)
+        mask_scheduler = utilities.scheduler.MasksSchedule(mask_schedule=args.mask_schedule, batch_size=args.batch_size, 
+            total_seq_len=model.configuration.seq_len, max_text_seq_len=args.max_text_seq_len,
+            warmup_steps=mask_wucd_steps, cooldown_steps=mask_wucd_steps, total_steps=total_steps,
+            cycles=.5)
+    else:
+        mask_scheduler = None
     if args.mask_schedule:
         tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
     else:
@@ -93,7 +97,7 @@ def train_one_epoch(args, f, epoch, global_step, model, device, tokenizer,
         labels = labels.to(device)
 
         # return new masks according to schedule
-        masks = mask_scheduler.ret_mask(global_step)
+        masks = mask_scheduler.ret_mask(global_step) if mask_scheduler else None
         if masks is not None:
             # 0 is [PAD], 101 is [CLS], 102 is [SEP]
             labels_text = torch.where((captions==0) | (captions==101) | (captions==102), -100, captions)
@@ -184,7 +188,7 @@ def validate(args, f, global_step, model, device, tokenizer, loader,
             images = images.to(device)
             labels = labels.to(device)
                 
-            masks = mask_scheduler.ret_mask(global_step)
+            masks = mask_scheduler.ret_mask(global_step) if mask_scheduler else None
             if masks is not None:
                 # 0 is [PAD], 101 is [CLS], 102 is [SEP]
                 labels_text = torch.where((captions==0) | (captions==101) | (captions==102), -100, captions)

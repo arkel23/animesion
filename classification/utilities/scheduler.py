@@ -51,7 +51,7 @@ class MasksSchedule():
             mask_text = np.random.choice(a=[0, 1], size=(self.batch_size, self.max_text_seq_len), p=[0.15, 0.85])
             return torch.from_numpy(np.hstack((mask_images, mask_text)))
         
-        elif self.mask_schedule == 'cosine_wwucd':
+        elif self.mask_schedule == 'sigmoid':
             # during warmup attend to all tokens
             # during cooldown attend to no text tokens
             # else attend to a percentage of text tokens following cosine function
@@ -60,17 +60,17 @@ class MasksSchedule():
             if step < self.warmup_steps:
                 mask_text = np.random.choice(a=[0, 1], size=(self.batch_size, self.max_text_seq_len), p=[0, 1])
             
-            elif step > (self.total_steps - self.warmup_steps - self.cooldown_steps):
+            elif step > (self.total_steps - self.cooldown_steps):
                 mask_text = np.random.choice(a=[0, 1], size=(self.batch_size, self.max_text_seq_len), p=[1, 0])
             
             else:
                 progress = (float(step - self.warmup_steps) / 
-                    (float(max(1, self.t_total - self.warmup_steps - self.cooldown_steps))))
+                    (float(max(1, self.total_steps - self.warmup_steps - self.cooldown_steps))))
                 
                 prob_visible = max(0.0, 0.5 * (1. + math.cos(math.pi * float(self.cycles) * 2.0 * progress)))
-                prob_mask = 1.0 - prob_images
+                prob_mask = 1.0 - prob_visible
                 
                 mask_text = np.random.choice(a=[0, 1], size=(self.batch_size, self.max_text_seq_len), 
-                    p=[prob_visible, prob_mask])
+                    p=[prob_mask, prob_visible])
 
             return torch.from_numpy(np.hstack((mask_images, mask_text)))   

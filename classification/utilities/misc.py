@@ -60,7 +60,7 @@ def ret_args():
     parser.add_argument('--multimodal', action='store_true', help='Vision+tags if true')  
     parser.add_argument('--max_text_seq_len', default=None, required=False, 
                         help='Length for text sequence (for padding and truncation). Default uses same as image.') 
-    parser.add_argument('--mask_schedule', choices=[None, 'constant', 'cosine_wwucd'], 
+    parser.add_argument('--mask_schedule', choices=[None, 'constant', 'sigmoid'], 
                         default=None, help='Scheduler for masking language tokens.')
     parser.add_argument('--mask_wucd_percent', type=float, default=0.2, 
                         help='Percentage of training steps for warmup and cooldown')

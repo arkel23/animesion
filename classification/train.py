@@ -11,7 +11,6 @@ from torchsummary import summary
 import wandb
 from transformers import BertTokenizer
 
-import models.models as models
 import utilities as utilities
 
 logger = logging.getLogger(__name__)
@@ -30,14 +29,14 @@ def environment_loader(args):
     utilities.misc.set_seed(args.seed)
 
     # dataloader and train/test datasets
-    train_set, train_loader = utilities.datasets.data_loading(args, split='train')
-    _, val_loader = utilities.datasets.data_loading(args, split='val')
-    _, test_loader = utilities.datasets.data_loading(args, split='test')
+    train_set, train_loader = utilities.data_selection.load_data(args, split='train')
+    _, val_loader = utilities.data_selection.load_data(args, split='val')
+    _, test_loader = utilities.data_selection.load_data(args, split='test')
     args.num_classes = train_set.num_classes
     classid_classname_dic = train_set.classes
 
     # model
-    model = models.model_selection(args, device)
+    model = utilities.model_selection.load_model(args, device)
     utilities.misc.print_write(f, str(model.configuration))
     if (not args.interm_features_fc) and (not args.multimodal):
         summary(model, input_size=iter(train_loader).next()[0].shape[1:])

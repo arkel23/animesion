@@ -6,14 +6,17 @@ import torchvision.models as models
 import einops
 from einops.layers.torch import Rearrange
 
+from efficientnet_pytorch import EfficientNet
 from pytorch_pretrained_vit import ViT, ViTConfigExtended, PRETRAINED_CONFIGS
 
-def model_selection(args, device):
+def load_model(args, device):
     # initiates model and loss     
     if args.model_name=='shallow':
         model = ShallowNet(args)
-    elif args.model_name=='resnet18' or args.model_name=='resnet152':
+    elif args.model_name in ['resnet18', 'resnet50', 'resnet152']:
         model = ResNet(args)
+    elif args.model_name == 'efficientnetb0':
+        model = EffNet(args)
     else:
         model = VisionTransformer(args)
 
@@ -93,22 +96,26 @@ class ShallowNet(nn.Module):
 class ResNet(nn.Module):
     def __init__(self, args):
         super(ResNet, self).__init__()
-        self.num_classes = args.num_classes
-        if args.model_type == 'resnet18':
+        
+        if args.model_name == 'resnet18':
             base_model = models.resnet18(pretrained=args.pretrained, progress=True)
-        elif args.model_type == 'resnet152':
+        elif args.model_name == 'resnet50':
+            base_model = models.resnet50(pretrained=args.pretrained, progress=True) 
+        elif args.model_name == 'resnet152':
             base_model = models.resnet152(pretrained=args.pretrained, progress=True)
         self.model = base_model
 
         # Initialize/freeze weights
-        if args.pretrained:
-            freeze_layers(self.model)
-        else:
+        # originally for pretrained would freeze all layers except last
+        #if args.pretrained:
+        #    freeze_layers(self.model)
+        #else:
+        if not args.pretrained:
             self.init_weights()
         
         # Classifier head
         num_features = self.model.fc.in_features
-        self.model.fc = nn.Linear(num_features, num_classes)
+        self.model.fc = nn.Linear(num_features, args.num_classes)
 
     @torch.no_grad()
     def init_weights(self):
@@ -121,6 +128,36 @@ class ResNet(nn.Module):
         self.apply(_init)
         nn.init.constant_(self.model.fc.weight, 0)
         nn.init.constant_(self.model.fc.bias, 0)
+        
+    def forward(self, x):
+        out = self.model(x)
+        return out
+
+
+class EffNet(nn.Module):
+    def __init__(self, args):
+        super(EffNet, self).__init__()
+        
+        self.model = EfficientNet.from_pretrained('efficientnet-b0')
+        
+        if not args.pretrained:
+            self.init_weights()
+        
+        # Classifier head
+        num_features = self.model._fc.in_features
+        self.model._fc = nn.Linear(num_features, args.num_classes)
+
+    @torch.no_grad()
+    def init_weights(self):
+        def _init(m):
+            if isinstance(m, nn.Linear) or isinstance(m, nn.Conv2d):
+                nn.init.xavier_uniform_(m.weight)
+                if hasattr(m, 'bias') and m.bias is not None:
+                    nn.init.normal_(m.bias, std=1e-6)
+            
+        self.apply(_init)
+        nn.init.constant_(self.model._fc.weight, 0)
+        nn.init.constant_(self.model._fc.bias, 0)
         
     def forward(self, x):
         out = self.model(x)

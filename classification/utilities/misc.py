@@ -14,7 +14,7 @@ def ret_args():
     parser.add_argument('--dataset_name', choices=['moeImouto', 'danbooruFaces', 'cartoonFace', 'danbooruFull'], 
                         default='moeImouto', help='Which dataset to use.')
     parser.add_argument('--dataset_path', required=True, help='Path for the dataset.')
-    parser.add_argument('--model_name', choices=['shallow', 'resnet18', 'resnet152', 
+    parser.add_argument('--model_name', choices=['shallow', 'resnet18', 'resnet152', 'efficientnetb0',
                         'B_16', 'B_32', 'L_16', 'L_32'], default='B_16',
                         help='Which model architecture to use')
     parser.add_argument('--results_dir', default='results_training', type=str,

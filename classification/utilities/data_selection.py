@@ -11,8 +11,8 @@ from transformers import BertTokenizer
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
-def data_loading(args, split):
-    if args.model_name == 'resnet18' or args.model_name == 'resnet152':
+def load_data(args, split):
+    if args.model_name in ['resnet18', 'resnet50', 'resnet152']:
         if split=='train':
             transform = transforms.Compose([
                 transforms.Resize((args.image_size+32, args.image_size+32)),

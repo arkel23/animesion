@@ -13,7 +13,7 @@ def ret_args():
     parser = argparse.ArgumentParser()
     parser.add_argument('--dataset_name', choices=['moeImouto', 'danbooruFaces', 'cartoonFace', 'danbooruFull'], 
                         default='moeImouto', help='Which dataset to use.')
-    parser.add_argument('--dataset_path', required=True, help='Path for the dataset.')
+    parser.add_argument('--dataset_path', help='Path for the dataset.')
     parser.add_argument('--model_name', choices=['shallow', 'resnet18', 'resnet50', 'resnet152', 'efficientnetb0',
                         'B_16', 'B_32', 'L_16', 'L_32'], default='B_16',
                         help='Which model architecture to use')
@@ -98,15 +98,20 @@ def print_write(f, line):
     print(line)
 
 
-def decode_text(f, tokenizer, outputs_text, captions, labels_text, num_print=1):
+def decode_text(f, tokenizer, outputs_text, captions, captions_updated, labels_text, num_print=1):
     _, text_pred = torch.topk(outputs_text, 1, dim=2, largest=True, sorted=True)
     text_pred = text_pred.squeeze()
     for j, sample in enumerate(text_pred):
         if j >= num_print:
             break
         else:
-            curr_line = 'Prediction: {}\nGround truth: {}\nLabels (masks): {}\n'.format(
-                tokenizer.decode(sample), tokenizer.decode(captions[j].data), labels_text[j].data) 
+            curr_line = '''Prediction: {}\n
+            Ground truth: {}\n
+            Input tokens: {}\n
+            Ground truth tokens: {}\n
+            Labels (masks): {}\n'''.format(
+                tokenizer.decode(sample), tokenizer.decode(captions[j].data), 
+                captions_updated[j].data, captions[j].data, labels_text[j].data) 
             print_write(f, curr_line)        
 
 

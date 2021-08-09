@@ -15,15 +15,16 @@ import utilities as utilities
 
 logger = logging.getLogger(__name__)
 
-def environment_loader(args):
+def environment_loader(args, init=True):
 
     # Init logger    
-    wandb.init(config=args)
-    wandb.run.name = '{}'.format(args.run_name)
-    file_name = '{}_log.txt'.format(args.run_name)
-    f = open(os.path.join(args.results_dir, '{}'.format(file_name)), 'w', buffering=1)
-    utilities.misc.print_write(f, str(args))
-    
+    if init:
+        wandb.init(config=args)
+        wandb.run.name = '{}'.format(args.run_name)
+        file_name = '{}_log.txt'.format(args.run_name)
+        f = open(os.path.join(args.results_dir, '{}'.format(file_name)), 'w', buffering=1)
+        utilities.misc.print_write(f, str(args))
+        
     # Set device and random seed
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     utilities.misc.set_seed(args.seed)
@@ -37,7 +38,7 @@ def environment_loader(args):
 
     # model
     model = utilities.model_selection.load_model(args, device)
-    if args.model_name not in ['shallow', 'efficientnetb0', 'resnet18', 'resnet50', 'resnet152']:
+    if (args.model_name not in ['shallow', 'efficientnetb0', 'resnet18', 'resnet50', 'resnet152']) and init:
         utilities.misc.print_write(f, str(model.configuration))
     if (not args.interm_features_fc) and (not args.multimodal):
         summary(model, input_size=iter(train_loader).next()[0].shape[1:])
@@ -58,22 +59,22 @@ def environment_loader(args):
         lr_scheduler=None
     
     # mask scheduler
-    if args.model_name not in ['shallow', 'efficientnetb0', 'resnet18', 'resnet50', 'resnet152']:
-        mask_wucd_steps = int(total_steps * args.mask_wucd_percent)
-        mask_scheduler = utilities.scheduler.MasksSchedule(mask_schedule=args.mask_schedule, batch_size=args.batch_size, 
-            total_seq_len=model.configuration.seq_len, max_text_seq_len=args.max_text_seq_len,
-            warmup_steps=mask_wucd_steps, cooldown_steps=mask_wucd_steps, total_steps=total_steps,
-            cycles=.5)
-    else:
-        mask_scheduler = None
     if args.mask_schedule:
+        mask_wucd_steps = int(total_steps * args.mask_wucd_percent)
+        mask_scheduler = utilities.scheduler.MasksSchedule(device=device, mask_schedule=args.mask_schedule, 
+            batch_size=args.batch_size, max_text_seq_len=args.max_text_seq_len, 
+            warmup_steps=mask_wucd_steps, cooldown_steps=mask_wucd_steps, total_steps=total_steps, cycles=.5)
         tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
     else:
+        mask_scheduler = None
         tokenizer = None
-        
-    return [f, device, train_set, train_loader, val_loader, test_loader, 
-    classid_classname_dic, model, optimizer, lr_scheduler, mask_scheduler, tokenizer]
     
+    if init:
+        return [f, device, train_set, train_loader, val_loader, test_loader, 
+        classid_classname_dic, model, optimizer, lr_scheduler, mask_scheduler, tokenizer]
+    else:
+        return [device, train_set, train_loader, val_loader, test_loader, 
+        classid_classname_dic, model, optimizer, lr_scheduler, mask_scheduler, tokenizer]
 
 def train_one_epoch(args, f, epoch, global_step, model, device, tokenizer,
     optimizer, mask_scheduler, lr_scheduler, train_loader, train_loss_avg):
@@ -96,31 +97,28 @@ def train_one_epoch(args, f, epoch, global_step, model, device, tokenizer,
         images = images.to(device)
         labels = labels.to(device)
 
-        # return new masks according to schedule
-        masks = mask_scheduler.ret_mask(global_step) if mask_scheduler else None
-        if masks is not None:
-            # 0 is [PAD], 101 is [CLS], 102 is [SEP]
-            labels_text = torch.where((captions==0) | (captions==101) | (captions==102), -100, captions)
-            labels_text = labels_text.to(device)
-            masks = masks.to(device)                
-            labels_text = torch.where(masks[:, -args.max_text_seq_len:]==1, -100, labels_text)
-        
+        # return updated caption tokens (and token labels for cross entropy) according to schedule
+        if mask_scheduler is not None:
+            captions_updated, labels_text = mask_scheduler.ret_mask(global_step, captions)
+        else:
+            labels_text = None
+
         # Forward pass
         if args.multimodal and args.mask_schedule and args.exclusion_loss:
-            outputs, outputs_text, exclusion_loss = model(images, text=captions, mask=masks)
+            outputs, outputs_text, exclusion_loss = model(images, text=captions_updated)
         elif args.multimodal and args.mask_schedule:
-            outputs, outputs_text = model(images, text=captions, mask=masks)
+            outputs, outputs_text = model(images, text=captions_updated)
         elif args.multimodal and args.exclusion_loss:
-            outputs, exclusion_loss = model(images, text=captions, mask=masks)
+            outputs, exclusion_loss = model(images, text=captions)
         elif args.multimodal:
-            outputs = model(images, text=captions, mask=masks)
+            outputs = model(images, text=captions)
         elif args.exclusion_loss:
             outputs, exclusion_loss = model(images)
         else:
             outputs = model(images)
         
         loss = criterion(outputs, labels)
-        if masks is not None:
+        if labels_text is not None:
             loss = loss + criterion(outputs_text.transpose(1, 2), labels_text)
         if args.exclusion_loss:
             loss =  loss - (args.exclusion_weight * (args.temperature ** 2) * exclusion_loss)
@@ -146,8 +144,8 @@ def train_one_epoch(args, f, epoch, global_step, model, device, tokenizer,
             wandb.log({'Training loss (step)': loss.item(),
                 'Learning rate (current)': curr_lr})
 
-            if masks is not None:
-                utilities.misc.decode_text(f, tokenizer, outputs_text, captions, labels_text)
+            if labels_text is not None:
+                utilities.misc.decode_text(f, tokenizer, outputs_text, captions, captions_updated, labels_text)
 
         if args.debugging and ((i + 1) % (args.log_freq * 3) == 0):
             break    
@@ -187,22 +185,20 @@ def validate(args, f, global_step, model, device, tokenizer, loader,
                 images, labels = batch
             images = images.to(device)
             labels = labels.to(device)
-                
-            masks = mask_scheduler.ret_mask(global_step) if mask_scheduler else None
-            if masks is not None:
-                # 0 is [PAD], 101 is [CLS], 102 is [SEP]
-                labels_text = torch.where((captions==0) | (captions==101) | (captions==102), -100, captions)
-                labels_text = labels_text.to(device)
-                masks = masks.to(device)                
-                labels_text = torch.where(masks[:, -args.max_text_seq_len:]==1, -100, labels_text)
-                        
+                    
+            # return new masks and updated caption tokens according to schedule
+            if mask_scheduler is not None:
+                captions_updated, labels_text = mask_scheduler.ret_mask(global_step, captions)
+            else:
+                labels_text = None
+            
             # Forward pass
             if args.multimodal and args.mask_schedule and args.exclusion_loss:
-                outputs, outputs_text, exclusion_loss = model(images, text=captions, mask=masks)
+                outputs, outputs_text, exclusion_loss = model(images, text=captions_updated)
             elif args.multimodal and args.mask_schedule:
-                outputs, outputs_text = model(images, text=captions, mask=masks)
+                outputs, outputs_text = model(images, text=captions_updated)
             elif args.multimodal and args.exclusion_loss:
-                outputs, exclusion_loss = model(images, text=captions, mask=masks)
+                outputs, exclusion_loss = model(images, text=captions)
             elif args.multimodal:
                 outputs = model(images, text=captions, mask=masks)
             elif args.exclusion_loss:
@@ -211,7 +207,7 @@ def validate(args, f, global_step, model, device, tokenizer, loader,
                 outputs = model(images)
                 
             loss = criterion(outputs, labels)
-            if masks is not None:
+            if labels_text is not None:
                 loss = loss + criterion(outputs_text.transpose(1, 2), labels_text)
             if args.exclusion_loss:
                 loss =  loss - (args.exclusion_weight * (args.temperature ** 2) * exclusion_loss)
@@ -229,8 +225,8 @@ def validate(args, f, global_step, model, device, tokenizer, loader,
                 i+1, steps_per_epoch, loss.item())
                 utilities.misc.print_write(f, curr_line)
 
-                if masks is not None:
-                    utilities.misc.decode_text(f, tokenizer, outputs_text, captions, labels_text)
+                if labels_text is not None:
+                    utilities.misc.decode_text(f, tokenizer, outputs_text, captions, captions_updated, labels_text)
 
             if args.debugging and ((i + 1) % (args.log_freq * 3) == 0):
                 break    

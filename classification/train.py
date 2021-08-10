@@ -161,10 +161,14 @@ def train_one_epoch(args, f, epoch, global_step, model, device, tokenizer,
 
 
 def validate(args, f, global_step, model, device, tokenizer, loader,
-    mask_scheduler, top1_accuracies, top5_accuracies, val_loss_avg=[]):
+    mask_scheduler, top1_accuracies, top5_accuracies, val_loss_avg=[], save_all_captions=False):
     # Test the model (validation set)
     # eval mode (batchnorm uses moving mean/variance instead of mini-batch mean/variance)
     # dropout probability goes to 0
+    if save_all_captions:
+        file_name = '{}_captions.txt'.format(args.run_name)
+        save_all_captions_file = open(os.path.join(args.results_dir, '{}'.format(file_name)), 'w', buffering=1)
+
     criterion = torch.nn.CrossEntropyLoss()
     if args.mask_schedule:
         criterion_mlm = torch.nn.CrossEntropyLoss(reduction='none')
@@ -228,6 +232,10 @@ def validate(args, f, global_step, model, device, tokenizer, loader,
                 if labels_text is not None:
                     utilities.misc.decode_text(f, tokenizer, outputs_text, captions, captions_updated, labels_text)
 
+            if save_all_captions:
+                utilities.misc.decode_text(save_all_captions_file, tokenizer, outputs_text, captions, 
+                captions_updated, labels_text, num_print=outputs_text.shape[0], save_all_captions=True)
+
             if args.debugging and ((i + 1) % (args.log_freq * 3) == 0):
                 break    
             
@@ -289,12 +297,23 @@ def train_main(logger, args):
 
         # Save the model checkpoint if the top1-acc is higher than current highest
         if curr_acc > top_acc:
-            torch.save(model.state_dict(), os.path.join(args.results_dir, 
-            '{}.ckpt'.format(args.run_name)))
+            torch.save(model.state_dict(), os.path.join(args.results_dir,  '{}_bestEpoch.ckpt'.format(args.run_name)))
             top_acc = curr_acc
             best_epoch = epoch + 1
         
-    # validate on test set and plot results
+        # Saves model for last epoch regardless (necessary for mlm versions since accuracy is not good metric for those)
+        torch.save(model.state_dict(), os.path.join(args.results_dir, '{}_lastEpoch.ckpt'.format(args.run_name)))
+        
+    # validate on test set using last checkpoint and save captions (assume last checkpoint gets best captions)
+    curr_line = '\nUsing checkpoint from last epoch: {}.\n'.format(args.no_epochs)
+    utilities.misc.print_write(f, curr_line)
+    validate(args, f, global_step, model=model, device=device, tokenizer=tokenizer, loader=test_loader, 
+    mask_scheduler=mask_scheduler, top1_accuracies=top1_accuracies, top5_accuracies=top5_accuracies, save_all_captions=True)
+
+    # validate using best epoch checkpoint
+    model.load_state_dict(torch.load(os.path.join(args.results_dir, '{}_bestEpoch.ckpt'.format(args.run_name))), strict=True)
+    curr_line = '\nLoading checkpoint from best epoch: {}.\n'.format(best_epoch)
+    utilities.misc.print_write(f, curr_line)
     validate(args, f, global_step, model=model, device=device, tokenizer=tokenizer, loader=test_loader, 
     mask_scheduler=mask_scheduler, top1_accuracies=top1_accuracies, top5_accuracies=top5_accuracies)
 

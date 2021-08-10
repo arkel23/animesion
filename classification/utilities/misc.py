@@ -84,7 +84,7 @@ def ret_args():
     if args.exclusion_loss and not args.interm_features_fc:
         args.exclusion_loss = False
 
-    args.run_name = '{}_{}_image{}_batch{}_SGDlr{}_pt{}_pl{}_seed{}_{}_interFeatClassHead{}_mm{}_textLen{}_mask{}_excLoss{}_excWeight{}_excLayers{}'.format(
+    args.run_name = '{}_{}_image{}_batch{}_SGDlr{}_pt{}_pl{}_seed{}_{}_interFeatClassHead{}_mm{}_textLen{}_mask{}'.format(
     args.dataset_name, args.model_name, args.image_size, args.batch_size, 
     args.learning_rate, args.pretrained, args.load_partial_mode, args.seed, 
     args.lr_scheduler, args.interm_features_fc, 
@@ -99,21 +99,27 @@ def print_write(f, line):
     print(line)
 
 
-def decode_text(f, tokenizer, outputs_text, captions, captions_updated, labels_text, num_print=1):
+def decode_text(f, tokenizer, outputs_text, captions, captions_updated, 
+labels_text, num_print=1, save_all_captions=False):
     _, text_pred = torch.topk(outputs_text, 1, dim=2, largest=True, sorted=True)
     text_pred = text_pred.squeeze()
     for j, sample in enumerate(text_pred):
         if j >= num_print:
             break
         else:
-            curr_line = '''Prediction: {}\n
-            Ground truth: {}\n
-            Input tokens: {}\n
-            Ground truth tokens: {}\n
-            Labels (masks): {}\n'''.format(
-                tokenizer.decode(sample), tokenizer.decode(captions[j].data), 
-                captions_updated[j].data, captions[j].data, labels_text[j].data) 
-            print_write(f, curr_line)        
+            if not save_all_captions:
+                curr_line = '''Prediction: {}
+                Ground truth: {}
+                Input tokens: {}
+                Ground truth tokens: {}
+                Labels (masks): {}\n'''.format(
+                    tokenizer.decode(sample), tokenizer.decode(captions[j].data), 
+                    captions_updated[j].data, captions[j].data, labels_text[j].data) 
+                print_write(f, curr_line)        
+            else:
+                curr_line = '{}\n{}\n'.format(
+                    tokenizer.decode(sample), tokenizer.decode(captions[j].data))
+                print_write(f, curr_line)
 
 
 def accuracy(output, target, topk=(1,)):

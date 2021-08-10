@@ -76,7 +76,8 @@ def ret_args():
         args.max_text_seq_len = None
         args.mask_schedule = None
     elif (args.multimodal) and (not args.max_text_seq_len):
-        args.max_text_seq_len = int(((args.image_size // args.patch_size)**2) / 4)
+        #args.max_text_seq_len = int(((args.image_size // args.patch_size)**2) / 4)
+        args.max_text_seq_len = 32
     else:
         args.max_text_seq_len = int(args.max_text_seq_len)
 

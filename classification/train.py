@@ -12,6 +12,7 @@ import wandb
 from transformers import BertTokenizer
 
 import utilities as utilities
+from utilities.build_vocab import Vocabulary
 
 logger = logging.getLogger(__name__)
 
@@ -36,6 +37,30 @@ def environment_loader(args, init=True):
     args.num_classes = train_set.num_classes
     classid_classname_dic = train_set.classes
 
+    steps_per_epoch = len(train_loader)
+    total_steps = args.no_epochs * steps_per_epoch
+
+    # mask scheduler
+    if args.mask_schedule:
+        if args.tokenizer == 'wp':
+            tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+            args.vocab_size = tokenizer.vocab_size
+        elif args.tokenizer == 'tag':
+            tokenizer = utilities.custom_tokenizer.CustomTokenizer(
+                vocab_path=os.path.join(args.dataset_path, 'labels', 'vocab.pkl'), 
+                max_text_seq_len=args.max_text_seq_len)
+            args.vocab_size = tokenizer.vocab_size
+
+        mask_wucd_steps = int(total_steps * args.mask_wucd_percent)
+        mask_scheduler = utilities.scheduler.MasksSchedule(device=device, mask_schedule=args.mask_schedule, 
+            masking_behavior=args.masking_behavior, vocab_size=args.vocab_size,
+            batch_size=args.batch_size, max_text_seq_len=args.max_text_seq_len, 
+            warmup_steps=mask_wucd_steps, cooldown_steps=mask_wucd_steps, total_steps=total_steps, cycles=.5)
+    else:
+        mask_scheduler = None
+        tokenizer = None
+        args.vocab_size = None
+
     # model
     model = utilities.model_selection.load_model(args, device)
     if (args.model_name not in ['shallow', 'efficientnetb0', 'resnet18', 'resnet50', 'resnet152']) and init:
@@ -50,24 +75,11 @@ def environment_loader(args, init=True):
             params_to_update.append(param)
     optimizer = torch.optim.SGD(params_to_update, lr=args.learning_rate, momentum=0.9)
 
-    steps_per_epoch = len(train_loader)
-    total_steps = args.no_epochs * steps_per_epoch
     if args.lr_scheduler == 'warmupCosine':
         lr_scheduler = utilities.scheduler.WarmupCosineSchedule(optimizer, 
         warmup_steps=args.warmup_steps, t_total=total_steps)
     else:
         lr_scheduler=None
-    
-    # mask scheduler
-    if args.mask_schedule:
-        mask_wucd_steps = int(total_steps * args.mask_wucd_percent)
-        mask_scheduler = utilities.scheduler.MasksSchedule(device=device, mask_schedule=args.mask_schedule, 
-            batch_size=args.batch_size, max_text_seq_len=args.max_text_seq_len, 
-            warmup_steps=mask_wucd_steps, cooldown_steps=mask_wucd_steps, total_steps=total_steps, cycles=.5)
-        tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
-    else:
-        mask_scheduler = None
-        tokenizer = None
     
     if init:
         return [f, device, train_set, train_loader, val_loader, test_loader, 

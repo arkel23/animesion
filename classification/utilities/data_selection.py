@@ -1,5 +1,6 @@
 import os
 import ast
+import random
 import pandas as pd
 from PIL import Image
 from PIL import ImageFile
@@ -8,6 +9,8 @@ import torch
 import torch.utils.data as data
 from torchvision import transforms
 from transformers import BertTokenizer
+
+from .custom_tokenizer import CustomTokenizer
 
 ImageFile.LOAD_TRUNCATED_IMAGES = True
 
@@ -64,8 +67,10 @@ class danbooruFacesFull(data.Dataset):
 		self.image_size = args.image_size
 		self.split = split
 		self.transform = transform
-		
+
+		self.tokenizer_method = args.tokenizer		
 		self.max_text_seq_len = args.max_text_seq_len
+		self.shuffle = args.shuffle_tokens
 		
 		if self.split=='train':
 			print('Train set')
@@ -86,7 +91,12 @@ class danbooruFacesFull(data.Dataset):
 				self.transform = get_transform(split='test', image_size=self.image_size)
 
 		if self.max_text_seq_len:
-			self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+			if self.tokenizer_method == 'wp':
+				self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+			elif self.tokenizer_method == 'tag':
+				self.tokenizer = CustomTokenizer(
+					vocab_path=os.path.join(args.dataset_path, 'labels', 'vocab.pkl'), 
+                	max_text_seq_len=args.max_text_seq_len)
 			self.set_dir = self.set_dir.replace('.csv', '_tags.csv')
 			self.df = pd.read_csv(self.set_dir)
 		else:
@@ -118,9 +128,14 @@ class danbooruFacesFull(data.Dataset):
 
 		if self.max_text_seq_len:
 			caption = ast.literal_eval(self.df.iloc[idx].tags_cat0)
-			caption = ' '.join(caption) # originally joined by '[SEP]'
-			caption = self.tokenizer(caption, return_tensors='pt', padding='max_length', 
-				max_length=self.max_text_seq_len, truncation=True)['input_ids']
+			if self.shuffle:
+				random.shuffle(caption)
+			if self.tokenizer_method == 'wp':
+				caption = ' '.join(caption) # originally joined by '[SEP]'
+				caption = self.tokenizer(caption, return_tensors='pt', padding='max_length', 
+					max_length=self.max_text_seq_len, truncation=True)['input_ids']
+			elif self.tokenizer_method == 'tag':
+				caption = self.tokenizer(caption)
 			return img, target, caption
 		else:
 			return img, target

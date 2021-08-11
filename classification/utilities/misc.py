@@ -65,6 +65,12 @@ def ret_args():
     parser.add_argument('--mask_wucd_percent', type=float, default=0.2, 
                         help='Percentage of training steps for warmup and cooldown')
     parser.add_argument('--ret_attn_scores', action='store_true', help='Returns attention scores for visualization')
+    parser.add_argument('--tokenizer', type=str, choices=['wp', 'tag'],
+                        default='wp', help='Tokenize using word-piece (BERT pretrained from HF) or custom tag-level')
+    parser.add_argument('--masking_behavior', type=str, choices=['constant', 'random'],
+                        default='constant', help='When masked convert token to 1 or to a random int in vocab size')
+    parser.add_argument('--shuffle_tokens', action='store_true', 
+                        help='When turned on it shuffles tokens before sending to bert or custom tokenizer')
     args = parser.parse_args()
 
     if args.model_name == 'B_16' or args.model_name == 'L_16':
@@ -84,13 +90,10 @@ def ret_args():
     if args.exclusion_loss and not args.interm_features_fc:
         args.exclusion_loss = False
 
-    args.run_name = '{}_{}_image{}_batch{}_SGDlr{}_pt{}_pl{}_seed{}_{}_interFeatClassHead{}_mm{}_textLen{}_mask{}'.format(
-    args.dataset_name, args.model_name, args.image_size, args.batch_size, 
-    args.learning_rate, args.pretrained, args.load_partial_mode, args.seed, 
-    args.lr_scheduler, args.interm_features_fc, 
-    args.multimodal, args.max_text_seq_len, args.mask_schedule,
-    args.exclusion_loss, args.exclusion_weight, args.exc_layers_dist)
-
+    args.run_name = '{}_{}_image{}_batch{}_SGDlr{}_pt{}_seed{}_{}_inter{}_mm{}_textLen{}_mask{}{}{}tokenizingshuf{}'.format(
+    args.dataset_name, args.model_name, args.image_size, args.batch_size, args.learning_rate, 
+    args.pretrained, args.seed, args.lr_scheduler, args.interm_features_fc, args.multimodal, 
+    args.max_text_seq_len, args.mask_schedule, args.masking_behavior, args.tokenizer, args.shuffle_tokens)
     return args
 
 
@@ -112,15 +115,14 @@ labels_text, num_print=1, save_all_captions=False):
                 Ground truth: {}
                 Input tokens: {}
                 Ground truth tokens: {}
-                Labels (masks): {}\n'''.format(
+                Labels (masks): {}'''.format(
                     tokenizer.decode(sample), tokenizer.decode(captions[j].data), 
                     captions_updated[j].data, captions[j].data, labels_text[j].data) 
                 print_write(f, curr_line)        
             else:
-                curr_line = '{}\n{}\n'.format(
-                    tokenizer.decode(sample), tokenizer.decode(captions[j].data))
-                print_write(f, curr_line)
-
+                f.write('{}\n{}\n'.format(
+                    tokenizer.decode(sample), tokenizer.decode(captions[j].data)))
+                
 
 def accuracy(output, target, topk=(1,)):
     """Computes the precision@k for the specified values of k"""

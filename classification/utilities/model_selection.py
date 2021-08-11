@@ -176,6 +176,7 @@ class VisionTransformer(nn.Module):
         self.configuration.num_classes = args.num_classes
         self.configuration.image_size = args.image_size
         self.configuration.max_text_seq_len = args.max_text_seq_len
+        self.configuration.vocab_size = args.vocab_size
         
         load_fc_layer = not(args.interm_features_fc) and not(args.mask_schedule)
         self.configuration.load_fc_layer = load_fc_layer

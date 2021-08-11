@@ -27,12 +27,14 @@ class WarmupCosineSchedule(LambdaLR):
 
 class MasksSchedule():
 
-    def __init__(self, device, mask_schedule, batch_size, max_text_seq_len, 
+    def __init__(self, device, mask_schedule, masking_behavior, vocab_size, batch_size, max_text_seq_len, 
         warmup_steps, cooldown_steps, total_steps, cycles=.5):
         
         self.device = device
 
         self.mask_schedule = mask_schedule
+        self.masking_behavior = masking_behavior
+        self.vocab_size = vocab_size
         
         self.batch_size = batch_size
         self.max_text_seq_len = max_text_seq_len
@@ -57,11 +59,16 @@ class MasksSchedule():
                 p=[0.15, 0.85])).to(self.device)
             
             # if mask then change token to 1 (unused 0)
-            tokens_text_updated = torch.where(((masks==0) & ((tokens_text!=0) | (tokens_text!=101) | (tokens_text!=102))), 1, tokens_text)
+            #if self.masking_behavior == 'constant':
+            #    tokens_text_updated = torch.where(((masks==0) & ((tokens_text!=0) | (tokens_text!=101) | (tokens_text!=102))), 1, tokens_text)
+            #elif self.masking_behavior == 'random':
+            #    num_to_mask = torch.where(((masks==0) & ((tokens_text!=0) | (tokens_text!=101) | (tokens_text!=102))), 1, 0).sum()
+            #    tokens_text_updated = torch.where(((masks==0) & ((tokens_text!=0) | (tokens_text!=101) | (tokens_text!=102))), 
+            #    torch.randint(0, self.vocab_size-1, (num_to_mask)), tokens_text)
             #tokens_text_updated = torch.where((masks==0) & ((tokens!=0) | (tokens!=101) | (tokens!=102)), random.randint(0, self.vocab_size-1), tokens_text)
             
             # 0 is [PAD], 101 is [CLS], 102 is [SEP]
-            labels_text = torch.where((tokens_text==0) | (tokens_text==101) | (tokens_text==102) | (masks==1), -100, tokens_text)
+            #labels_text = torch.where((tokens_text==0) | (tokens_text==101) | (tokens_text==102) | (masks==1), -100, tokens_text)
             
             ##labels_text = torch.where(masks==1, -100, labels_text)
 
@@ -70,8 +77,8 @@ class MasksSchedule():
             #labels_text = torch.where((tokens_text==0) | (tokens_text==101) | (tokens_text==102), -100, tokens_text)
             #labels_text = torch.where(masks[:, -self.max_text_seq_len:]==1, -100, labels_text)
 
-            return tokens_text_updated, labels_text
-        
+            #return tokens_text_updated, labels_text
+            
         elif self.mask_schedule == 'sigmoid':
             # during warmup attend to all tokens
             # during cooldown attend to no text tokens
@@ -100,11 +107,22 @@ class MasksSchedule():
             
             # if mask then change token to 1 (unused 0)
             #tokens_text_updated = torch.where(masks[:, -self.max_text_seq_len:]==0, 1, tokens_text)
-            tokens_text_updated = torch.where(((masks==0) & ((tokens_text!=0) | (tokens_text!=101) | (tokens_text!=102))), 1, tokens_text)
+            #tokens_text_updated = torch.where(((masks==0) & ((tokens_text!=0) | (tokens_text!=101) | (tokens_text!=102))), 1, tokens_text)
+
 
             # 0 is [PAD], 101 is [CLS], 102 is [SEP]
-            labels_text = torch.where((tokens_text==0) | (tokens_text==101) | (tokens_text==102) | (masks==1), -100, tokens_text)
             #labels_text = torch.where((tokens_text==0) | (tokens_text==101) | (tokens_text==102), -100, tokens_text)
             #labels_text = torch.where(masks[:, -self.max_text_seq_len:]==1, -100, labels_text)
-
-            return tokens_text_updated, labels_text
+        
+        if self.masking_behavior == 'constant':
+            # if mask then change token to 1 (unused 0)
+            tokens_text_updated = torch.where((masks==0) & (tokens_text!=0) & (tokens_text!=101) & (tokens_text!=102), 1, tokens_text)
+        elif self.masking_behavior == 'random':
+            random_numbers = torch.randint(0, self.vocab_size-1, (self.batch_size, self.max_text_seq_len)).to(self.device)
+            tokens_text_updated = torch.where((masks==0) & (tokens_text!=0) & (tokens_text!=101) & (tokens_text!=102), 
+                random_numbers, tokens_text)
+        
+        # 0 is [PAD], 101 is [CLS], 102 is [SEP]
+        labels_text = torch.where((tokens_text==0) | (tokens_text==101) | (tokens_text==102) | (masks==1), -100, tokens_text)
+    
+        return tokens_text_updated, labels_text

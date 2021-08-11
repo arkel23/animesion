@@ -53,7 +53,7 @@ def environment_loader(args, init=True):
 
         mask_wucd_steps = int(total_steps * args.mask_wucd_percent)
         mask_scheduler = utilities.scheduler.MasksSchedule(device=device, mask_schedule=args.mask_schedule, 
-            masking_behavior=args.masking_behavior, vocab_size=args.vocab_size,
+            masking_behavior=args.masking_behavior, tokenizer=args.tokenizer, vocab_size=args.vocab_size,
             batch_size=args.batch_size, max_text_seq_len=args.max_text_seq_len, 
             warmup_steps=mask_wucd_steps, cooldown_steps=mask_wucd_steps, total_steps=total_steps, cycles=.5)
     else:

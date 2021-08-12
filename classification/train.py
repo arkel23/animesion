@@ -244,7 +244,7 @@ def validate(args, f, global_step, model, device, tokenizer, loader,
                 if labels_text is not None:
                     utilities.misc.decode_text(f, tokenizer, outputs_text, captions, captions_updated, labels_text)
 
-            if save_all_captions:
+            if save_all_captions and (mask_scheduler is not None):
                 utilities.misc.decode_text(save_all_captions_file, tokenizer, outputs_text, captions, 
                 captions_updated, labels_text, num_print=outputs_text.shape[0], save_all_captions=True)
 

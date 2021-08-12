@@ -50,6 +50,7 @@ def build_vocab(args):
     # Create a vocab wrapper and add some special tokens.
     vocab = Vocabulary()
     vocab.add_word('[PAD]')
+    vocab.add_word('[UNUSED]')
     vocab.add_word('[CLS]')
     vocab.add_word('[SEP]')
     vocab.add_word('[UNK]')

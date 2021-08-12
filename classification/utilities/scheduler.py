@@ -50,8 +50,8 @@ class MasksSchedule():
             # 0 is [PAD], 101 is [CLS], 102 is [SEP]
             self.special_tokens = [0, 101, 102]
         elif self.tokenizer == 'tag':
-            # 0 is [PAD], 1 is [CLS], 2 is [SEP]
-            self.special_tokens = [0, 1, 2]
+            # 0 is [PAD], 2 is [CLS], 3 is [SEP]
+            self.special_tokens = [0, 2, 3]
 
     def ret_mask(self, step, tokens_text=None):
         step = step[0]
@@ -130,11 +130,11 @@ class MasksSchedule():
         elif self.masking_behavior == 'random':
             updated_numbers = torch.randint(0, self.vocab_size-1, (self.batch_size, self.max_text_seq_len)).to(self.device)
         
-        tokens_text_updated = torch.where((masks==0) & (tokens_text!=0) & (tokens_text!=101) & (tokens_text!=102), 
-                updated_numbers, tokens_text)
-        # 0 is [PAD], 101 is [CLS], 102 is [SEP]
+        tokens_text_updated = torch.where(
+            (masks==0) & (tokens_text!=self.special_tokens[0]) & (tokens_text!=self.special_tokens[1]) & (tokens_text!=self.special_tokens[2]), 
+            updated_numbers, tokens_text)
         labels_text = torch.where(
-            (tokens_text==self.special_tokens[0]) | (tokens_text==self.special_tokens[1]) | (tokens_text==self.special_tokens[2]) | (masks==1), 
+            (masks==1) | (tokens_text==self.special_tokens[0]) | (tokens_text==self.special_tokens[1]) | (tokens_text==self.special_tokens[2]), 
             -100, tokens_text)
         
         return tokens_text_updated, labels_text

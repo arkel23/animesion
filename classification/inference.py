@@ -122,6 +122,11 @@ def inference(args, device, model, data_set):
 
 def return_prepared_inputs(file_path, args, device, data_set, mask_scheduler):
     transform = data_set.transform
+    transform = transforms.Compose([transforms.Resize((args.image_size, args.image_size)),
+    transforms.ToTensor(),
+    transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5]),
+    ])
+
     image = transform(Image.open(file_path)).to(device).unsqueeze(0)
 
     if args.inference_mode == 'multimodal':
@@ -151,18 +156,15 @@ def inference_multimodal(args, device, data_set, model, mask_scheduler, tokenize
         
         text_prob, text_pred = torch.topk(out_tokens_text, k=1, dim=2, largest=True, sorted=True)
         text_pred = text_pred.squeeze()
-        print(text_prob)
+        print(file_path)
+        print(text_prompt)
+        #print(text_prob)
         print('Predicted: ', tokenizer.decode(text_pred))
 
 
 def main():
     
     '''
-    parser.add_argument("--save_results", type=bool, default=True,
-                        help="Save the images after transform and with label results.")   
-    #args = parser.parse_args()
-    #args.load_partial_mode = None
-    #args.transfer_learning = False
     #device, model, data_set, data_loader = environment_loader(args)
 
     #os.makedirs(args.results_infer, exist_ok=True)
@@ -178,6 +180,8 @@ def main():
                         help="The directory where test image is stored.")
     parser.add_argument("--results_infer", default="results_inference", type=str,
                         help="The directory where inference results will be stored.")
+    parser.add_argument("--save_results", type=bool, default=True,
+                        help="Save the images after transform and with label results.")   
     args = parser.parse_args()
 
     if args.inference_mode == 'multimodal':

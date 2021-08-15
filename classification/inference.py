@@ -1,5 +1,4 @@
 import os
-import logging
 import argparse
 from PIL import Image
 import numpy as np
@@ -9,8 +8,11 @@ import torch
 import torchvision
 import torchvision.transforms as transforms
 
-from evaluate import environment_loader
-import utils.utilities as utilities
+#from evaluate import environment_loader
+#import utils.utilities as utilities
+from train import environment_loader
+import utilities as utilities
+from utilities.build_vocab import Vocabulary
 
 # take main from train.py and modify it for inference (choose model and checkpoint or not)
 # input an image (or a dataset)
@@ -118,43 +120,78 @@ def inference(args, device, model, data_set):
                 imshow(grid, out_name, title=classes_predicted, save_results=args.save_results)
 
 
+def return_prepared_inputs(file_path, args, device, data_set, mask_scheduler):
+    transform = data_set.transform
+    image = transform(Image.open(file_path)).to(device).unsqueeze(0)
+
+    if args.inference_mode == 'multimodal':
+        if args.masking_behavior == 'constant':
+            text_prompt = torch.ones((1, args.max_text_seq_len), dtype=torch.int64).to(device)
+        else:
+            text_prompt = torch.randint(0, mask_scheduler.vocab_size-1, (1, args.max_text_seq_len)).to(device)
+        text_prompt[:, 0] = mask_scheduler.special_tokens[1]
+        text_prompt[:, -1] = mask_scheduler.special_tokens[2]
+        return image, text_prompt
+    
+    return image
+
+
+def inference_multimodal(args, device, data_set, model, mask_scheduler, tokenizer):
+
+    model.eval()
+
+    file_list = [os.path.join(args.test_image_path, f) for f in os.listdir(args.test_image_path) if os.path.isfile(
+        os.path.join(args.test_image_path, f))]
+
+    for file_path in file_list:
+        image, text_prompt = return_prepared_inputs(file_path, args, device, data_set, mask_scheduler)
+
+        with torch.no_grad():
+            out_cls, out_tokens_text = model(image, text=text_prompt)
+        
+        text_prob, text_pred = torch.topk(out_tokens_text, k=1, dim=2, largest=True, sorted=True)
+        text_pred = text_pred.squeeze()
+        print(text_prob)
+        print('Predicted: ', tokenizer.decode(text_pred))
+
 
 def main():
-  
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--dataset_name", choices=["moeImouto", "danbooruFaces", "danbooruFull"], default='danbooruFaces',
-                        help="Which dataset to use (for no. of classes/loading model).")
-    parser.add_argument("--dataset_path", default="data/danbooruFaces/",
-                        help="Path for the dataset.")
-    parser.add_argument("--images_path", default='test_images',
-                        help="Path for the images to be tested.")
-    parser.add_argument("--image_size", choices=[128, 224], default=128, type=int,
-                        help="Image (square) resolution size")
-    parser.add_argument("--model_name", choices=["shallow", 'resnet18', 'resnet152', 
-                        'B_16', 'B_32', 'L_16', 'L_32'], default='L_16',
-                        help="Which model architecture to use")
-    parser.add_argument("--checkpoint_path", type=str, 
-                        default="./checkpoints/verify_danbooruFaces_l16_ptTrue_batch16_imageSize128_50epochs_epochDecay20.ckpt",
-                        help="Path for model checkpoint to load.")    
-    parser.add_argument("--results_dir", default="results_inference", type=str,
-                        help="The directory where results will be stored.")
-    parser.add_argument("--pretrained", type=bool, default=True,
-                        help="DON'T CHANGE! Always true since always loading when doing inference.")
-    parser.add_argument("--batch_size", default=64, type=int,
-                        help="Batch size for train/val/test. Just for loading the dataset.")
+    
+    '''
     parser.add_argument("--save_results", type=bool, default=True,
                         help="Save the images after transform and with label results.")   
-    #parser.add_argument("--ret_attn_scores", type=bool, default=True,
-    #                    help="Saves attention maps.")
+    #args = parser.parse_args()
+    #args.load_partial_mode = None
+    #args.transfer_learning = False
+    #device, model, data_set, data_loader = environment_loader(args)
 
+    #os.makedirs(args.results_infer, exist_ok=True)
+    #inference(args, device, model, data_set)           
+    '''
+    
+    parent_parser = utilities.misc.ret_args(ret_parser=True)
+
+    parser = argparse.ArgumentParser(parents=[parent_parser], add_help=False)
+    parser.add_argument("--inference_mode", choices=['multimodal'], type=str, required=True,
+                        help="Mode for inference (multimodal or vision).")
+    parser.add_argument("--test_image_path", type=str, required=True,
+                        help="The directory where test image is stored.")
+    parser.add_argument("--results_infer", default="results_inference", type=str,
+                        help="The directory where inference results will be stored.")
     args = parser.parse_args()
-    args.load_partial_mode = None
-    args.transfer_learning = False
 
-    device, model, data_set, data_loader = environment_loader(args)
+    if args.inference_mode == 'multimodal':
+        args.multimodal = True
+        if not args.max_text_seq_len:
+            args.max_text_seq_len = 16
+    
+    (device, train_set, train_loader, val_loader, test_loader,
+    classid_classname_dic, model, optimizer, lr_scheduler,
+    mask_scheduler, tokenizer) = environment_loader(args, init=False)
 
+    if args.inference_mode == 'multimodal':
+        inference_multimodal(args, device, train_set, model, mask_scheduler, tokenizer)
 
-    inference(args, device, model, data_set)           
 
 if __name__ == '__main__':
     main()

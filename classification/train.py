@@ -51,11 +51,12 @@ def environment_loader(args, init=True):
                 max_text_seq_len=args.max_text_seq_len)
             args.vocab_size = tokenizer.vocab_size
 
-        mask_wucd_steps = int(total_steps * args.mask_wucd_percent)
+        mask_wu_steps = int(total_steps * args.mask_wu_percent)
+        mask_cd_steps = int(total_steps * args.mask_cd_percent)
         mask_scheduler = utilities.scheduler.MasksSchedule(device=device, mask_schedule=args.mask_schedule, 
             masking_behavior=args.masking_behavior, tokenizer=args.tokenizer, vocab_size=args.vocab_size,
             batch_size=args.batch_size, max_text_seq_len=args.max_text_seq_len, 
-            warmup_steps=mask_wucd_steps, cooldown_steps=mask_wucd_steps, total_steps=total_steps, cycles=.5)
+            warmup_steps=mask_wu_steps, cooldown_steps=mask_cd_steps, total_steps=total_steps, cycles=.5)
     else:
         mask_scheduler = None
         tokenizer = None
@@ -252,7 +253,8 @@ def validate(args, f, global_step, model, device, tokenizer, loader,
                 break    
             
         # append avg val loss
-        val_loss_avg.append(mean(current_losses))
+        curr_val_loss = mean(current_losses)
+        val_loss_avg.append(curr_val_loss)
 
         # compute epoch accuracy in percentages
         curr_top1_acc = 100 * correct_1/total
@@ -270,7 +272,7 @@ def validate(args, f, global_step, model, device, tokenizer, loader,
         "Val Accuracy Top-5": curr_top5_acc,
         "Val Loss": mean(current_losses)})
 
-        return curr_top1_acc
+        return curr_top1_acc, curr_val_loss
 
 
 def train_main(logger, args):
@@ -286,9 +288,11 @@ def train_main(logger, args):
     val_loss_avg = []
     top1_accuracies = []
     top5_accuracies = []
-    best_epoch = 0
+    best_epoch_acc = 0
+    best_epoch_losss = 0
     curr_acc = 0
     top_acc = 0
+    lowest_loss = 1e6
     max_memory = 0
     global_step = [0]
     
@@ -303,15 +307,21 @@ def train_main(logger, args):
             max_memory = curr_max_memory
         
         # validates on test set once per epoch, calculates top1/5 acc and val loss avg
-        curr_acc = validate(args, f, global_step, model=model, device=device, tokenizer=tokenizer, loader=val_loader,
+        curr_acc, curr_val_loss = validate(args, f, global_step, model=model, device=device, tokenizer=tokenizer, loader=val_loader,
         mask_scheduler=mask_scheduler, top1_accuracies=top1_accuracies, top5_accuracies=top5_accuracies, 
         val_loss_avg=val_loss_avg)
 
         # Save the model checkpoint if the top1-acc is higher than current highest
         if curr_acc > top_acc:
-            torch.save(model.state_dict(), os.path.join(args.results_dir,  '{}_bestEpoch.ckpt'.format(args.run_name)))
+            torch.save(model.state_dict(), os.path.join(args.results_dir,  '{}_bestAccEpoch.ckpt'.format(args.run_name)))
             top_acc = curr_acc
-            best_epoch = epoch + 1
+            best_epoch_acc = epoch + 1
+
+        # save if val loss is lower than current lowest
+        if curr_val_loss < lowest_loss:
+            torch.save(model.state_dict(), os.path.join(args.results_dir,  '{}_bestLossEpoch.ckpt'.format(args.run_name)))
+            lowest_loss = curr_val_loss
+            best_epoch_loss = epoch + 1     
         
         # Saves model for last epoch regardless (necessary for mlm versions since accuracy is not good metric for those)
         torch.save(model.state_dict(), os.path.join(args.results_dir, '{}_lastEpoch.ckpt'.format(args.run_name)))
@@ -322,9 +332,9 @@ def train_main(logger, args):
     validate(args, f, global_step, model=model, device=device, tokenizer=tokenizer, loader=test_loader, 
     mask_scheduler=mask_scheduler, top1_accuracies=top1_accuracies, top5_accuracies=top5_accuracies, save_all_captions=True)
 
-    # validate using best epoch checkpoint
-    model.load_state_dict(torch.load(os.path.join(args.results_dir, '{}_bestEpoch.ckpt'.format(args.run_name))), strict=True)
-    curr_line = '\nLoading checkpoint from best epoch: {}.\n'.format(best_epoch)
+    # validate using best accuracy epoch checkpoint
+    model.load_state_dict(torch.load(os.path.join(args.results_dir, '{}_bestAccEpoch.ckpt'.format(args.run_name))), strict=True)
+    curr_line = '\nLoading checkpoint from best epoch: {}.\n'.format(best_epoch_acc)
     utilities.misc.print_write(f, curr_line)
     validate(args, f, global_step, model=model, device=device, tokenizer=tokenizer, loader=test_loader, 
     mask_scheduler=mask_scheduler, top1_accuracies=top1_accuracies, top5_accuracies=top5_accuracies)
@@ -332,8 +342,9 @@ def train_main(logger, args):
     time_end = time.time()
     time_all = time_end - time_start
 
-    utilities.misc.log_summary_stats(args, logger, f, top_acc, best_epoch, max_memory,
-    time_all, top1_accuracies, top5_accuracies, train_loss_avg, val_loss_avg)
+    utilities.misc.log_summary_stats(args, logger, f, top_acc, best_epoch_acc, 
+    lowest_loss, best_epoch_loss, max_memory, time_all, 
+    top1_accuracies, top5_accuracies, train_loss_avg, val_loss_avg)
 
 
 def main():

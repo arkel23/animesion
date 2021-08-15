@@ -9,7 +9,8 @@ import wandb
 
 import torch
 
-def ret_args():
+def ret_args(ret_parser=False):
+
     parser = argparse.ArgumentParser()
     parser.add_argument('--dataset_name', choices=['moeImouto', 'danbooruFaces', 'cartoonFace', 'danbooruFull'], 
                         default='moeImouto', help='Which dataset to use.')
@@ -58,12 +59,14 @@ def ret_args():
     parser.add_argument('--exclusion_weight', type=float, default=0.01, help='Weight for exclusion loss')
     parser.add_argument('--exc_layers_dist', type=int, default=2, help='Number of layers in between to calculate exclusion')
     parser.add_argument('--multimodal', action='store_true', help='Vision+tags if true')  
-    parser.add_argument('--max_text_seq_len', default=None, required=False, 
+    parser.add_argument('--max_text_seq_len', default=None, required=False, type=int,
                         help='Length for text sequence (for padding and truncation). Default uses same as image.') 
     parser.add_argument('--mask_schedule', choices=[None, 'bert', 'full', 'sigmoid'], 
                         default=None, help='Scheduler for masking language tokens.')
-    parser.add_argument('--mask_wucd_percent', type=float, default=0.2, 
-                        help='Percentage of training steps for warmup and cooldown')
+    parser.add_argument('--mask_wu_percent', type=float, default=0.0, 
+                        help='Percentage of training steps for masks warmup')
+    parser.add_argument('--mask_cd_percent', type=float, default=0.5, 
+                        help='Percentage of training steps for masks cooldown')
     parser.add_argument('--ret_attn_scores', action='store_true', help='Returns attention scores for visualization')
     parser.add_argument('--tokenizer', type=str, choices=['wp', 'tag'],
                         default='wp', help='Tokenize using word-piece (BERT pretrained from HF) or custom tag-level')
@@ -71,6 +74,8 @@ def ret_args():
                         default='constant', help='When masked convert token to 1 or to a random int in vocab size')
     parser.add_argument('--shuffle_tokens', action='store_true', 
                         help='When turned on it shuffles tokens before sending to bert or custom tokenizer')
+    if ret_parser:
+        return parser
     args = parser.parse_args()
 
     if args.model_name == 'B_16' or args.model_name == 'L_16':
@@ -153,20 +158,23 @@ def set_seed(seed):
     torch.cuda.manual_seed_all(seed)
 
 
-def log_summary_stats(args, logger, f, top_acc, best_epoch, max_memory, time_all,
+def log_summary_stats(args, logger, f, top_acc, best_epoch_acc, 
+    lowest_loss, best_epoch_loss, max_memory, time_all,
     top1_accuracies, top5_accuracies, train_loss_avg, val_loss_avg):
     
     curr_line = '''\n{}
-    \nAbove configuration finished training successfully. 
-    \nBest val accuracy: {}, at epoch no: {}/{}.
-    \nHighest reserved memory: {} (GB).
-    \nTotal time (loading, training and evaluation): {} seconds. Average: {} seconds.
-    \nTime to reach top accuracy: {} seconds.
-    \n'''.format(str(args),
-    top_acc, best_epoch, args.no_epochs, 
+    Above configuration finished training successfully. 
+    Best val accuracy: {}, at epoch no: {}/{}.
+    Best val loss: {}, at epoch no: {}/{}.
+    Highest reserved memory: {} (GB).
+    Total time (loading, training and evaluation): {} seconds. Average: {} seconds.
+    Time to reach top accuracy: {} seconds.\n'''.format(
+    str(args),
+    top_acc, best_epoch_acc, args.no_epochs, 
+    lowest_loss, best_epoch_loss, args.no_epochs,
     max_memory, 
     time_all, time_all/args.no_epochs,
-    best_epoch * (time_all/args.no_epochs))
+    best_epoch_acc * (time_all/args.no_epochs))
     print_write(f, curr_line)
     logger.info(curr_line)
 
@@ -181,10 +189,12 @@ def log_summary_stats(args, logger, f, top_acc, best_epoch, max_memory, time_all
     '{}_metrics.csv'.format(args.run_name)), sep=',', header=True, index=False)
 
     wandb.run.summary['Best top-1 accuracy'] = top_acc
-    wandb.run.summary['Best epoch'] = best_epoch
+    wandb.run.summary['Best epoch (acc)'] = best_epoch_acc
+    wandb.run.summary['Best validation loss'] = lowest_loss
+    wandb.run.summary['Best epoch (loss)'] = best_epoch_loss
     wandb.run.summary['Time total (s)'] = time_all
     wandb.run.summary['Average time per epoch (s)'] = time_all/args.no_epochs
-    wandb.run.summary['Time to reach top accuracy'] = best_epoch * (time_all/args.no_epochs)
+    wandb.run.summary['Time to reach top accuracy'] = best_epoch_acc * (time_all/args.no_epochs)
     wandb.run.summary['Peak memory consumption (GB)'] = max_memory
 
     f.close()

@@ -288,11 +288,12 @@ def train_main(logger, args):
     val_loss_avg = []
     top1_accuracies = []
     top5_accuracies = []
+
     best_epoch_acc = 0
-    best_epoch_losss = 0
-    curr_acc = 0
+    best_epoch_loss = 0
     top_acc = 0
     lowest_loss = 1e6
+
     max_memory = 0
     global_step = [0]
     
@@ -311,24 +312,10 @@ def train_main(logger, args):
         mask_scheduler=mask_scheduler, top1_accuracies=top1_accuracies, top5_accuracies=top5_accuracies, 
         val_loss_avg=val_loss_avg)
 
-        # Save the model checkpoint if the top1-acc is higher than current highest
-        if curr_acc > top_acc:
-            torch.save(model.state_dict(), os.path.join(args.results_dir,  '{}_bestAccEpoch.ckpt'.format(args.run_name)))
-            top_acc = curr_acc
-            best_epoch_acc = epoch + 1
+        # save checkpoints (last epoch, best accuracy, best val loss, each few epochs) and update best metrics
+        top_acc, best_epoch_acc, lowest_loss, best_epoch_loss = utilities.misc.save_checkpoints(
+            args, model, epoch, curr_acc, top_acc, best_epoch_acc, curr_val_loss, lowest_loss, best_epoch_loss)
 
-        # save if val loss is lower than current lowest
-        if curr_val_loss < lowest_loss:
-            torch.save(model.state_dict(), os.path.join(args.results_dir,  '{}_bestLossEpoch.ckpt'.format(args.run_name)))
-            lowest_loss = curr_val_loss
-            best_epoch_loss = epoch + 1     
-        
-        # save each args.save_checkpoint_freq epochs
-        if (epoch + 1) % args.save_checkpoint_freq == 0:
-            torch.save(model.state_dict(), os.path.join(args.results_dir, '{}_epoch{}.ckpt'.format(args.run_name, epoch)))
-
-        # Saves model for last epoch regardless (necessary for mlm versions since accuracy is not good metric for those)
-        torch.save(model.state_dict(), os.path.join(args.results_dir, '{}_lastEpoch.ckpt'.format(args.run_name)))
         
     # validate on test set using last checkpoint and save captions (assume last checkpoint gets best captions)
     curr_line = '\nUsing checkpoint from last epoch: {}.\n'.format(args.no_epochs)

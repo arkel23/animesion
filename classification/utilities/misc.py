@@ -203,6 +203,31 @@ def log_summary_stats(args, logger, f, top_acc, best_epoch_acc,
     wandb.finish()
 
 
+def save_checkpoints(args, model, epoch, curr_acc, top_acc, best_epoch_acc,
+    curr_val_loss, lowest_loss, best_epoch_loss):
+
+    # Save the model checkpoint if the top1-acc is higher than current highest
+    if curr_acc > top_acc:
+        torch.save(model.state_dict(), os.path.join(args.results_dir,  '{}_bestAccEpoch.ckpt'.format(args.run_name)))
+        top_acc = curr_acc
+        best_epoch_acc = epoch + 1
+
+    # save if val loss is lower than current lowest
+    if curr_val_loss < lowest_loss:
+        torch.save(model.state_dict(), os.path.join(args.results_dir,  '{}_bestLossEpoch.ckpt'.format(args.run_name)))
+        lowest_loss = curr_val_loss
+        best_epoch_loss = epoch + 1     
+        
+    # save each args.save_checkpoint_freq epochs
+    if (epoch + 1) % args.save_checkpoint_freq == 0:
+        torch.save(model.state_dict(), os.path.join(args.results_dir, '{}_epoch{}.ckpt'.format(args.run_name, epoch)))
+
+    # Saves model for last epoch regardless (necessary for mlm versions since accuracy is not good metric for those)
+    torch.save(model.state_dict(), os.path.join(args.results_dir, '{}_lastEpoch.ckpt'.format(args.run_name)))
+
+    return top_acc, best_epoch_acc, lowest_loss, best_epoch_loss
+        
+
 def vis_attention(args, image, outputs, att_mat, file_name_no_ext):
 
     #outputs = outputs.squeeze(0)

@@ -48,6 +48,8 @@ def ret_args(ret_parser=False):
                         help='Load pre-processing components to speed up training')
     parser.add_argument('--log_freq', default=100, type=int,
                         help='Frequency in steps to print results (and save images if needed).')        
+    parser.add_argument('--save_checkpoint_freq', default=40, type=int,
+                        help='Frequency (in epochs) to save checkpoints')        
     parser.add_argument('--no_cpu_workers', type=int, default=4, help='CPU workers for data loading.')
     parser.add_argument('--seed', type=int, default=0, help='random seed for initialization')
     parser.add_argument('--interm_features_fc', action='store_true', 

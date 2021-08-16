@@ -323,6 +323,10 @@ def train_main(logger, args):
             lowest_loss = curr_val_loss
             best_epoch_loss = epoch + 1     
         
+        # save each args.save_checkpoint_freq epochs
+        if (epoch + 1) % args.save_checkpoint_freq == 0:
+            torch.save(model.state_dict(), os.path.join(args.results_dir, '{}_epoch{}.ckpt'.format(args.run_name, epoch)))
+
         # Saves model for last epoch regardless (necessary for mlm versions since accuracy is not good metric for those)
         torch.save(model.state_dict(), os.path.join(args.results_dir, '{}_lastEpoch.ckpt'.format(args.run_name)))
         

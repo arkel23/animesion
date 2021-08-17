@@ -3,14 +3,13 @@ import pickle
 import argparse
 from PIL import Image
 import numpy as np
+import pandas as pd
 import matplotlib.pyplot as plt 
 
 import torch
 import torchvision
 import torchvision.transforms as transforms
 
-#from evaluate import environment_loader
-#import utils.utilities as utilities
 from train import environment_loader
 import utilities as utilities
 from utilities.build_vocab import Vocabulary
@@ -130,7 +129,7 @@ def return_prepared_inputs(file_path, args, device, data_set, mask_scheduler):
 
     image = transform(Image.open(file_path)).to(device).unsqueeze(0)
 
-    if args.inference_mode == 'multimodal':
+    if args.mode == 'multimodal' or args.mode == 'generate_tags':
         if args.masking_behavior == 'constant':
             text_prompt = torch.ones((1, args.max_text_seq_len), dtype=torch.int64).to(device)
         else:
@@ -152,8 +151,8 @@ def inference_multimodal(args, device, data_set, model, mask_scheduler, tokenize
 
     model.eval()
 
-    file_list = [os.path.join(args.test_image_path, f) for f in os.listdir(args.test_image_path) if os.path.isfile(
-        os.path.join(args.test_image_path, f))]
+    file_list = [os.path.join(args.test_path, f) for f in os.listdir(args.test_path) if os.path.isfile(
+        os.path.join(args.test_path, f))]
 
     for file_path in file_list:
         image, text_prompt = return_prepared_inputs(file_path, args, device, data_set, mask_scheduler)
@@ -174,6 +173,56 @@ def inference_multimodal(args, device, data_set, model, mask_scheduler, tokenize
             print('Predicted: ', 
                 sorted({tag for tag in voc.word2idx.keys() if tag in decoded_text}))
 
+
+def generate_tags_df(args, device, data_set, model, mask_scheduler, tokenizer):
+
+    path_root, filename = os.path.split(args.test_path)
+    filename_no_ext = os.path.splitext(filename)[0]
+    new_filename = os.path.join(path_root, '{}_tags.csv'.format(filename_no_ext))
+    
+    df = pd.read_csv(args.test_path,  sep=',', header=None, names=['class_id', 'dir'], 
+			dtype={'class_id': 'UInt16', 'dir': 'object'})
+    df['tags_cat0'] = ''
+
+    if args.tokenizer == 'tag':
+        voc = tokenizer.vocab
+    else:
+        with open(os.path.join(args.dataset_path, 'labels', 'vocab.pkl'), 'rb') as f:
+            voc = pickle.load(f)
+
+    model.eval()
+
+    for i, file_path in enumerate(df.dir):
+        image, text_prompt = return_prepared_inputs(
+            os.path.join(path_root, 'data', file_path), args, device, data_set, mask_scheduler)
+
+        with torch.no_grad():
+            out_cls, out_tokens_text = model(image, text=text_prompt)
+        
+        text_prob, text_pred = torch.topk(out_tokens_text, k=1, dim=2, largest=True, sorted=True)
+        text_pred = text_pred.squeeze()
+        
+        #print(file_path)
+        #print(text_prompt)
+        #print(text_prob)
+        decoded_text = tokenizer.decode(text_pred)
+        if args.tokenizer == 'tag':
+            gen_caption = sorted({tag for tag in decoded_text if tag in voc.word2idx.keys()})
+            #print('Predicted: ', gen_caption)
+        else:
+            gen_caption = sorted({tag for tag in voc.word2idx.keys() if tag in decoded_text})
+            #('Predicted: ', gen_caption)
+        
+        df.at[i, 'tags_cat0'] = gen_caption
+
+        if i % 500 == 0:
+            print('{}/{}: {}: {}'.format(i, len(df), file_path, gen_caption))
+
+
+    df.to_csv(new_filename, header=True, index=False)
+    print('Saved new dataset with tags')
+
+
 def main():
     
     '''
@@ -186,9 +235,9 @@ def main():
     parent_parser = utilities.misc.ret_args(ret_parser=True)
 
     parser = argparse.ArgumentParser(parents=[parent_parser], add_help=False)
-    parser.add_argument("--inference_mode", choices=['multimodal'], type=str, required=True,
+    parser.add_argument("--mode", choices=['inference_multimodal', 'generate_tags'], type=str, required=True,
                         help="Mode for inference (multimodal or vision).")
-    parser.add_argument("--test_image_path", type=str, required=True,
+    parser.add_argument("--test_path", type=str, required=True,
                         help="The directory where test image is stored.")
     parser.add_argument("--results_infer", default="results_inference", type=str,
                         help="The directory where inference results will be stored.")
@@ -196,7 +245,7 @@ def main():
                         help="Save the images after transform and with label results.")   
     args = parser.parse_args()
 
-    if args.inference_mode == 'multimodal':
+    if args.mode == 'multimodal' or args.mode == 'generate_tags':
         args.multimodal = True
         if not args.max_text_seq_len:
             args.max_text_seq_len = 16
@@ -205,8 +254,10 @@ def main():
     classid_classname_dic, model, optimizer, lr_scheduler,
     mask_scheduler, tokenizer) = environment_loader(args, init=False)
 
-    if args.inference_mode == 'multimodal':
+    if args.mode == 'multimodal':
         inference_multimodal(args, device, train_set, model, mask_scheduler, tokenizer)
+    elif args.mode == 'generate_tags':
+        generate_tags_df(args, device, train_set, model, mask_scheduler, tokenizer)
 
 
 if __name__ == '__main__':

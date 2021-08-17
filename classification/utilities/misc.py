@@ -221,7 +221,7 @@ def save_checkpoints(args, model, epoch, curr_acc, top_acc, best_epoch_acc,
         
     # save each args.save_checkpoint_freq epochs
     if (epoch + 1) % args.save_checkpoint_freq == 0:
-        torch.save(model.state_dict(), os.path.join(args.results_dir, '{}_epoch{}.ckpt'.format(args.run_name, epoch)))
+        torch.save(model.state_dict(), os.path.join(args.results_dir, '{}_epoch{}.ckpt'.format(args.run_name, epoch+1)))
 
     # Saves model for last epoch regardless (necessary for mlm versions since accuracy is not good metric for those)
     torch.save(model.state_dict(), os.path.join(args.results_dir, '{}_lastEpoch.ckpt'.format(args.run_name)))

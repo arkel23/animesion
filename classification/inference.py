@@ -1,4 +1,5 @@
 import os
+import pickle
 import argparse
 from PIL import Image
 import numpy as np
@@ -143,6 +144,12 @@ def return_prepared_inputs(file_path, args, device, data_set, mask_scheduler):
 
 def inference_multimodal(args, device, data_set, model, mask_scheduler, tokenizer):
 
+    if args.tokenizer == 'tag':
+        voc = tokenizer.vocab
+    else:
+        with open(os.path.join(args.dataset_path, 'labels', 'vocab.pkl'), 'rb') as f:
+            voc = pickle.load(f)
+
     model.eval()
 
     file_list = [os.path.join(args.test_image_path, f) for f in os.listdir(args.test_image_path) if os.path.isfile(
@@ -159,8 +166,13 @@ def inference_multimodal(args, device, data_set, model, mask_scheduler, tokenize
         print(file_path)
         print(text_prompt)
         #print(text_prob)
-        print('Predicted: ', tokenizer.decode(text_pred))
-
+        decoded_text = tokenizer.decode(text_pred)
+        if args.tokenizer == 'tag':
+            print('Predicted: ', 
+                sorted({tag for tag in decoded_text if tag in voc.word2idx.keys()}))
+        else:
+            print('Predicted: ', 
+                sorted({tag for tag in voc.word2idx.keys() if tag in decoded_text}))
 
 def main():
     

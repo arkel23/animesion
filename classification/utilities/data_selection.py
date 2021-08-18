@@ -19,8 +19,7 @@ def load_data(args, split):
     transform = None
 
     if args.dataset_name == 'moeImouto':    
-        dataset = moeImouto(root=args.dataset_path,
-        image_size=args.image_size, split=split, transform=transform)
+        dataset = moeImouto(args, split=split, transform=transform)
     elif args.dataset_name == 'cartoonFace':
         dataset = cartoonFace(root=args.dataset_path,
         image_size=args.image_size, split=split, transform=transform)
@@ -151,14 +150,19 @@ class moeImouto(data.Dataset):
 	http://www.nurs.or.jp/~nagadomi/animeface-character-dataset/
 	https://github.com/nagadomi/lbpcascade_animeface
 	'''
-	def __init__(self, root, image_size=224, 
-	split='train', transform=None):
+	def __init__(self, args, 
+		split='train', transform=None):
 		super().__init__()
-		self.root = os.path.abspath(root)
-		self.image_size = image_size
+		self.dataset_name = args.dataset_name
+		self.root = os.path.abspath(args.dataset_path)
+		self.image_size = args.image_size
 		self.split = split
 		self.transform = transform
 
+		self.tokenizer_method = args.tokenizer		
+		self.max_text_seq_len = args.max_text_seq_len
+		self.shuffle = args.shuffle_tokens
+		
 		if self.split=='train':
 			print('Train set')
 			self.set_dir = os.path.join(self.root, 'train.csv')
@@ -170,8 +174,18 @@ class moeImouto(data.Dataset):
 			if self.transform is None:
 				self.transform = get_transform(split='test', image_size=self.image_size)
 
-		self.df = pd.read_csv(self.set_dir, sep=',', header=None, names=['class_id', 'dir'], 
-			dtype={'class_id': 'UInt16', 'dir': 'object'})	
+		if self.max_text_seq_len:
+			if self.tokenizer_method == 'wp':
+				self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+			elif self.tokenizer_method == 'tag':
+				self.tokenizer = CustomTokenizer(
+					vocab_path=os.path.join(args.dataset_path, 'labels', 'vocab.pkl'), 
+                	max_text_seq_len=args.max_text_seq_len)
+			self.set_dir = self.set_dir.replace('.csv', '_tags.csv')
+			self.df = pd.read_csv(self.set_dir)
+		else:
+			self.df = pd.read_csv(self.set_dir, sep=',', header=None, names=['class_id', 'dir'], 
+				dtype={'class_id': 'UInt16', 'dir': 'object'})	
 
 		self.targets = self.df['class_id'].to_numpy()
 		self.data = self.df['dir'].to_numpy()
@@ -194,7 +208,20 @@ class moeImouto(data.Dataset):
 		if self.transform:
 			img = self.transform(img)
 
-		return img, target
+		if self.max_text_seq_len:
+			caption = ast.literal_eval(self.df.iloc[idx].tags_cat0)
+			if self.shuffle:
+				random.shuffle(caption)
+			if self.tokenizer_method == 'wp':
+				caption = ' '.join(caption) # originally joined by '[SEP]'
+				caption = self.tokenizer(caption, return_tensors='pt', padding='max_length', 
+					max_length=self.max_text_seq_len, truncation=True)['input_ids']
+			elif self.tokenizer_method == 'tag':
+				caption = self.tokenizer(caption)
+			return img, target, caption
+		else:
+			return img, target
+		
 
 	def __len__(self):
 		return len(self.targets)

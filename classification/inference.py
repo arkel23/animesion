@@ -129,7 +129,7 @@ def return_prepared_inputs(file_path, args, device, data_set, mask_scheduler):
 
     image = transform(Image.open(file_path)).to(device).unsqueeze(0)
 
-    if args.mode == 'multimodal' or args.mode == 'generate_tags':
+    if args.mode == 'inference_multimodal' or args.mode == 'generate_tags':
         if args.masking_behavior == 'constant':
             text_prompt = torch.ones((1, args.max_text_seq_len), dtype=torch.int64).to(device)
         else:
@@ -163,15 +163,15 @@ def inference_multimodal(args, device, data_set, model, mask_scheduler, tokenize
         text_prob, text_pred = torch.topk(out_tokens_text, k=1, dim=2, largest=True, sorted=True)
         text_pred = text_pred.squeeze()
         print(file_path)
-        print(text_prompt)
+        #print(text_prompt)
         #print(text_prob)
         decoded_text = tokenizer.decode(text_pred)
         if args.tokenizer == 'tag':
-            print('Predicted: ', 
-                sorted({tag for tag in decoded_text if tag in voc.word2idx.keys()}))
+            gen_tags = sorted({tag for tag in decoded_text if tag in voc.word2idx.keys()})
+            print('Predicted {} tags: {}'.format(len(gen_tags), gen_tags))
         else:
-            print('Predicted: ', 
-                sorted({tag for tag in voc.word2idx.keys() if tag in decoded_text}))
+            gen_tags = sorted({tag for tag in voc.word2idx.keys() if tag in decoded_text})
+            print('Predicted {} tags: {}'.format(len(gen_tags), gen_tags))
 
 
 def generate_tags_df(args, device, data_set, model, mask_scheduler, tokenizer):
@@ -207,16 +207,16 @@ def generate_tags_df(args, device, data_set, model, mask_scheduler, tokenizer):
         #print(text_prob)
         decoded_text = tokenizer.decode(text_pred)
         if args.tokenizer == 'tag':
-            gen_caption = sorted({tag for tag in decoded_text if tag in voc.word2idx.keys()})
-            #print('Predicted: ', gen_caption)
+            gen_tags = sorted({tag for tag in decoded_text if tag in voc.word2idx.keys()})
+            #print('Predicted: ', gen_tags)
         else:
-            gen_caption = sorted({tag for tag in voc.word2idx.keys() if tag in decoded_text})
-            #('Predicted: ', gen_caption)
+            gen_tags = sorted({tag for tag in voc.word2idx.keys() if tag in decoded_text})
+            #('Predicted: ', gen_tags)
         
-        df.at[i, 'tags_cat0'] = gen_caption
+        df.at[i, 'tags_cat0'] = gen_tags
 
         if i % 500 == 0:
-            print('{}/{}: {}: {}'.format(i, len(df), file_path, gen_caption))
+            print('{}/{}: {}: {}'.format(i, len(df), file_path, gen_tags))
 
 
     df.to_csv(new_filename, header=True, index=False)
@@ -245,7 +245,7 @@ def main():
                         help="Save the images after transform and with label results.")   
     args = parser.parse_args()
 
-    if args.mode == 'multimodal' or args.mode == 'generate_tags':
+    if args.mode == 'inference_multimodal' or args.mode == 'generate_tags':
         args.multimodal = True
         if not args.max_text_seq_len:
             args.max_text_seq_len = 16
@@ -254,7 +254,7 @@ def main():
     classid_classname_dic, model, optimizer, lr_scheduler,
     mask_scheduler, tokenizer) = environment_loader(args, init=False)
 
-    if args.mode == 'multimodal':
+    if args.mode == 'inference_multimodal':
         inference_multimodal(args, device, train_set, model, mask_scheduler, tokenizer)
     elif args.mode == 'generate_tags':
         generate_tags_df(args, device, train_set, model, mask_scheduler, tokenizer)

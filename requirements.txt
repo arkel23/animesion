@@ -1,46 +1,26 @@
-absl-py==0.11.0
-certifi==2020.12.5
-cloudpickle @ file:///tmp/build/80754af9/cloudpickle_1598884132938/work
-contextlib2==0.6.0.post1
-cycler==0.10.0
-Cython @ file:///home/conda/feedstock_root/build_artifacts/cython_1602367295094/work
-cytoolz==0.11.0
-dask @ file:///tmp/build/80754af9/dask-core_1602083700509/work
-dataclasses==0.6
-decorator==4.4.2
-future==0.18.2
-imageio @ file:///tmp/build/80754af9/imageio_1594161405741/work
-joblib @ file:///tmp/build/80754af9/joblib_1601912903842/work
-kiwisolver @ file:///tmp/build/80754af9/kiwisolver_1604014535162/work
-matplotlib @ file:///tmp/build/80754af9/matplotlib-base_1603378225747/work
-mkl-fft==1.2.0
-mkl-random==1.1.1
-mkl-service==2.3.0
-ml-collections==0.1.0
-networkx @ file:///tmp/build/80754af9/networkx_1598376031484/work
-numpy @ file:///tmp/build/80754af9/numpy_and_numpy_base_1603570489231/work
-olefile==0.46
+cloudpickle==1.6.0
+efficientnet-pytorch==0.7.1
+einops==0.3.0
+gradio==2.2.8
+huggingface-hub==0.0.12
+matplotlib==3.3.2
+matplotlib-inline==0.1.2
+numpy==1.19.2
 opencv-python==4.4.0.46
-pandas @ file:///tmp/build/80754af9/pandas_1602088120436/work
-Pillow @ file:///tmp/build/80754af9/pillow_1603822255246/work
-pycocotools @ file:///home/conda/feedstock_root/build_artifacts/pycocotools_1602612081239/work
-pyparsing==2.4.7
-python-dateutil==2.8.1
--e git+https://github.com/arkel23/PyTorch-Pretrained-ViT@3619b09902b36b8b3b089212ce273616a87025ac#egg=pytorch_pretrained_vit
-pytz @ file:///tmp/build/80754af9/pytz_1606604771399/work
-PyWavelets @ file:///tmp/build/80754af9/pywavelets_1601658317819/work
-PyYAML==5.3.1
+pandas==1.1.3
+pickleshare==0.7.5
+Pillow==8.0.1
+pip==20.2.4
+pytorch-pretrained-vit==0.0.7
+regex==2021.8.3
 scikit-image==0.17.2
-scikit-learn @ file:///tmp/build/80754af9/scikit-learn_1598376899566/work
-scipy @ file:///tmp/build/80754af9/scipy_1597686649129/work
-sip==4.19.13
-six @ file:///tmp/build/80754af9/six_1605205327372/work
-threadpoolctl @ file:///tmp/tmp9twdgx9k/threadpoolctl-2.1.0-py3-none-any.whl
-tifffile==2020.10.1
-toolz @ file:///tmp/build/80754af9/toolz_1601054250827/work
+scikit-learn==0.23.2
+scipy==1.5.2
+tokenizers==0.10.3
 torch==1.7.0
 torchaudio==0.7.0a0+ac17b64
 torchsummary==1.5.1
 torchvision==0.8.1
-tornado==6.0.4
-typing-extensions @ file:///tmp/build/80754af9/typing_extensions_1598376058250/work
+transformers==4.9.1
+wandb==0.11.2
+wordcloud==1.8.1

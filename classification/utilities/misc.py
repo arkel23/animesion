@@ -213,8 +213,8 @@ def save_checkpoints(args, model, epoch, curr_acc, top_acc, best_epoch_acc,
         best_epoch_acc = epoch + 1
 
     # save if val loss is lower than current lowest and has reached cooldown period
-    no_epochs_cu = args.mask_cu_percent * args.no_epochs
-    if (curr_val_loss < lowest_loss) and (epoch > (args.no_epochs - args.no_epochs_cu)):
+    no_epochs_cd = args.mask_cd_percent * args.no_epochs
+    if (curr_val_loss < lowest_loss) and (epoch > (args.no_epochs - no_epochs_cd)):
         torch.save(model.state_dict(), os.path.join(args.results_dir,  '{}_bestLossEpoch.ckpt'.format(args.run_name)))
         lowest_loss = curr_val_loss
         best_epoch_loss = epoch + 1     

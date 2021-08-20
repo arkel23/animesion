@@ -6,7 +6,7 @@ python download_convert_models.py
 ```
 ### Usage
 ``` 
-from pytorch_pretrained_vit import ViT, ViTConfigExtended, PRETRAINED_CONFIGS 
+from vit_animesion import ViT, ViTConfigExtended, PRETRAINED_CONFIGS 
 model_name = 'B_16' 
 def_config = PRETRAINED_CONFIGS['{}'.format(model_name)]['config'] 
 configuration = ViTConfigExtended(**def_config) 

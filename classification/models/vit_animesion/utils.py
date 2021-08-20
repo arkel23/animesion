@@ -12,7 +12,7 @@ from torch.utils import model_zoo
 from torch.hub import get_dir, urlparse, download_url_to_file, _is_legacy_zip_format, _legacy_zip_load
 from torchvision import transforms
 
-import pytorch_pretrained_vit
+import vit_animesion
 from .configs import PRETRAINED_CONFIGS, ViTConfigExtended
 
 def jax_to_pytorch(k):

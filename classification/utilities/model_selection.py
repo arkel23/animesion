@@ -7,7 +7,7 @@ import einops
 from einops.layers.torch import Rearrange
 
 from efficientnet_pytorch import EfficientNet
-from pytorch_pretrained_vit import ViT, ViTConfigExtended, PRETRAINED_CONFIGS
+from vit_animesion import ViT, ViTConfigExtended, PRETRAINED_CONFIGS
 
 def load_model(args, device):
     # initiates model and loss     

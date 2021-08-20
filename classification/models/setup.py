@@ -12,11 +12,11 @@ from shutil import rmtree
 from setuptools import find_packages, setup, Command
 
 # Package meta-data.
-NAME = 'pytorch-pretrained-vit'
-DESCRIPTION = 'Visual Transformers (ViT) in PyTorch.'
-URL = 'https://github.com/lukemelas/ViT-PyTorch'
-EMAIL = 'luke.melas@gmail.com'
-AUTHOR = 'Luke'
+NAME = 'vit-animesion'
+DESCRIPTION = 'Visual Transformers (ViT) for Animesion'
+URL = 'blank'
+EMAIL = 'blank'
+AUTHOR = 'blank'
 REQUIRES_PYTHON = '>=3.5.0'
 VERSION = '0.0.7'
 

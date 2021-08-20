@@ -1,4 +1,4 @@
-from pytorch_pretrained_vit import ViT, ViTConfigExtended, PRETRAINED_CONFIGS
+from vit_animesion import ViT, ViTConfigExtended, PRETRAINED_CONFIGS
 
 models_list = ['B_16', 'B_32', 'L_16', 'L_32', 'H_14']
 for model_name in models_list:

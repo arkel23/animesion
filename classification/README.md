@@ -28,10 +28,6 @@ among others) and trains the model, either from scratch, or from a checkpoint.
 If training from a checkpoint, it can also use it to do knowledge transfer between datasets, 
 by for example using a checkpoint trained on *DAF:re* to classify images according to the characters in *moeImouto*. 
 It can also train a model based on both images and tags data.
-
-Note: for ViT models it requires installing the Vision Transformer repository. It can be cloned and then installed through `pip install -e .` and then download pretrained models following instructions on the repo::
-* https://github.com/arkel23/PyTorch-Pretrained-ViT
-
 ```
 usage: train.py [-h]
                 [--dataset_name {moeImouto,danbooruFaces,cartoonFace,danbooruFull}]

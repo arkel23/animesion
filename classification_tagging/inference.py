@@ -23,7 +23,7 @@ def return_prepared_inputs(file_path, args, device, data_set, mask_scheduler=Non
     transforms.Normalize([0.5, 0.5, 0.5], [0.5, 0.5, 0.5]),
     ])
 
-    image = transform(Image.open(file_path)).to(device).unsqueeze(0)
+    image = transform(Image.open(file_path).convert('RGB')).to(device).unsqueeze(0)
 
     if args.mode == 'recognition_vision':
         return image

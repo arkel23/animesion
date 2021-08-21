@@ -20,12 +20,19 @@
 **/flagged/
 **/wandb/
 **/test_images/*
+!**/test_images/homura_top*
+!**/test_images/eren_face*
+!**/test_images/rei*
+!**/test_images/muffin*
+!**/test_images/dva*
+!**/test_images/kirito*
 **/results*/*
 !**/results_inference/muffin*
-!**/results_inference/rei*
+!**/results_inference/rei_body*
 !**/results_inference/dva*
 !**/results_inference/kirito*
 !**/results_inference/homura_top*
+!**/results_inference/eren_face*
 **/attention/
 
 # temp nfs files

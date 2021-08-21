@@ -22,7 +22,7 @@ Checkpoints and data: [Google Drive](https://drive.google.com/drive/folders/1Tk2
 # How to (summary)
 
 ## Data preparation
-From `data` folder in Google Drive download `dafre_faces.tar.gz` for *DAF:re Faces* or `dafre_full.tar.gz` for *DAF:re Full*, and `labels.tar.gz` and uncompress their contents into desired data storage location. The `dataset_path` argument expects a path to the root that contains both `faces` or `fullMin256` directories, along with `labels` at the same level.
+From `data` folder in Google Drive download `dafre_faces.tar.gz` for *DAF:re Faces* or `dafre_full.tar.gz` for *DAF:re Full*, and `labels.tar.gz` and uncompress their contents into desired data storage location (clone [DAF:re repo](https://github.com/arkel23/Danbooru2018AnimeCharacterRecognitionDataset_Revamped) and uncompress these folders). The `dataset_path` argument expects a path to the root that contains both `faces` or `fullMin256` directories, along with `labels` at the same level.
 
 ## Training
 Train a ViT B-16 vision only model with intermediate features aggregation classification head on DanbooruFaces for recognition: 
@@ -218,7 +218,7 @@ A brief preview can be seen here for *DAF:re Faces* and *moeImouto*, respectivel
 ## Datasets
 
 ### moeImouto
-For the moeImouto dataset here's a sample of how the images look along with their classes. For the data and label files please check the above aforementioned [Google Drive folder](https://drive.google.com/drive/folders/1Tk2e5OoI4mtVBdmjMhfoh2VC-lzW164Q?usp=sharing).
+For the moeImouto dataset here's a sample of how the images look along with their classes. For the data and label files please check the above aforementioned [Google Drive folder](https://drive.google.com/drive/folders/1Tk2e5OoI4mtVBdmjMhfoh2VC-lzW164Q?usp=sharing) for the `moeimouto_animefacecharacterdataset.tar.gz` file, download and extract to desired location.
 
 ![](./data_exploration/datasets_vis/moeImouto_train_labelsFalse_orderedFalse.png)
 

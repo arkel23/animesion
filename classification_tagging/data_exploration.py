@@ -91,7 +91,7 @@ def data_visualization(args):
     else:
         images, labels = iter(dataset_loader).next()
         out_name = os.path.join(args.results_dir, 
-        '{}_{}_labels{}.png'.format(args.dataset_name, args.split, args.labels))
+        '{}_{}_labels{}_ordered{}.png'.format(args.dataset_name, args.split, args.labels, args.data_vis_full))
         # Make a grid from batch
         grid = torchvision.utils.make_grid(images, nrow=nrows)
         if args.labels:
@@ -141,16 +141,22 @@ def data_stats(args):
         if args.dataset_name=='moeImouto':
             dataset_train = load_dataset(args, split='train')
             dataset_test = load_dataset(args, split='test')
+            dataset = dataset_train
+            
             no_samples = len(dataset_train) + len(dataset_test)
+            
             df_train = dataset_train.df
             df_test = dataset_test.df
             df = pd.concat([df_train, df_test])
+        
         elif args.dataset_name == 'danbooruFaces' or args.dataset_name == 'danbooruFull':
             dataset_train = load_dataset(args, split='train')
             dataset_val = load_dataset(args, split='val')
             dataset_test = load_dataset(args, split='test')
             dataset = dataset_train
+            
             no_samples = len(dataset_train) + len(dataset_val) + len(dataset_test)
+            
             df_train = dataset_train.df
             df_val = dataset_val.df
             df_test = dataset_test.df
@@ -203,7 +209,7 @@ def data_stats(args):
 
     if not os.path.exists(args.results_dir):
         os.makedirs(args.results_dir)
-    file_name = os.path.join(args.results_dir, 'histogram_{}.png'.format(args.dataset_name))	
+    file_name = os.path.join(args.results_dir, 'histogram_{}_partial{}.png'.format(args.dataset_name, args.stats_partial))	
     fig.savefig(file_name, dpi=300)
 
 

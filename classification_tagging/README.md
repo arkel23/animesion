@@ -43,7 +43,7 @@ Demo with [gradio](https://gradio.app/):
 `python demo.py --dataset_path YOUR_PATH -checkpoint_path PATH_TO_CHECKPOINT`
 
 # How to use (detailed)
-The main scripts in this repo are the `train.py`, and `inference.py`.
+The main scripts in this repo are the `train.py`, `evaluate.py` and `inference.py`.
  
 ## train.py
  
@@ -154,3 +154,18 @@ usage: inference.py [--mode {recognition_vision,recognition_tagging,generate_tag
   --save_results SAVE_RESULTS
                         Save the images after transform and with label results.
 ```
+
+# Others
+Visualization for the data in terms of histograms, image grids, and statistics related to the classes distributions can be obtained by using `data_exploration.py`. Parent argument parser is the same as `train.py` but the important ones are the following:
+```
+[--split SPLIT]
+                           [--data_vis_full] [--labels] [--display_images] [--stats_partial]
+
+--split SPLIT         Split to visualize
+  --data_vis_full       Save all images into a video.
+  --labels              Include labels as title during the visualization video (requires a LOT more time).
+  --display_images      If False skips to data_stats function else display images as single plot or video.
+  --stats_partial       If true will display stats for a certain subset instead of the whole.
+```
+For example to generate a grid for danbooruFull's test split with labels printed as the title: 
+`python data_exploration.py --dataset_path PATH --split test --display_image --dataset_name danbooruFull --labels`

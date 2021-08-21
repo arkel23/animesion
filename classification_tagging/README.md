@@ -19,6 +19,9 @@ Checkpoints and data: [Google Drive](https://drive.google.com/drive/folders/1Tk2
  
 # How to (summary)
 
+## Data preparation
+From `data` folder in Google Drive download `dafre_faces.tar.gz` for `DAF:re Faces` or `dafre_full.tar.gz` for `DAF:re Full`, and `labels.tar.gz` and uncompress their contents into desired data storage location. The `dataset_path` argument expects a path to the root that contains both `faces` or `fullMin256` directories, along with `labels` at the same level.
+
 ## Training
 Train a ViT B-16 vision only model with intermediate features aggregation classification head on DanbooruFaces for recognition: 
 `python train.py --dataset_name danbooruFaces --dataset_path YOUR_PATH --model_name B_16 --image_size 128 --batch_size 64 --learning_rate_scheduler warmupCosine --pretrained --interm_features`
@@ -37,7 +40,7 @@ Load pretrained model for recognition and tagging (defaults: B-16, max_text_seq_
 `python inference.py --dataset_path YOUR_PATH --checkpoint_path PATH_TO_CHECKPOINT --mode recognition_tagging`
 
 # How to use (detailed)
-The main scripts in this repo are the `train.py`, `evaluate.py` and `inference.py`.
+The main scripts in this repo are the `train.py`, and `inference.py`.
  
 ## train.py
  

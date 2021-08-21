@@ -13,7 +13,7 @@ import torch.utils.data as data
 import torchvision
 import torchvision.transforms as transforms
 
-import data.datasets as datasets
+import utilities as utilities
  
 def imshow(inp, out_name, title=None):
     """Imshow for Tensor."""
@@ -27,6 +27,7 @@ def imshow(inp, out_name, title=None):
     plt.tight_layout()
     plt.savefig('{}'.format(out_name), dpi=300)
 
+
 def load_dataset(args, split=None):
 
     if split==None:
@@ -38,17 +39,13 @@ def load_dataset(args, split=None):
                 transforms.Resize((img_size, img_size)),
                 transforms.ToTensor()])
 
-    if args.dataset_name=='moeImouto':
-        dataset = datasets.moeImouto(root=args.dataset_path,
-        split=split, transform=transform)
-    elif args.dataset_name == 'danbooruFaces':
-        dataset = datasets.danbooruFaces(root=args.dataset_path,
-        split=split, transform=transform)
-    elif args.dataset_name == 'danbooruFull':
-        dataset = datasets.danbooruFull(root=args.dataset_path, 
-        split=split, transform=transform)
-    
+    if args.dataset_name == 'moeImouto':    
+        dataset = utilities.data_selection.moeImouto(args, split=split, transform=transform)
+    elif args.dataset_name == 'danbooruFaces' or args.dataset_name == 'danbooruFull':
+        dataset = utilities.data_selection.danbooruFacesFull(args, split=split, transform=transform)
+	
     return dataset
+
 
 def data_visualization(args):
     
@@ -112,7 +109,8 @@ def data_visualization(args):
         else:
             # just displays the images
             torchvision.utils.save_image(grid, out_name, nrow=nrows)
-        
+
+
 def video_from_frames(args):
     images_paths = glob.glob(os.path.join(args.results_dir, '*.png'))
     images_paths = [p for p in images_paths if re.search("[0-9]+(.png)", p)]
@@ -131,6 +129,7 @@ def video_from_frames(args):
         video_out.write(img)
         os.remove(curr_path)
     video_out.release()
+
 
 def data_stats(args):
     
@@ -204,38 +203,33 @@ def data_stats(args):
 
     if not os.path.exists(args.results_dir):
         os.makedirs(args.results_dir)
-    file_name = os.path.join(args.results_dir, 'histogram_{}.pdf'.format(args.dataset_name))	
+    file_name = os.path.join(args.results_dir, 'histogram_{}.png'.format(args.dataset_name))	
     fig.savefig(file_name, dpi=300)
+
 
 def main():
     torch.manual_seed(0)
-    parser = argparse.ArgumentParser()
-    parser.add_argument("--dataset_name", choices=["moeImouto", "danbooruFaces", "danbooruFull"], 
-                        default="moeImouto", help="Which dataset to use.")
-    parser.add_argument("--dataset_path", required=True,
-                        help="Path for the dataset.")
-    parser.add_argument("--results_dir", default='data_exploration', type=str,
-                        help="Path for the results.")
-    parser.add_argument("--batch_size", default=64, type=int,
-                        help="Batch size for visualization. Don't use more than 64 if using labels.")
-    parser.add_argument("--image_size", default=128, type=int,
-                        help="Image (square) resolution size")
-    parser.add_argument("--data_vis_full", type=bool, default=False,
-                        help="Save all images into a video.")  
+    parent_parser = utilities.misc.ret_args(ret_parser=True)
+
+    parser = argparse.ArgumentParser(parents=[parent_parser], add_help=False)
     parser.add_argument("--split", default='test', type=str,
-                        help="Split to visualize") 
-    parser.add_argument("--labels", type=bool, default=False,
+                        help="Split to visualize")
+    parser.add_argument("--data_vis_full", action='store_true',
+                        help="Save all images into a video.")  
+    parser.add_argument("--labels", action='store_true',
                         help="Include labels as title during the visualization video (requires a LOT more time).")
-    parser.add_argument("--display_images", type=bool, default=False,
+    parser.add_argument("--display_images", action='store_true',
                         help="If False skips to data_stats function else display images as single plot or video.")
-    parser.add_argument("--stats_partial", type=bool, default=False,
+    parser.add_argument("--stats_partial", action='store_true',
                         help="If true will display stats for a certain subset instead of the whole.")
+    parser.set_defaults(results_dir='data_exploration')
     args = parser.parse_args()
-    print(args)
-    
+    assert args.dataset_path, "Requires to input --dataset_path"
+
     if args.display_images:
         data_visualization(args)
     data_stats(args)
+
 
 if __name__ == '__main__':
     main()

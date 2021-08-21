@@ -39,6 +39,9 @@ Load pretrained model for recognition (defaults: B-16, IS=128):
 Load pretrained model for recognition and tagging (defaults: B-16, max_text_seq_len=16, tokenizer='tag'):
 `python inference.py --dataset_path YOUR_PATH --checkpoint_path PATH_TO_CHECKPOINT --mode recognition_tagging`
 
+Demo with [gradio](https://gradio.app/):
+`python demo.py --dataset_path YOUR_PATH -checkpoint_path PATH_TO_CHECKPOINT`
+
 # How to use (detailed)
 The main scripts in this repo are the `train.py`, and `inference.py`.
  

@@ -23,7 +23,7 @@ def ret_args(ret_parser=False):
                         help='The directory where results will be stored')
     parser.add_argument('--image_size', default=128, type=int,
                         help='Image (square) resolution size')
-    parser.add_argument('--batch_size', default=16, type=int,
+    parser.add_argument('--batch_size', default=64, type=int,
                         help='Batch size for train/val/test.')
     parser.add_argument('--no_epochs', default=50, type=int,
                         help='Total number of epochs for training.')                         

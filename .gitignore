@@ -14,15 +14,13 @@
 *.tsv
 # exception
 !requirements.txt
+!requirements_conda.txt
 
 # directories
 **/flagged/
 **/wandb/
 **/test_images/*
-**/results_training/
-**/results/
-**/results_fail/
-**/results_inference/*
+**/results*/*
 !**/results_inference/muffin*
 !**/results_inference/rei*
 !**/results_inference/dva*

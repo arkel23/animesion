@@ -25,7 +25,9 @@ def return_prepared_inputs(file_path, args, device, data_set, mask_scheduler=Non
 
     image = transform(Image.open(file_path)).to(device).unsqueeze(0)
 
-    if args.mode == 'recognition_tagging' or args.mode == 'generate_tags':
+    if args.mode == 'recognition_vision':
+        return image
+    else:
         if args.masking_behavior == 'constant':
             text_prompt = torch.ones((1, args.max_text_seq_len), dtype=torch.int64).to(device)
         else:
@@ -34,25 +36,10 @@ def return_prepared_inputs(file_path, args, device, data_set, mask_scheduler=Non
         text_prompt[:, -1] = mask_scheduler.special_tokens[2]
         return image, text_prompt
     
-    return image
 
-
-def imshow(inp, out_name, title=None, imagenet_values=False, save_results=False):
-    '''Imshow for Tensor.
-    # pretrained on imagenet (resnets)
-    # std=(0.229, 0.224, 0.225)
-    # mean=(0.485, 0.456, 0.406)
-
-    # others:
-    # std=(0.5, 0.5, 0.5)
-    # mean=(0.5, 0.5, 0.5)
-    '''
-    if imagenet_values:
-        inv_normalize = transforms.Normalize(
-        mean=[-0.485/0.229, -0.456/0.224, -0.406/0.225],
-        std=[1/0.229, 1/0.224, 1/0.255])
-    else:
-        inv_normalize = transforms.Normalize(
+def imshow(inp, out_name, title=None, save_results=False):
+    
+    inv_normalize = transforms.Normalize(
         mean=[-0.5/0.5, -0.5/0.5, -0.5/0.5],
         std=[1/0.5, 1/0.5, 1/0.5])
 
@@ -62,7 +49,7 @@ def imshow(inp, out_name, title=None, imagenet_values=False, save_results=False)
 
     plt.imshow(inp)
     if title is not None:
-        plt.title(title, fontsize=10, wrap=True)
+        plt.title(title, fontsize=8, wrap=True)
     plt.tight_layout()
     plt.show(block=False)
     plt.pause(5)
@@ -71,10 +58,9 @@ def imshow(inp, out_name, title=None, imagenet_values=False, save_results=False)
     plt.close()
 
 
-def forward_vision(args, classid_classname_dic, model, image, file_path):
+def forward_vision(args, classid_classname_dic, model, image, file_path, print_local=True):
 
     # forward pass plus printing and plotting classification results
-    print(file_path)
     file_name_no_ext = os.path.splitext(os.path.split(file_path)[1])[0]
     out_name = os.path.join(args.results_dir, '{}.jpg'.format(file_name_no_ext))
         
@@ -85,8 +71,7 @@ def forward_vision(args, classid_classname_dic, model, image, file_path):
             utilities.vis_attention(args, image, out_cls, att_mat, file_name_no_ext)
             
             classes_predicted = []
-            classes_predicted.append(file_name_no_ext)
-            classes_predicted.append('\n')
+            classes_predicted.append('{}\n'.format(file_name_no_ext))
             for i, idx in enumerate(torch.topk(out_cls, k=5).indices.tolist()):
                 prob = torch.softmax(out_cls, -1)[idx].item() * 100
                 class_name = classid_classname_dic.loc[classid_classname_dic['class_id']==idx, 'class_name'].item()
@@ -108,16 +93,19 @@ def forward_vision(args, classid_classname_dic, model, image, file_path):
                 class_name = classid_classname_dic.loc[classid_classname_dic['class_id']==idx, 'class_name'].item()
                 predict_text = 'Prediction No. {}: {} [ID: {}], Confidence: {}\n'.format(i+1, class_name, idx, prob)
                 classes_predicted.append(predict_text)
-                print(predict_text, end='')
-
+                
             classes_predicted = '  '.join(classes_predicted)
-            grid = torchvision.utils.make_grid(image)
-            imshow(grid, out_name, title=classes_predicted, save_results=args.save_results)
+            if print_local:
+                print(classes_predicted)
+                grid = torchvision.utils.make_grid(image)
+                imshow(grid, out_name, title=classes_predicted, save_results=args.save_results)
+            else:
+                return classes_predicted
 
 
-def forward_multimodal(args, classid_classname_dic, model, tokenizer, voc, image, text_prompt, file_path):
+def forward_multimodal(args, classid_classname_dic, model, tokenizer, voc, 
+    image, text_prompt, file_path, print_local=True):
     
-    print(file_path)
     file_name_no_ext = os.path.splitext(os.path.split(file_path)[1])[0]
     out_name = os.path.join(args.results_dir, '{}.jpg'.format(file_name_no_ext))
 
@@ -126,30 +114,32 @@ def forward_multimodal(args, classid_classname_dic, model, tokenizer, voc, image
 
     out_cls = out_cls.squeeze(0)
     classes_predicted = []
-    classes_predicted.append(file_name_no_ext)
-    classes_predicted.append('\n')
+    classes_predicted.append('{}\n'.format(file_name_no_ext))
     for i, idx in enumerate(torch.topk(out_cls, k=5).indices.tolist()):
         prob = torch.softmax(out_cls, -1)[idx].item() * 100
         class_name = classid_classname_dic.loc[classid_classname_dic['class_id']==idx, 'class_name'].item()
         predict_text = 'Prediction No. {}: {} [ID: {}], Confidence: {}\n'.format(i+1, class_name, idx, prob)
         classes_predicted.append(predict_text)
-        print(predict_text, end='')
-
-    classes_predicted = '  '.join(classes_predicted)
-    grid = torchvision.utils.make_grid(image)
-    imshow(grid, out_name, title=classes_predicted, save_results=args.save_results)
         
     text_prob, text_pred = torch.topk(out_tokens_text, k=1, dim=2, largest=True, sorted=True)
-    text_pred = text_pred.squeeze()
+    text_pred, text_prob = text_pred.squeeze(), text_prob.squeeze()
     #print(text_prompt)
-    #print(text_prob)
+    #print(text_prob.cpu().numpy())
     decoded_text = tokenizer.decode(text_pred)
     if args.tokenizer == 'tag':
         gen_tags = sorted({tag for tag in decoded_text if tag in voc.word2idx.keys()})
-        print('Predicted {} tags: {}'.format(len(gen_tags), gen_tags))
     else:
         gen_tags = sorted({tag for tag in voc.word2idx.keys() if tag in decoded_text})
-        print('Predicted {} tags: {}'.format(len(gen_tags), gen_tags))
+    tag_output_formatted = 'Predicted {} tags: {}'.format(len(gen_tags), gen_tags)
+    
+    classes_predicted = '  '.join(classes_predicted)
+    class_tags_formatted = '{}{}'.format(classes_predicted, tag_output_formatted)  
+    if print_local:
+        print(class_tags_formatted, '\n')
+        grid = torchvision.utils.make_grid(image)
+        imshow(grid, out_name, title=class_tags_formatted, save_results=args.save_results)    
+    else:
+        return class_tags_formatted    
 
 
 def recognition_vision(args, device, data_set, model):
@@ -229,24 +219,16 @@ def generate_tags_df(args, device, data_set, model, mask_scheduler, tokenizer):
 
 def main():
     
-    '''
-    #device, model, data_set, data_loader = environment_loader(args)
-
-    #os.makedirs(args.results_infer, exist_ok=True)
-    #inference(args, device, model, data_set)           
-    '''
-    
     parent_parser = utilities.misc.ret_args(ret_parser=True)
 
     parser = argparse.ArgumentParser(parents=[parent_parser], add_help=False)
-    parser.add_argument("--mode", choices=['recognition_vision', 'recognition_tagging', 'generate_tags'], type=str, 
-                        default='recognition_vision', help="Mode for inference (multimodal or vision).")
+    parser.add_argument("--mode", choices=['recognition_vision', 'recognition_tagging', 
+                        'generate_tags'], type=str, default='recognition_vision', help="Mode for inference.")
     parser.add_argument("--test_path", type=str, default='test_images/',
                         help="The directory where test image is stored.")
-    parser.add_argument("--results_infer", default="results_inference", type=str,
-                        help="The directory where inference results will be stored.")
-    parser.add_argument("--save_results", type=bool, default=False,
+    parser.add_argument("--save_results", action='store_true',
                         help="Save the images after transform and with label results.")   
+    parser.set_defaults(results_dir='results_inference')
     args = parser.parse_args()
 
     if args.mode == 'recognition_tagging' or args.mode == 'generate_tags':
@@ -263,11 +245,13 @@ def main():
 
     if args.mode == 'recognition_vision':
         recognition_vision(args, device, train_set, model)
+    
     elif args.mode == 'recognition_tagging':
         recognition_tagging(args, device, train_set, model, mask_scheduler, tokenizer)
+    
     elif args.mode == 'generate_tags':
         generate_tags_df(args, device, train_set, model, mask_scheduler, tokenizer)
-
+    
 
 if __name__ == '__main__':
     main()

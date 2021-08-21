@@ -4,10 +4,9 @@
 Anime character recognition and tagging using PyTorch.
 
 Our best vision-only model, ViT L-16 with image size 128x128 and batch size 16 achieves to get 89.71% 
-and 96.14% top-1 and top-5 classification accuracies, respectively, among 3263 characters.
+and 96.14% test set top-1 and top-5 classification accuracies, respectively, among 3263 characters!
 
 We hope that this work inspires other researchers to follow and build upon this path. 
-ViT models have interesting properties for domain transfer that haven't been studied.
 
 Checkpoints and data: [Google Drive](https://drive.google.com/drive/folders/1Tk2e5OoI4mtVBdmjMhfoh2VC-lzW164Q?usp=sharing).
 
@@ -16,9 +15,28 @@ Checkpoints and data: [Google Drive](https://drive.google.com/drive/folders/1Tk2
 * Two fully-fledged datasets, moeImouto and DAF:re, with 173 and more than 3000 classes, respectively
 * Pre-trained models for best performing models using image size of 128x128.
 * Supporting scripts for making, visualization and stats for datasets.
-* Scripts for training from scratch, evaluation (accuracy of a model with a certain set and pretrained weights), and inference (classifies all images in `test_images/` folder)
+* Scripts for training from scratch, evaluation (accuracy of a model with a certain set and pretrained weights), and inference (classifies all images in a given (`test_images` by default) folder.
  
-# How to use
+# How to (summary)
+
+## Training
+Train a ViT B-16 vision only model with intermediate features aggregation classification head on DanbooruFaces for recognition: 
+`python train.py --dataset_name danbooruFaces --dataset_path YOUR_PATH --model_name B_16 --image_size 128 --batch_size 64 --learning_rate_scheduler warmupCosine --pretrained --interm_features`
+
+Train a ViLT B-16 with tag/language tokens on DanbooruFull for recognition: 
+`python train.py --dataset_name danbooruFull --dataset_path YOUR_PATH --model_name B_16 --image_size 128 --batch_size 64 --learning_rate_scheduler warmupCosine --pretrained --multimodal --max_text_seq_len 32 --tokenizer wp`
+
+Train a ViLT B-16 with tag/language tokens on DanbooruFull for recognition and tagging: 
+`python train.py --dataset_name danbooruFull --dataset_path YOUR_PATH --model_name B_16 --image_size 128 --batch_size 16 --learning_rate_scheduler warmupCosine --pretrained --multimodal --max_text_seq_len 16 --tokenizer tag --mask_schedule full --masking_behavior constant`
+
+## Inference
+Load pretrained model for recognition (defaults: B-16, IS=128):
+`python inference.py --dataset_path YOUR_PATH --checkpoint_path PATH_TO_CHECKPOINT`
+
+Load pretrained model for recognition and tagging (defaults: B-16, max_text_seq_len=16, tokenizer='tag'):
+`python inference.py --dataset_path YOUR_PATH --checkpoint_path PATH_TO_CHECKPOINT --mode recognition_tagging`
+
+# How to use (detailed)
 The main scripts in this repo are the `train.py`, `evaluate.py` and `inference.py`.
  
 ## train.py
@@ -113,4 +131,23 @@ optional arguments:
                         vocab size
   --shuffle_tokens      When turned on it shuffles tokens before sending to
                         bert or custom tokenizer
+```
+
+## inference.py
+Same arguments as previous one but also additionally takes mode (recognition_vision for recognition only, and recognition_tagging for doing both),
+test_path for the images to test (tests all files in directory), results_infer (where to save), and save_results (save images with visualization of
+class probabilities if doing vision ony recognition).
+
+```
+usage: inference.py [--mode {recognition_vision,recognition_tagging,generate_tags}] [--test_path TEST_PATH]
+                    [--results_infer RESULTS_INFER] [--save_results SAVE_RESULTS]
+
+  --mode {recognition_vision,recognition_tagging,generate_tags}
+                        Mode for inference (multimodal or vision).
+  --test_path TEST_PATH
+                        The directory where test image is stored.
+  --results_infer RESULTS_INFER
+                        The directory where inference results will be stored.
+  --save_results SAVE_RESULTS
+                        Save the images after transform and with label results.
 ```

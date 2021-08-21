@@ -6,14 +6,15 @@ import pandas as pd
 import matplotlib.pyplot as plt 
 import cv2
 import wandb
-
 import torch
+
+DEFAULT_MAX_TEXT_SEQ_LEN = 16
 
 def ret_args(ret_parser=False):
 
     parser = argparse.ArgumentParser()
     parser.add_argument('--dataset_name', choices=['moeImouto', 'danbooruFaces', 'cartoonFace', 'danbooruFull'], 
-                        default='moeImouto', help='Which dataset to use.')
+                        default='danbooruFaces', help='Which dataset to use.')
     parser.add_argument('--dataset_path', help='Path for the dataset.')
     parser.add_argument('--model_name', choices=['shallow', 'resnet18', 'resnet50', 'resnet152', 'efficientnetb0',
                         'B_16', 'B_32', 'L_16', 'L_32'], default='B_16',
@@ -29,7 +30,7 @@ def ret_args(ret_parser=False):
     parser.add_argument('--learning_rate', default=0.001, type=float,
                         help='Initial learning rate.')  
     parser.add_argument('--lr_scheduler', type=str, choices=['warmupCosine', 'epochDecayConstant'], 
-                        default='epochDecayConstant', help='LR scheduler.')
+                        default='warmupCosine', help='LR scheduler.')
     parser.add_argument('--epoch_decay', default=20, type=int,
                         help='After how many epochs to decay the learning rate once.')
     parser.add_argument('--warmup_steps', type=int, default=1000, help='Warmup steps for LR scheduler.')
@@ -48,7 +49,7 @@ def ret_args(ret_parser=False):
                         help='Load pre-processing components to speed up training')
     parser.add_argument('--log_freq', default=100, type=int,
                         help='Frequency in steps to print results (and save images if needed).')        
-    parser.add_argument('--save_checkpoint_freq', default=40, type=int,
+    parser.add_argument('--save_checkpoint_freq', default=100, type=int,
                         help='Frequency (in epochs) to save checkpoints')        
     parser.add_argument('--no_cpu_workers', type=int, default=4, help='CPU workers for data loading.')
     parser.add_argument('--seed', type=int, default=0, help='random seed for initialization')
@@ -62,16 +63,16 @@ def ret_args(ret_parser=False):
     parser.add_argument('--exc_layers_dist', type=int, default=2, help='Number of layers in between to calculate exclusion')
     parser.add_argument('--multimodal', action='store_true', help='Vision+tags if true')  
     parser.add_argument('--max_text_seq_len', default=None, required=False, type=int,
-                        help='Length for text sequence (for padding and truncation). Default uses same as image.') 
+                        help='Length for text sequence (for padding and truncation). Default 16.') 
     parser.add_argument('--mask_schedule', choices=[None, 'bert', 'full', 'sigmoid'], 
                         default=None, help='Scheduler for masking language tokens.')
-    parser.add_argument('--mask_wu_percent', type=float, default=0.0, 
+    parser.add_argument('--mask_wu_percent', type=float, default=0.1, 
                         help='Percentage of training steps for masks warmup')
     parser.add_argument('--mask_cd_percent', type=float, default=0.5, 
                         help='Percentage of training steps for masks cooldown')
     parser.add_argument('--ret_attn_scores', action='store_true', help='Returns attention scores for visualization')
     parser.add_argument('--tokenizer', type=str, choices=['wp', 'tag'],
-                        default='wp', help='Tokenize using word-piece (BERT pretrained from HF) or custom tag-level')
+                        default='tag', help='Tokenize using word-piece (BERT pretrained from HF) or custom tag-level')
     parser.add_argument('--masking_behavior', type=str, choices=['constant', 'random'],
                         default='constant', help='When masked convert token to 1 or to a random int in vocab size')
     parser.add_argument('--shuffle_tokens', action='store_true', 
@@ -90,7 +91,7 @@ def ret_args(ret_parser=False):
         args.mask_schedule = None
     elif (args.multimodal) and (not args.max_text_seq_len):
         #args.max_text_seq_len = int(((args.image_size // args.patch_size)**2) / 4)
-        args.max_text_seq_len = 32
+        args.max_text_seq_len = int(DEFAULT_MAX_TEXT_SEQ_LEN)
     else:
         args.max_text_seq_len = int(args.max_text_seq_len)
 

@@ -1,10 +1,13 @@
 # Animesion
 An end-to-end framework for anime character recognition and tagging.
-![](./classification/data_exploration/figures/AnimesionSystemDiagram.png)
+![](./classification_tagging/data_exploration/figures/AnimesionSystemDiagram.png)
 
-Install requirements by first creating a conda environment then installing with conda
-Packages that cant be found with conda install with pip
+Install requirements by first creating a conda environment and installing with conda then pip
+packages for packages that cant be found in conda
 ```
-conda create --animesion python pip
-conda install --file requirements.txt
-pip install -r requirements.txt```
+conda create --name animesion --file requirements_conda.txt
+conda activate animesion
+conda install pytorch torchvision torchaudio cudatoolkit=10.2 -c pytorch
+pip install -r requirements.txt
+cd classification_tagging/models & pip install -e .
+```

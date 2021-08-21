@@ -66,7 +66,7 @@ def environment_loader(args, init=True):
     model = utilities.model_selection.load_model(args, device)
     if (args.model_name not in ['shallow', 'efficientnetb0', 'resnet18', 'resnet50', 'resnet152']) and init:
         utilities.misc.print_write(f, str(model.configuration))
-    if (not args.interm_features_fc) and (not args.multimodal):
+    if (not args.interm_features_fc) and (not args.multimodal) and (init):
         summary(model, input_size=iter(train_loader).next()[0].shape[1:])
     
     # loss and optimizer

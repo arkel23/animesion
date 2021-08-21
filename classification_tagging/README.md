@@ -10,6 +10,7 @@ We hope that this work inspires other researchers to follow and build upon this 
 
 Checkpoints and data: [Google Drive](https://drive.google.com/drive/folders/1Tk2e5OoI4mtVBdmjMhfoh2VC-lzW164Q?usp=sharing).
 
+
 # Features
 * Variety of architectures to choose from: Shallow, Resnet18/50/152, EfficientNet-B0, Vi(L)T B-16/B-32/L-16/L-32
 * Two fully-fledged datasets, moeImouto and DAF:re, with 173 and more than 3000 classes, respectively
@@ -17,6 +18,7 @@ Checkpoints and data: [Google Drive](https://drive.google.com/drive/folders/1Tk2
 * Supporting scripts for making, visualization and stats for datasets.
 * Scripts for training from scratch, evaluation (accuracy of a model with a certain set and pretrained weights), and inference (classifies all images in a given (`test_images` by default) folder.
  
+
 # How to (summary)
 
 ## Data preparation
@@ -39,14 +41,33 @@ Load pretrained model for recognition (defaults: B-16, IS=128):
 Load pretrained model for recognition and tagging (defaults: B-16, max_text_seq_len=16, tokenizer='tag'):
 `python inference.py --dataset_path YOUR_PATH --checkpoint_path PATH_TO_CHECKPOINT --mode recognition_tagging`
 
-Demo with [gradio](https://gradio.app/):
+Demo for recognition and tagging with [gradio](https://gradio.app/):
 `python demo.py --dataset_path YOUR_PATH -checkpoint_path PATH_TO_CHECKPOINT`
+
+## Evaluation
+Evaluate on test set of chosen dataset using pretrained model for recognition (defaults: B-16, IS=128):
+`python evaluate.py --dataset_path YOUR_PATH --checkpoint_path PATH_TO_CHECKPOINT`
+
+
+# Sample results
+![](./results_inference/homura_top.jpg)
+![](./results_inference/kirito.jpg)
+It not only works for anime images, but also works that take inspiration from anime, such as many videogames. 
+![](./results_inference/dva.jpg)
+And also for images that are not a face-crop:
+![](./results_inference/rei_bodypillow.jpg)
+
+We also tried it for people (and a cat), so hopefully I'll be able to post some results of that later. What came to me as interesting is that for the cat, it predicted `Naruto`, I guess based on the whiskers. Also, for a friend with curly hair, among the predictions included `Yamagishi Yukako`, a character with similar characteristics. 
+
+![](./results_inference/muffin.jpg)
+
+While the results were certainly far from perfect, this can serve as a basis for more studies on domain adaptation from natural images to sketches and drawn media.
+
 
 # How to use (detailed)
 The main scripts in this repo are the `train.py`, `evaluate.py` and `inference.py`.
  
 ## train.py
- 
 This script takes as input a set of hyperparameters (dataset to use, model, batch and image size, 
 among others) and trains the model, either from scratch, or from a checkpoint. 
 If training from a checkpoint, it can also use it to do knowledge transfer between datasets, 
@@ -155,7 +176,24 @@ usage: inference.py [--mode {recognition_vision,recognition_tagging,generate_tag
                         Save the images after transform and with label results.
 ```
 
+## evaluate.py
+Main functionality is the evaluate() function which loads a pretrained model from a checkpoint and evaluates it on the given dataset, 
+returning top-1 and top-5 accuracies for the test split, along with accuracies and stats for each character class and stores it into log files with same name as checkpoint, 
+and saved to `results_dir` which becomes `results_inference` by default but can be changed by using the argument.
+Same arguments as `train.py` but includes eval_imagebyimage flag to inspect one by one wrong classification results 
+(with possibility of saving them with save_results flag).
+```
+[--vis_arch] [--eval_imagebyimage] [--save_results]
+
+  --vis_arch            Visualize architecture through model summary.
+  --eval_imagebyimage   Evaluate all or image by image
+  --save_results        Save the images after transform and with label results.
+```
+
+
 # Others
+
+## Data exploration
 Visualization for the data in terms of histograms, image grids, and statistics related to the classes distributions can be obtained by using `data_exploration.py`. Parent argument parser is the same as `train.py` but the important ones are the following:
 ```
 [--split SPLIT]
@@ -169,3 +207,75 @@ Visualization for the data in terms of histograms, image grids, and statistics r
 ```
 For example to generate a grid for danbooruFull's test split with labels printed as the title: 
 `python data_exploration.py --dataset_path PATH --split test --display_image --dataset_name danbooruFull --labels`
+
+For a visualization of all the splits (along with the labels): [YouTube playlist](https://youtube.com/playlist?list=PLenBV8wMp2FyJHvBZM4FBxua7JggUUqvQ). In total, there's 6 videos, 3 for *DAF:re* and 3 for *moeImouto*.
+
+A brief preview can be seen here for DAF:re and moeImouto, respectively:
+
+![](https://j.gifs.com/ROpp10.gif)
+
+![](https://j.gifs.com/XLyy5l.gif)
+
+## Datasets
+
+### moeImouto
+For the moeImouto dataset here's a sample of how the images look along with their classes. For the training and testing split files: [moeImouto repo](https://github.com/arkel23/moeimouto_animefacecharacterdataset)
+![](./data_exploration/datasets_vis/moeImouto_train_labelsFalse_orderedFalse.png)
+Histogram of classes with most samples.
+![](./data_exploration/histograms/histogram_moeImouto_partialFalse.png)
+The dataset itself can be downloaded from [Kaggle](https://www.kaggle.com/mylesoneill/tagged-anime-illustrations/home) then stored in a folder containing the rest of the files, following the structure `moeImoutoDataset/data/`, where `data/` contains the folders containing images divided by class and the base folder `moeImoutoDataset/` contains the files included in the [repo](https://github.com/arkel23/moeimouto_animefacecharacterdataset) I described previously (`train.csv`, `test.csv`, and `classid_classname.csv`).
+
+### DAF:re
+Similarly, for DAF:re. Also, here's the repo for some more details on the dataset along with the instructions for downloading data, labels and supporting scripts: [DAF:re repo](https://github.com/arkel23/Danbooru2018AnimeCharacterRecognitionDataset_Revamped)
+![](./data_exploration/datasets_vis/danbooruFaces_train_labelsFalse_orderedFalse.png)
+Histogram of classes with most samples. It's clear that the distribution is very long-tailed.
+![](./data_exploration/histograms/histogram_danbooruFaces_partialFalse.png)
+
+
+## Models
+Shallow is a shallow, 5 layer (2 convolutional + 2 fully-connected) network. ResNet-18/152 has been the basis for many CNN architectures and was SotA for image classification just a few years ago [(paper)](https://arxiv.org/abs/1512.03385). Vision Transformers [(ViT paper)](https://arxiv.org/abs/2010.11929) are the new SotA for image classification in many standard benchmarks such as ImageNet, among others. Their significance is that they forego convolutions completely, and rely only on self-attention. This allows ViT to attend to distant regions in the image, as it looks as the whole image as a sequence of patches, all at once. This is in comparison to CNNs which traditionally "look" at the image patch by patch, rendering them unable to grasp long-range dependencies.
+
+
+# References
+If you find this work useful, please consider citing:
+
+* E. A. Rios, W.-H. Cheng, and B.-C. Lai, “DAF:re: A Challenging, Crowd-Sourced, Large-Scale, Long-Tailed Dataset For Anime Character Recognition,” arXiv:2101.08674 [cs], Jan. 2021, Accessed: Jan. 22, 2021. [Online]. Available: http://arxiv.org/abs/2101.08674.
+* Yan Wang, "Danbooru2018 Anime Character Recognition Dataset," July 2019. https://github.com/grapeot/Danbooru2018AnimeCharacterRecognitionDataset 
+* Anonymous, The Danbooru Community, & Gwern Branwen; “Danbooru2020: A Large-Scale Crowdsourced and Tagged Anime Illustration Dataset”, 2020-01-12. Web. Accessed [DATE] https://www.gwern.net/Danbooru2020
+
+
+```bibtex
+@misc{rios2021dafre,
+      title={DAF:re: A Challenging, Crowd-Sourced, Large-Scale, Long-Tailed Dataset For Anime Character Recognition}, 
+      author={Edwin Arkel Rios and Wen-Huang Cheng and Bo-Cheng Lai},
+      year={2021},
+      eprint={2101.08674},
+      archivePrefix={arXiv},
+      primaryClass={cs.CV}
+}
+```
+
+```bibtex
+    @misc{danboorucharacter,
+        author = {Yan Wang},
+        title = {Danbooru 2018 Anime Character Recognition Dataset},
+        howpublished = {\url{https://github.com/grapeot/Danbooru2018AnimeCharacterRecognitionDataset}},
+        url = {https://github.com/grapeot/Danbooru2018AnimeCharacterRecognitionDataset},
+        type = {dataset},
+        year = {2019},
+        month = {July} }
+```
+
+```bibtex
+    @misc{danbooru2020,
+        author = {Anonymous and Danbooru community and Gwern Branwen},
+        title = {Danbooru2020: A Large-Scale Crowdsourced and Tagged Anime Illustration Dataset},
+        howpublished = {\url{https://www.gwern.net/Danbooru2020}},
+        url = {https://www.gwern.net/Danbooru2020},
+        type = {dataset},
+        year = {2021},
+        month = {January},
+        timestamp = {2020-01-12},
+        note = {Accessed: DATE} }
+```
+

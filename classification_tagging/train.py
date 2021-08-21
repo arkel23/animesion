@@ -40,8 +40,8 @@ def environment_loader(args, init=True):
     steps_per_epoch = len(train_loader)
     total_steps = args.no_epochs * steps_per_epoch
 
-    # mask scheduler
-    if args.mask_schedule:
+    # tokenizer and mask scheduler
+    if args.multimodal:
         if args.tokenizer == 'wp':
             tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
             args.vocab_size = tokenizer.vocab_size
@@ -50,13 +50,15 @@ def environment_loader(args, init=True):
                 vocab_path=os.path.join(args.dataset_path, 'labels', 'vocab.pkl'), 
                 max_text_seq_len=args.max_text_seq_len)
             args.vocab_size = tokenizer.vocab_size
-
-        mask_wu_steps = int(total_steps * args.mask_wu_percent)
-        mask_cd_steps = int(total_steps * args.mask_cd_percent)
-        mask_scheduler = utilities.scheduler.MasksSchedule(device=device, mask_schedule=args.mask_schedule, 
-            masking_behavior=args.masking_behavior, tokenizer=args.tokenizer, vocab_size=args.vocab_size,
-            batch_size=args.batch_size, max_text_seq_len=args.max_text_seq_len, 
-            warmup_steps=mask_wu_steps, cooldown_steps=mask_cd_steps, total_steps=total_steps, cycles=.5)
+        if args.mask_schedule:
+            mask_wu_steps = int(total_steps * args.mask_wu_percent)
+            mask_cd_steps = int(total_steps * args.mask_cd_percent)
+            mask_scheduler = utilities.scheduler.MasksSchedule(device=device, mask_schedule=args.mask_schedule, 
+                masking_behavior=args.masking_behavior, tokenizer=args.tokenizer, vocab_size=args.vocab_size,
+                batch_size=args.batch_size, max_text_seq_len=args.max_text_seq_len, 
+                warmup_steps=mask_wu_steps, cooldown_steps=mask_cd_steps, total_steps=total_steps, cycles=.5)
+        else:
+            mask_scheduler = None
     else:
         mask_scheduler = None
         tokenizer = None
@@ -178,7 +180,7 @@ def validate(args, f, global_step, model, device, tokenizer, loader,
     # Test the model (validation set)
     # eval mode (batchnorm uses moving mean/variance instead of mini-batch mean/variance)
     # dropout probability goes to 0
-    if save_all_captions:
+    if save_all_captions and mask_scheduler is not None:
         file_name = '{}_captions.txt'.format(args.run_name)
         save_all_captions_file = open(os.path.join(args.results_dir, '{}'.format(file_name)), 'w', buffering=1)
 
@@ -321,14 +323,7 @@ def train_main(logger, args):
     curr_line = '\nUsing checkpoint from last epoch: {}.\n'.format(args.no_epochs)
     utilities.misc.print_write(f, curr_line)
     validate(args, f, global_step, model=model, device=device, tokenizer=tokenizer, loader=test_loader, 
-    mask_scheduler=mask_scheduler, top1_accuracies=top1_accuracies, top5_accuracies=top5_accuracies, save_all_captions=True)
-
-    # validate using best accuracy epoch checkpoint
-    model.load_state_dict(torch.load(os.path.join(args.results_dir, '{}_bestAccEpoch.ckpt'.format(args.run_name))), strict=True)
-    curr_line = '\nLoading checkpoint from best epoch: {}.\n'.format(best_epoch_acc)
-    utilities.misc.print_write(f, curr_line)
-    validate(args, f, global_step, model=model, device=device, tokenizer=tokenizer, loader=test_loader, 
-    mask_scheduler=mask_scheduler, top1_accuracies=top1_accuracies, top5_accuracies=top5_accuracies)
+    mask_scheduler=mask_scheduler, top1_accuracies=top1_accuracies, top5_accuracies=top5_accuracies, save_all_captions=args.mask_schedule)
 
     time_end = time.time()
     time_all = time_end - time_start

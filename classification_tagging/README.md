@@ -13,7 +13,7 @@ Checkpoints and data: [Google Drive](https://drive.google.com/drive/folders/1Tk2
 
 # Features
 * Variety of architectures to choose from: Shallow, Resnet18/50/152, EfficientNet-B0, Vi(L)T B-16/B-32/L-16/L-32
-* Two fully-fledged datasets, moeImouto and DAF:re, with 173 and more than 3000 classes, respectively
+* Two fully-fledged datasets, *moeImouto* and *DAF:re*, with 173 and more than 3000 classes, respectively
 * Pre-trained models for best performing models using image size of 128x128.
 * Supporting scripts for making, visualization and stats for datasets.
 * Scripts for training from scratch, evaluation (accuracy of a model with a certain set and pretrained weights), and inference (classifies all images in a given (`test_images` by default) folder.
@@ -22,7 +22,7 @@ Checkpoints and data: [Google Drive](https://drive.google.com/drive/folders/1Tk2
 # How to (summary)
 
 ## Data preparation
-From `data` folder in Google Drive download `dafre_faces.tar.gz` for `DAF:re Faces` or `dafre_full.tar.gz` for `DAF:re Full`, and `labels.tar.gz` and uncompress their contents into desired data storage location. The `dataset_path` argument expects a path to the root that contains both `faces` or `fullMin256` directories, along with `labels` at the same level.
+From `data` folder in Google Drive download `dafre_faces.tar.gz` for *DAF:re Faces* or `dafre_full.tar.gz` for *DAF:re Full*, and `labels.tar.gz` and uncompress their contents into desired data storage location. The `dataset_path` argument expects a path to the root that contains both `faces` or `fullMin256` directories, along with `labels` at the same level.
 
 ## Training
 Train a ViT B-16 vision only model with intermediate features aggregation classification head on DanbooruFaces for recognition: 
@@ -57,12 +57,10 @@ It not only works for anime images, but also works that take inspiration from an
 And also for images that are not a face-crop:
 ![](./results_inference/rei_bodypillow.jpg)
 
-We also tried it for people (and a cat), so hopefully I'll be able to post some results of that later. What came to me as interesting is that for the cat, it predicted `Naruto`, I guess based on the whiskers. Also, for a friend with curly hair, among the predictions included `Yamagishi Yukako`, a character with similar characteristics. 
-
+We also tried it with people, and a cat:
 ![](./results_inference/muffin.jpg)
 
 While the results were certainly far from perfect, this can serve as a basis for more studies on domain adaptation from natural images to sketches and drawn media.
-
 
 # How to use (detailed)
 The main scripts in this repo are the `train.py`, `evaluate.py` and `inference.py`.
@@ -208,32 +206,41 @@ Visualization for the data in terms of histograms, image grids, and statistics r
 For example to generate a grid for danbooruFull's test split with labels printed as the title: 
 `python data_exploration.py --dataset_path PATH --split test --display_image --dataset_name danbooruFull --labels`
 
-For a visualization of all the splits (along with the labels): [YouTube playlist](https://youtube.com/playlist?list=PLenBV8wMp2FyJHvBZM4FBxua7JggUUqvQ). In total, there's 6 videos, 3 for *DAF:re* and 3 for *moeImouto*.
+For a visualization of all the splits (along with the labels): [YouTube playlist](https://youtube.com/playlist?list=PLenBV8wMp2FyJHvBZM4FBxua7JggUUqvQ). In total, there's 6 videos, 3 for *DAF:re Faces* and 3 for *moeImouto*.
 
-A brief preview can be seen here for DAF:re and moeImouto, respectively:
+A brief preview can be seen here for *DAF:re Faces* and *moeImouto*, respectively:
 
 ![](https://j.gifs.com/ROpp10.gif)
 
 ![](https://j.gifs.com/XLyy5l.gif)
 
+
 ## Datasets
 
 ### moeImouto
-For the moeImouto dataset here's a sample of how the images look along with their classes. For the training and testing split files: [moeImouto repo](https://github.com/arkel23/moeimouto_animefacecharacterdataset)
+For the moeImouto dataset here's a sample of how the images look along with their classes. For the data and label files please check the above aforementioned [Google Drive folder](https://drive.google.com/drive/folders/1Tk2e5OoI4mtVBdmjMhfoh2VC-lzW164Q?usp=sharing).
+
 ![](./data_exploration/datasets_vis/moeImouto_train_labelsFalse_orderedFalse.png)
+
 Histogram of classes with most samples.
 ![](./data_exploration/histograms/histogram_moeImouto_partialFalse.png)
-The dataset itself can be downloaded from [Kaggle](https://www.kaggle.com/mylesoneill/tagged-anime-illustrations/home) then stored in a folder containing the rest of the files, following the structure `moeImoutoDataset/data/`, where `data/` contains the folders containing images divided by class and the base folder `moeImoutoDataset/` contains the files included in the [repo](https://github.com/arkel23/moeimouto_animefacecharacterdataset) I described previously (`train.csv`, `test.csv`, and `classid_classname.csv`).
 
 ### DAF:re
-Similarly, for DAF:re. Also, here's the repo for some more details on the dataset along with the instructions for downloading data, labels and supporting scripts: [DAF:re repo](https://github.com/arkel23/Danbooru2018AnimeCharacterRecognitionDataset_Revamped)
+Similarly, for *DAF:re Faces* and *Full*. Also, here's the repo for some more details on the dataset along with the instructions for downloading data, labels and supporting scripts: [DAF:re repo](https://github.com/arkel23/Danbooru2018AnimeCharacterRecognitionDataset_Revamped)
 ![](./data_exploration/datasets_vis/danbooruFaces_train_labelsFalse_orderedFalse.png)
+![](./data_exploration/datasets_vis/danbooruFull_train_labelsTrue_orderedFalse.png)
+
 Histogram of classes with most samples. It's clear that the distribution is very long-tailed.
 ![](./data_exploration/histograms/histogram_danbooruFaces_partialFalse.png)
 
+Wordcloud of category 0 tags:
+![](./data_exploration/figures/wordcloud_tags_cat0_wordlevel.png)
+
+Process to obtain the dataset and tags:
+![](./data_exploration/figures/DatasetPreparation.png)
 
 ## Models
-Shallow is a shallow, 5 layer (2 convolutional + 2 fully-connected) network. ResNet-18/152 has been the basis for many CNN architectures and was SotA for image classification just a few years ago [(paper)](https://arxiv.org/abs/1512.03385). Vision Transformers [(ViT paper)](https://arxiv.org/abs/2010.11929) are the new SotA for image classification in many standard benchmarks such as ImageNet, among others. Their significance is that they forego convolutions completely, and rely only on self-attention. This allows ViT to attend to distant regions in the image, as it looks as the whole image as a sequence of patches, all at once. This is in comparison to CNNs which traditionally "look" at the image patch by patch, rendering them unable to grasp long-range dependencies.
+Shallow is a shallow, 5 layer (2 convolutional + 2 fully-connected) network. ResNet-18/152 has been the basis for many CNN architectures and was SotA for image classification just a few years ago [(paper)](https://arxiv.org/abs/1512.03385). Vision Transformers [(ViT paper)](https://arxiv.org/abs/2010.11929) are the new SotA for image classification in many standard benchmarks such as ImageNet, among others. Their significance is that they forego convolutions completely, and rely only on self-attention. This allows ViT to attend to distant regions in the image, as it looks as the whole image as a sequence of patches, all at once. This is in comparison to CNNs which traditionally "look" at the image patch by patch, rendering them unable to grasp long-range dependencies. [Vision Language Transformer (ViLT)](https://arxiv.org/abs/2102.03334) allows ViT to take text data as input by incorporating a text tokenizer similar to BERT, and therefore perform multimodal tasks.
 
 
 # References

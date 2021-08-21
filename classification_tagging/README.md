@@ -61,7 +61,6 @@ usage: train.py [-h]
                 [--epoch_decay EPOCH_DECAY] [--warmup_steps WARMUP_STEPS]
                 [--pretrained] [--checkpoint_path CHECKPOINT_PATH]
                 [--transfer_learning]
-                [--load_partial_mode {full_tokenizer,patchprojection,posembeddings,clstoken,patchandposembeddings,patchandclstoken,posembeddingsandclstoken,None}]
                 [--log_freq LOG_FREQ]
                 [--save_checkpoint_freq SAVE_CHECKPOINT_FREQ]
                 [--no_cpu_workers NO_CPU_WORKERS] [--seed SEED]
@@ -103,8 +102,6 @@ optional arguments:
   --transfer_learning   Load partial state dict for transfer learningResets
                         the [embeddings, logits and] fc layer for ViTResets
                         the fc layer for ResnetsDefault=False
-  --load_partial_mode {full_tokenizer,patchprojection,posembeddings,clstoken,patchandposembeddings,patchandclstoken,posembeddingsandclstoken,None}
-                        Load pre-processing components to speed up training
   --log_freq LOG_FREQ   Frequency in steps to print results (and save images
                         if needed).
   --save_checkpoint_freq SAVE_CHECKPOINT_FREQ

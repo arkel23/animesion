@@ -80,15 +80,15 @@ def forward_vision(args, classid_classname_dic, model, image, file_path):
         
     with torch.no_grad():
         if args.ret_attn_scores:
-            outputs, att_mat = model(image)
-            outputs = outputs.squeeze(0)
-            utilities.vis_attention(args, image, outputs, att_mat, file_name_no_ext)
+            out_cls, att_mat = model(image)
+            out_cls = out_cls.squeeze(0)
+            utilities.vis_attention(args, image, out_cls, att_mat, file_name_no_ext)
             
             classes_predicted = []
             classes_predicted.append(file_name_no_ext)
             classes_predicted.append('\n')
-            for i, idx in enumerate(torch.topk(outputs, k=5).indices.tolist()):
-                prob = torch.softmax(outputs, -1)[idx].item() * 100
+            for i, idx in enumerate(torch.topk(out_cls, k=5).indices.tolist()):
+                prob = torch.softmax(out_cls, -1)[idx].item() * 100
                 class_name = classid_classname_dic.loc[classid_classname_dic['class_id']==idx, 'class_name'].item()
                 predict_text = 'Prediction No. {}: {} [ID: {}], Confidence: {}\n'.format(i+1, class_name, idx, prob)
                 classes_predicted.append(predict_text)
@@ -99,12 +99,12 @@ def forward_vision(args, classid_classname_dic, model, image, file_path):
             imshow(grid, out_name, title=classes_predicted, save_results=args.save_results)
                     
         else:
-            outputs = model(image).squeeze(0)
+            out_cls = model(image).squeeze(0)
             classes_predicted = []
             classes_predicted.append(file_name_no_ext)
             classes_predicted.append('\n')
-            for i, idx in enumerate(torch.topk(outputs, k=5).indices.tolist()):
-                prob = torch.softmax(outputs, -1)[idx].item() * 100
+            for i, idx in enumerate(torch.topk(out_cls, k=5).indices.tolist()):
+                prob = torch.softmax(out_cls, -1)[idx].item() * 100
                 class_name = classid_classname_dic.loc[classid_classname_dic['class_id']==idx, 'class_name'].item()
                 predict_text = 'Prediction No. {}: {} [ID: {}], Confidence: {}\n'.format(i+1, class_name, idx, prob)
                 classes_predicted.append(predict_text)
@@ -115,12 +115,29 @@ def forward_vision(args, classid_classname_dic, model, image, file_path):
             imshow(grid, out_name, title=classes_predicted, save_results=args.save_results)
 
 
-def forward_multimodal(args, model, tokenizer, voc, image, text_prompt, file_path):
+def forward_multimodal(args, classid_classname_dic, model, tokenizer, voc, image, text_prompt, file_path):
     
     print(file_path)
+    file_name_no_ext = os.path.splitext(os.path.split(file_path)[1])[0]
+    out_name = os.path.join(args.results_dir, '{}.jpg'.format(file_name_no_ext))
 
     with torch.no_grad():
         out_cls, out_tokens_text = model(image, text=text_prompt)
+
+    out_cls = out_cls.squeeze(0)
+    classes_predicted = []
+    classes_predicted.append(file_name_no_ext)
+    classes_predicted.append('\n')
+    for i, idx in enumerate(torch.topk(out_cls, k=5).indices.tolist()):
+        prob = torch.softmax(out_cls, -1)[idx].item() * 100
+        class_name = classid_classname_dic.loc[classid_classname_dic['class_id']==idx, 'class_name'].item()
+        predict_text = 'Prediction No. {}: {} [ID: {}], Confidence: {}\n'.format(i+1, class_name, idx, prob)
+        classes_predicted.append(predict_text)
+        print(predict_text, end='')
+
+    classes_predicted = '  '.join(classes_predicted)
+    grid = torchvision.utils.make_grid(image)
+    imshow(grid, out_name, title=classes_predicted, save_results=args.save_results)
         
     text_prob, text_pred = torch.topk(out_tokens_text, k=1, dim=2, largest=True, sorted=True)
     text_pred = text_pred.squeeze()
@@ -149,6 +166,7 @@ def recognition_vision(args, device, data_set, model):
 
 
 def recognition_tagging(args, device, data_set, model, mask_scheduler, tokenizer):
+    classid_classname_dic = data_set.classes
 
     if args.tokenizer == 'tag':
         voc = tokenizer.vocab
@@ -163,7 +181,7 @@ def recognition_tagging(args, device, data_set, model, mask_scheduler, tokenizer
 
     for file_path in file_list:
         image, text_prompt = return_prepared_inputs(file_path, args, device, data_set, mask_scheduler)
-        forward_multimodal(args, model, tokenizer, voc, image, text_prompt, file_path)
+        forward_multimodal(args, classid_classname_dic, model, tokenizer, voc, image, text_prompt, file_path)
 
 
 def generate_tags_df(args, device, data_set, model, mask_scheduler, tokenizer):

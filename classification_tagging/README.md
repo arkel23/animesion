@@ -4,7 +4,10 @@
 Anime character recognition and tagging using PyTorch.
 
 Our best vision-only model, ViT L-16 with image size 128x128 and batch size 16 achieves to get 89.71% 
-and 96.14% test set top-1 and top-5 classification accuracies, respectively, among 3263 characters!
+and 96.14% test set top-1 and top-5 classification accuracies, respectively, among 3263 characters! 
+Additionally, we study multi-label classification (also known as tagging) as the problem of learning a mapping 
+from a sequence of input query tokens to a set of prediction tags. This method is in contrast to the traditional approach of
+utilizing binary cross-entropy and predict probability of each tag individually.
 
 We hope that this work inspires other researchers to follow and build upon this path. 
 
@@ -16,8 +19,8 @@ Checkpoints and data: [Google Drive](https://drive.google.com/drive/folders/1Tk2
 * Two fully-fledged datasets, *moeImouto* and *DAF:re*, with 173 and more than 3000 classes, respectively
 * Pre-trained models for best performing models using image size of 128x128.
 * Supporting scripts for making, visualization and stats for datasets.
-* Scripts for training from scratch, evaluation (accuracy of a model with a certain set and pretrained weights), and inference (classifies all images in a given (`test_images` by default) folder.
- 
+* Scripts for training from scratch, evaluation (accuracy of a model with a certain set and pretrained weights), and inference (classifies (and optionally tags) all images in a given (`test_images` by default) folder.
+
 
 # How to (summary)
 

@@ -9,3 +9,4 @@ torchsummary==1.5.1
 transformers==4.9.1
 wandb==0.11.2
 wordcloud==1.8.1
+gdown==3.13.0

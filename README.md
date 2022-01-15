@@ -1,6 +1,6 @@
 # Animesion
 An end-to-end framework for anime character recognition and tagging.
-![](./classification_tagging/data_exploration/figures/AnimesionSystemDiagram.png)
+![](./classification_tagging/data_exploration/figures/AnimesionSystemDiagramRT.png)
 
 Install requirements by first creating a conda environment and installing with conda then pip
 packages for packages that cant be found in conda

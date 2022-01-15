@@ -1,18 +1,24 @@
-![](./data_exploration/figures/AnimesionSystemDiagram.png)
-
-# Overview 
-Anime character recognition and tagging using PyTorch.
+# Overview
+Anime character recognition (and tagging) using PyTorch.
 
 Our best vision-only model, ViT L-16 with image size 128x128 and batch size 16 achieves to get 89.71% 
 and 96.14% test set top-1 and top-5 classification accuracies, respectively, among 3263 characters! 
-Additionally, we study multi-label classification (also known as tagging) as the problem of learning a mapping 
-from a sequence of input query tokens to a set of prediction tags. This method is in contrast to the traditional approach of
-utilizing binary cross-entropy and predict probability of each tag individually.
 
 We hope that this work inspires other researchers to follow and build upon this path. 
 
 Checkpoints and data: [Google Drive](https://drive.google.com/drive/folders/1Tk2e5OoI4mtVBdmjMhfoh2VC-lzW164Q?usp=sharing).
 
+
+# IFA Classification Head
+
+We propose a simple change to the classification head that increases ViTs robustness against hyperparameters (mini-batch size), at relatively no additional computational cost, and which can be summarized with the below figure:
+
+![](./data_exploration/figures/AnimesionSystemDiagramRO.png)
+
+
+# Tagging
+
+Check [tagging.md](./tagging.MD) for more details.
 
 # Features
 * Variety of architectures to choose from: Shallow, Resnet18/50/152, EfficientNet-B0, Vi(L)T B-16/B-32/L-16/L-32
@@ -28,27 +34,34 @@ Checkpoints and data: [Google Drive](https://drive.google.com/drive/folders/1Tk2
 From `data` folder in Google Drive download `dafre_faces.tar.gz` for *DAF:re Faces* or `dafre_full.tar.gz` for *DAF:re Full*, and `labels.tar.gz` and uncompress their contents into desired data storage location (clone [DAF:re repo](https://github.com/arkel23/Danbooru2018AnimeCharacterRecognitionDataset_Revamped) and uncompress these folders). The `dataset_path` argument expects a path to the root that contains both `faces` or `fullMin256` directories, along with `labels` at the same level.
 
 ## Training
-Train a ViT B-16 vision only model with intermediate features aggregation classification head on DanbooruFaces for recognition: 
+Train a ViT B-16 vision only model with intermediate features aggregation classification head on DanbooruFaces for recognition:
+
 `python train.py --dataset_name danbooruFaces --dataset_path YOUR_PATH --model_name B_16 --image_size 128 --batch_size 64 --learning_rate_scheduler warmupCosine --pretrained --interm_features`
 
-Train a ViLT B-16 with tag/language tokens on DanbooruFull for recognition: 
+Train a ViLT B-16 with tag/language tokens on DanbooruFull for recognition:
+
 `python train.py --dataset_name danbooruFull --dataset_path YOUR_PATH --model_name B_16 --image_size 128 --batch_size 64 --learning_rate_scheduler warmupCosine --pretrained --multimodal --max_text_seq_len 32 --tokenizer wp`
 
-Train a ViLT B-16 with tag/language tokens on DanbooruFull for recognition and tagging: 
+Train a ViLT B-16 with tag/language tokens on DanbooruFull for recognition and tagging:
+
 `python train.py --dataset_name danbooruFull --dataset_path YOUR_PATH --model_name B_16 --image_size 128 --batch_size 16 --learning_rate_scheduler warmupCosine --pretrained --multimodal --max_text_seq_len 16 --tokenizer tag --mask_schedule full --masking_behavior constant`
 
 ## Inference
 Load pretrained model for recognition (defaults: B-16, IS=128):
+
 `python inference.py --dataset_path YOUR_PATH --checkpoint_path PATH_TO_CHECKPOINT`
 
 Load pretrained model for recognition and tagging (defaults: B-16, max_text_seq_len=16, tokenizer='tag'):
+
 `python inference.py --dataset_path YOUR_PATH --checkpoint_path PATH_TO_CHECKPOINT --mode recognition_tagging`
 
 Demo for recognition and tagging with [gradio](https://gradio.app/):
+
 `python demo.py --dataset_path YOUR_PATH -checkpoint_path PATH_TO_CHECKPOINT`
 
 ## Evaluation
 Evaluate on test set of chosen dataset using pretrained model for recognition (defaults: B-16, IS=128):
+
 `python evaluate.py --dataset_path YOUR_PATH --checkpoint_path PATH_TO_CHECKPOINT`
 
 
@@ -75,27 +88,19 @@ If training from a checkpoint, it can also use it to do knowledge transfer betwe
 by for example using a checkpoint trained on *DAF:re* to classify images according to the characters in *moeImouto*. 
 It can also train a model based on both images and tags data.
 ```
-usage: train.py [-h]
-                [--dataset_name {moeImouto,danbooruFaces,cartoonFace,danbooruFull}]
-                [--dataset_path DATASET_PATH]
+usage: train.py [-h] [--dataset_name {moeImouto,danbooruFaces,cartoonFace,danbooruFull}] [--dataset_path DATASET_PATH]
                 [--model_name {shallow,resnet18,resnet50,resnet152,efficientnetb0,B_16,B_32,L_16,L_32}]
-                [--results_dir RESULTS_DIR] [--image_size IMAGE_SIZE]
-                [--batch_size BATCH_SIZE] [--no_epochs NO_EPOCHS]
-                [--learning_rate LEARNING_RATE]
-                [--lr_scheduler {warmupCosine,epochDecayConstant}]
-                [--epoch_decay EPOCH_DECAY] [--warmup_steps WARMUP_STEPS]
-                [--pretrained] [--checkpoint_path CHECKPOINT_PATH]
-                [--transfer_learning]
-                [--log_freq LOG_FREQ]
-                [--save_checkpoint_freq SAVE_CHECKPOINT_FREQ]
-                [--no_cpu_workers NO_CPU_WORKERS] [--seed SEED]
-                [--interm_features_fc] [--debugging]
-                [--max_text_seq_len MAX_TEXT_SEQ_LEN]
-                [--mask_schedule {None,bert,full,sigmoid}]
-                [--mask_wu_percent MASK_WU_PERCENT]
-                [--mask_cd_percent MASK_CD_PERCENT] [--ret_attn_scores]
-                [--tokenizer {wp,tag}] [--masking_behavior {constant,random}]
-                [--shuffle_tokens]
+                [--results_dir RESULTS_DIR] [--image_size IMAGE_SIZE] [--batch_size BATCH_SIZE]
+                [--no_epochs NO_EPOCHS] [--learning_rate LEARNING_RATE]
+                [--lr_scheduler {warmupCosine,epochDecayConstant}] [--epoch_decay EPOCH_DECAY]
+                [--warmup_steps WARMUP_STEPS] [--pretrained] [--checkpoint_path CHECKPOINT_PATH] [--transfer_learning]
+                [--load_partial_mode {full_tokenizer,patchprojection,posembeddings,clstoken,patchandposembeddings,patchandclstoken,posembeddingsandclstoken,None}]
+                [--log_freq LOG_FREQ] [--save_checkpoint_freq SAVE_CHECKPOINT_FREQ] [--no_cpu_workers NO_CPU_WORKERS]
+                [--seed SEED] [--interm_features_fc] [--debugging] [--exclusion_loss] [--temperature TEMPERATURE]
+                [--exclusion_weight EXCLUSION_WEIGHT] [--exc_layers_dist EXC_LAYERS_DIST] [--multimodal]
+                [--max_text_seq_len MAX_TEXT_SEQ_LEN] [--mask_schedule {None,bert,full,sigmoid}]
+                [--mask_wu_percent MASK_WU_PERCENT] [--mask_cd_percent MASK_CD_PERCENT] [--ret_attn_scores]
+                [--tokenizer {wp,tag}] [--masking_behavior {constant,random}] [--shuffle_tokens]
 
 optional arguments:
   -h, --help            show this help message and exit
@@ -121,27 +126,30 @@ optional arguments:
                         After how many epochs to decay the learning rate once.
   --warmup_steps WARMUP_STEPS
                         Warmup steps for LR scheduler.
-  --pretrained          For models with pretrained weights
-                        availableDefault=False
+  --pretrained          For models with pretrained weights availableDefault=False
   --checkpoint_path CHECKPOINT_PATH
-  --transfer_learning   Load partial state dict for transfer learningResets
-                        the [embeddings, logits and] fc layer for ViTResets
-                        the fc layer for ResnetsDefault=False
-  --log_freq LOG_FREQ   Frequency in steps to print results (and save images
-                        if needed).
+  --transfer_learning   Load partial state dict for transfer learningResets the [embeddings, logits and] fc layer for
+                        ViTResets the fc layer for ResnetsDefault=False
+  --load_partial_mode {full_tokenizer,patchprojection,posembeddings,clstoken,patchandposembeddings,patchandclstoken,posembeddingsandclstoken,None}
+                        Load pre-processing components to speed up training
+  --log_freq LOG_FREQ   Frequency in steps to print results (and save images if needed).
   --save_checkpoint_freq SAVE_CHECKPOINT_FREQ
                         Frequency (in epochs) to save checkpoints
   --no_cpu_workers NO_CPU_WORKERS
                         CPU workers for data loading.
   --seed SEED           random seed for initialization
-  --interm_features_fc  If use this flag creates FC using intermediate
-                        features instead of only last layer.
-  --debugging           If use this flag then shortens the training/val loops
-                        to log_freq*3.
+  --interm_features_fc  If use this flag creates FC using intermediate features instead of only last layer.
+  --debugging           If use this flag then shortens the training/val loops to log_freq*3.
+  --exclusion_loss      Use layer-wise exclusion loss
+  --temperature TEMPERATURE
+                        Temperature for exclusion loss
+  --exclusion_weight EXCLUSION_WEIGHT
+                        Weight for exclusion loss
+  --exc_layers_dist EXC_LAYERS_DIST
+                        Number of layers in between to calculate exclusion
   --multimodal          Vision+tags if true
   --max_text_seq_len MAX_TEXT_SEQ_LEN
-                        Length for text sequence (for padding and truncation).
-                        Default uses same as image.
+                        Length for text sequence (for padding and truncation). Default 16.
   --mask_schedule {None,bert,full,sigmoid}
                         Scheduler for masking language tokens.
   --mask_wu_percent MASK_WU_PERCENT
@@ -149,14 +157,11 @@ optional arguments:
   --mask_cd_percent MASK_CD_PERCENT
                         Percentage of training steps for masks cooldown
   --ret_attn_scores     Returns attention scores for visualization
-  --tokenizer {wp,tag}  Tokenize using word-piece (BERT pretrained from HF) or
-                        custom tag-level
+  --tokenizer {wp,tag}  Tokenize using word-piece (BERT pretrained from HF) or custom tag-level
   --masking_behavior {constant,random}
-                        When masked convert token to 1 or to a random int in
-                        vocab size
-  --shuffle_tokens      When turned on it shuffles tokens before sending to
-                        bert or custom tokenizer
-```
+                        When masked convert token to 1 or to a random int in vocab size
+  --shuffle_tokens      When turned on it shuffles tokens before sending to bert or custom tokenizer
+  ```
 
 ## inference.py
 Same arguments as previous one but also additionally takes mode (recognition_vision for recognition only, and recognition_tagging for doing both),

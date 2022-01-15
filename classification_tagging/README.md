@@ -11,10 +11,11 @@ Checkpoints and data: [Google Drive](https://drive.google.com/drive/folders/1Tk2
 
 # IFA Classification Head
 
-We propose a simple change to the classification head that increases ViTs robustness against hyperparameters (mini-batch size), at relatively no additional computational cost, and which can be summarized with the below figure:
+We propose a simple change to the classification head that increases ViTs robustness against hyperparameters (mini-batch size), and increases performance for most settings, at relatively no additional computational cost, and which can be illustrated with the below figures:
 
 ![](./data_exploration/figures/AnimesionSystemDiagramRO.png)
 
+![](./data_exploration/figures/FeatAggregationLayerV2.png)
 
 # Tagging
 
@@ -22,7 +23,7 @@ Check [tagging.md](./tagging.MD) for more details.
 
 # Features
 * Variety of architectures to choose from: Shallow, Resnet18/50/152, EfficientNet-B0, Vi(L)T B-16/B-32/L-16/L-32
-* Two fully-fledged datasets, *moeImouto* and *DAF:re*, with 173 and more than 3000 classes, respectively
+* Supports three datasets *moeImouto*, *DAF:re*, and [*iCartoonFace*](https://github.com/luxiangju-PersonAI/iCartoonFace). These contain 173, 3263 and 5013 classes, and 14K, 463K and 389K images, respectively.
 * Pre-trained models for best performing models using image size of 128x128.
 * Supporting scripts for making, visualization and stats for datasets.
 * Scripts for training from scratch, evaluation (accuracy of a model with a certain set and pretrained weights), and inference (classifies (and optionally tags) all images in a given (`test_images` by default) folder.

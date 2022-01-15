@@ -3,6 +3,7 @@ Anime character recognition (and tagging) using PyTorch.
 
 Our best vision-only model, ViT L-16 with image size 128x128 and batch size 16 achieves to get 89.71% 
 and 96.14% test set top-1 and top-5 classification accuracies, respectively, among 3263 characters! 
+The best vision + tags model, ViLT L-16 reaches a top-1 accuracy of 90.30%!
 
 We hope that this work inspires other researchers to follow and build upon this path. 
 
@@ -11,7 +12,7 @@ Checkpoints and data: [Google Drive](https://drive.google.com/drive/folders/1Tk2
 
 # IFA Classification Head
 
-We propose a simple change to the classification head that increases ViTs robustness against hyperparameters (mini-batch size), and increases performance for most settings, at relatively no additional computational cost, and which can be illustrated with the below figures:
+We propose a simple change to the classification head that increases ViTs robustness against hyperparameters (mini-batch size), and increases performance for most settings, at relatively almost no additional computational cost, and which can be illustrated with the below figures:
 
 ![](./data_exploration/figures/AnimesionSystemDiagramRO.png)
 
@@ -37,7 +38,7 @@ From `data` folder in Google Drive download `dafre_faces.tar.gz` for *DAF:re Fac
 ## Training
 Train a ViT B-16 vision only model with intermediate features aggregation classification head on DanbooruFaces for recognition:
 
-`python train.py --dataset_name danbooruFaces --dataset_path YOUR_PATH --model_name B_16 --image_size 128 --batch_size 64 --learning_rate_scheduler warmupCosine --pretrained --interm_features`
+`python train.py --dataset_name danbooruFaces --dataset_path YOUR_PATH --model_name B_16 --image_size 128 --batch_size 64 --learning_rate_scheduler warmupCosine --pretrained --interm_features_fc`
 
 Train a ViLT B-16 with tag/language tokens on DanbooruFull for recognition:
 

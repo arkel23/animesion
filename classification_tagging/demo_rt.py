@@ -65,5 +65,4 @@ inputs = gr.inputs.Image(type='file', label='Input image')
 outputs = gr.outputs.Textbox(type='auto', label='Predicted class and tags')
 examples = [['test_images/homura_top.jpeg'], ['test_images/eren_face.jfif']]
 
-gr.Interface(demo, inputs, outputs, title=title, description=description, article=article, examples=examples).launch(debug=True,share=True)
-    
+gr.Interface(demo, inputs, outputs, title=title, description=description, article=article, examples=examples).launch(debug=True, share=True) 

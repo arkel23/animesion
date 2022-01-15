@@ -9,6 +9,7 @@ We hope that this work inspires other researchers to follow and build upon this 
 
 Checkpoints and data: [Google Drive](https://drive.google.com/drive/folders/1Tk2e5OoI4mtVBdmjMhfoh2VC-lzW164Q?usp=sharing).
 
+Try it on [Google Colab](https://colab.research.google.com/drive/1mfy45B83qAy3rMdCH1Lcb5dc5K1oqaZk?usp=sharing)!
 
 # IFA Classification Head
 

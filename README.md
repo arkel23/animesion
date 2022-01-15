@@ -2,6 +2,8 @@
 An end-to-end framework for anime character recognition and tagging.
 ![](./classification_tagging/data_exploration/figures/AnimesionSystemDiagramRT.png)
 
+Try it on [Google Colab](https://colab.research.google.com/drive/1mfy45B83qAy3rMdCH1Lcb5dc5K1oqaZk?usp=sharing)!
+
 Install requirements by first creating a conda environment and installing with conda then pip
 packages for packages that cant be found in conda
 ```

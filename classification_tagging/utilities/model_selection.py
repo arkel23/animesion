@@ -23,7 +23,7 @@ def load_model(args, device):
     if args.checkpoint_path:
             if args.load_partial_mode:
                 model.model.load_partial(weights_path=args.checkpoint_path, 
-                pretrained_image_size=self.configuration.pretrained_image_size, 
+                pretrained_image_size=model.configuration.pretrained_image_size, 
                 pretrained_mode=args.load_partial_mode, verbose=True)
             else:
                 state_dict = torch.load(args.checkpoint_path, map_location=torch.device('cpu'))

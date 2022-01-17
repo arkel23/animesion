@@ -18,7 +18,7 @@ def demo(file_path):
 
     model.eval()
 
-    image = return_prepared_inputs(file_path, args, device, train_set, mask_scheduler)
+    image = return_prepared_inputs(file_path, args, device, mask_scheduler)
     output = forward_vision(args, classid_classname_dic, model, image, file_path, print_local=False)
     print(output)
     return output

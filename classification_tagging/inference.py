@@ -18,8 +18,7 @@ from utilities.build_vocab import Vocabulary
 DEFAULT_MAX_TEXT_SEQ_LEN = 16
 
 
-def return_prepared_inputs(file_path, args, device, data_set, mask_scheduler=None):
-    transform = data_set.transform
+def return_prepared_inputs(file_path, args, device, mask_scheduler=None):
     transform = transforms.Compose([
         transforms.Resize((args.image_size, args.image_size)),
         transforms.ToTensor(),
@@ -151,7 +150,7 @@ def recognition_vision(args, device, data_set, model):
 
     model.eval()
     for file_path in file_list:
-        image = return_prepared_inputs(file_path, args, device, data_set)
+        image = return_prepared_inputs(file_path, args, device)
         forward_vision(args, classid_classname_dic, model, image, file_path)
 
 
@@ -170,11 +169,11 @@ def recognition_tagging(args, device, data_set, model, mask_scheduler, tokenizer
         os.path.join(args.test_path, f))]
 
     for file_path in file_list:
-        image, text_prompt = return_prepared_inputs(file_path, args, device, data_set, mask_scheduler)
+        image, text_prompt = return_prepared_inputs(file_path, args, device, mask_scheduler)
         forward_multimodal(args, classid_classname_dic, model, tokenizer, voc, image, text_prompt, file_path)
 
 
-def generate_tags_df(args, device, data_set, model, mask_scheduler, tokenizer):
+def gen_tags_df(args, device, data_set, model, mask_scheduler, tokenizer):
 
     path_root, filename = os.path.split(args.test_path)
     filename_no_ext = os.path.splitext(filename)[0]
@@ -194,7 +193,7 @@ def generate_tags_df(args, device, data_set, model, mask_scheduler, tokenizer):
 
     for i, file_path in enumerate(df.dir):
         image, text_prompt = return_prepared_inputs(
-            os.path.join(path_root, 'data', file_path), args, device, data_set, mask_scheduler)
+            os.path.join(path_root, 'data', file_path), args, device, mask_scheduler)
 
         with torch.no_grad():
             out_cls, out_tokens_text = model(image, text=text_prompt)
@@ -221,16 +220,16 @@ def main():
     parent_parser = utilities.misc.ret_args(ret_parser=True)
 
     parser = argparse.ArgumentParser(parents=[parent_parser], add_help=False)
-    parser.add_argument("--mode", choices=['recognition_vision', 'recognition_tagging',
-                        'generate_tags'], type=str, default='recognition_vision', help="Mode for inference.")
+    parser.add_argument("--mode", choices=['recognition_vision', 'recognition_tagging', 'gen_tags'],
+                        type=str, default='recognition_vision', help="Mode for inference.")
     parser.add_argument("--test_path", type=str, default='test_images/',
-                        help="The directory where test image is stored.")
+                        help="The directory where test image is stored or df.csv with file names for gen_tags")
     parser.add_argument("--save_results", action='store_true',
                         help="Save the images after transform and with label results.")
     parser.set_defaults(results_dir='results_inference')
     args = parser.parse_args()
 
-    if args.mode == 'recognition_tagging' or args.mode == 'generate_tags':
+    if args.mode == 'recognition_tagging' or args.mode == 'gen_tags':
         args.multimodal = True
         args.mask_schedule = 'full'
         if not args.max_text_seq_len:
@@ -247,8 +246,8 @@ def main():
     elif args.mode == 'recognition_tagging':
         recognition_tagging(args, device, train_set, model, mask_scheduler, tokenizer)
 
-    elif args.mode == 'generate_tags':
-        generate_tags_df(args, device, train_set, model, mask_scheduler, tokenizer)
+    elif args.mode == 'gen_tags':
+        gen_tags_df(args, device, train_set, model, mask_scheduler, tokenizer)
 
 
 if __name__ == '__main__':

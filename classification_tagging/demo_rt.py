@@ -27,7 +27,7 @@ def demo(file_path):
 
     model.eval()
 
-    image, text_prompt = return_prepared_inputs(file_path, args, device, train_set, mask_scheduler)
+    image, text_prompt = return_prepared_inputs(file_path, args, device, mask_scheduler)
     output = forward_multimodal(args, classid_classname_dic, model, tokenizer, voc, 
         image, text_prompt, file_path, print_local=False)
     print(output)

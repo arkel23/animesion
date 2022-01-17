@@ -1,8 +1,8 @@
 # Overview
 Anime character recognition (and tagging) using PyTorch.
 
-Our best vision-only model, ViT L-16 with image size 128x128 and batch size 16 achieves to get 89.71% 
-and 96.14% test set top-1 and top-5 classification accuracies, respectively, among 3263 characters! 
+Our best vision-only model, ViT L-16 with IFA classification head, image size 128x128 and batch size 16 
+achieves 90.10% and 96.36% test set top-1 and top-5 classification accuracies, respectively, among 3263 characters! 
 The best vision + tags model, ViLT L-16 reaches a top-1 accuracy of 90.30%!
 
 We hope that this work inspires other researchers to follow and build upon this path. 

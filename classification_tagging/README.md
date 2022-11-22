@@ -257,43 +257,57 @@ Shallow is a shallow, 5 layer (2 convolutional + 2 fully-connected) network. Res
 # References
 If you find this work useful, please consider citing:
 
+* E. A. Rios, M.-C. Hu, and B.-C. Lai, “Anime Character Recognition using Intermediate Features Aggregation,” in 2022 IEEE International Symposium on Circuits and Systems (ISCAS), May 2022, pp. 424–428. doi: 10.1109/ISCAS48785.2022.9937519.
 * E. A. Rios, W.-H. Cheng, and B.-C. Lai, “DAF:re: A Challenging, Crowd-Sourced, Large-Scale, Long-Tailed Dataset For Anime Character Recognition,” arXiv:2101.08674 [cs], Jan. 2021, Accessed: Jan. 22, 2021. [Online]. Available: http://arxiv.org/abs/2101.08674.
 * Yan Wang, "Danbooru2018 Anime Character Recognition Dataset," July 2019. https://github.com/grapeot/Danbooru2018AnimeCharacterRecognitionDataset 
 * Anonymous, The Danbooru Community, & Gwern Branwen; “Danbooru2020: A Large-Scale Crowdsourced and Tagged Anime Illustration Dataset”, 2020-01-12. Web. Accessed [DATE] https://www.gwern.net/Danbooru2020
 
-
 ```bibtex
-@misc{rios2021dafre,
-      title={DAF:re: A Challenging, Crowd-Sourced, Large-Scale, Long-Tailed Dataset For Anime Character Recognition}, 
-      author={Edwin Arkel Rios and Wen-Huang Cheng and Bo-Cheng Lai},
-      year={2021},
-      eprint={2101.08674},
-      archivePrefix={arXiv},
-      primaryClass={cs.CV}
+@inproceedings{rios_anime_2022,
+  title = {Anime {Character} {Recognition} using {Intermediate} {Features} {Aggregation}},
+  copyright = {All rights reserved},
+  doi = {10.1109/ISCAS48785.2022.9937519},
+  author = {Rios, Edwin Arkel and Hu, Min-Chun and Lai, Bo-Cheng},
+  month = may,
+  year = {2022},
+  note = {ISSN: 2158-1525},
+  keywords = {Adaptation models, Animation, Circuits and systems, Computer architecture, Sensitivity, Transfer learning, Transformers},
+  pages = {424--428}
 }
 ```
 
 ```bibtex
-    @misc{danboorucharacter,
-        author = {Yan Wang},
-        title = {Danbooru 2018 Anime Character Recognition Dataset},
-        howpublished = {\url{https://github.com/grapeot/Danbooru2018AnimeCharacterRecognitionDataset}},
-        url = {https://github.com/grapeot/Danbooru2018AnimeCharacterRecognitionDataset},
-        type = {dataset},
-        year = {2019},
-        month = {July} }
+@misc{rios2021dafre,
+  title={DAF:re: A Challenging, Crowd-Sourced, Large-Scale, Long-Tailed Dataset For Anime Character Recognition}, 
+  author={Edwin Arkel Rios and Wen-Huang Cheng and Bo-Cheng Lai},
+  year={2021},
+  eprint={2101.08674},
+  archivePrefix={arXiv},
+  primaryClass={cs.CV}
+}
 ```
 
 ```bibtex
-    @misc{danbooru2020,
-        author = {Anonymous and Danbooru community and Gwern Branwen},
-        title = {Danbooru2020: A Large-Scale Crowdsourced and Tagged Anime Illustration Dataset},
-        howpublished = {\url{https://www.gwern.net/Danbooru2020}},
-        url = {https://www.gwern.net/Danbooru2020},
-        type = {dataset},
-        year = {2021},
-        month = {January},
-        timestamp = {2020-01-12},
-        note = {Accessed: DATE} }
+@misc{danboorucharacter,
+  author = {Yan Wang},
+  title = {Danbooru 2018 Anime Character Recognition Dataset},
+  howpublished = {\url{https://github.com/grapeot/Danbooru2018AnimeCharacterRecognitionDataset}},
+  url = {https://github.com/grapeot/Danbooru2018AnimeCharacterRecognitionDataset},
+  type = {dataset},
+  year = {2019},
+  month = {July} }
+```
+
+```bibtex
+@misc{danbooru2020,
+  author = {Anonymous and Danbooru community and Gwern Branwen},
+  title = {Danbooru2020: A Large-Scale Crowdsourced and Tagged Anime Illustration Dataset},
+  howpublished = {\url{https://www.gwern.net/Danbooru2020}},
+  url = {https://www.gwern.net/Danbooru2020},
+  type = {dataset},
+  year = {2021},
+  month = {January},
+  timestamp = {2020-01-12},
+  note = {Accessed: DATE} }
 ```
 

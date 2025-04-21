@@ -9,6 +9,7 @@ We hope that this work inspires other researchers to follow and build upon this 
 
 Update 2025/04/21:
 This project is no longer being updated. An updated anime character recognition model along with checkpoints are also provided on our newer project, [GLSim](https://github.com/arkel23/GLSim).
+
 Dataset link: [HuggingFace](https://huggingface.co/datasets/xedwin23x/DAFB)
 
 # IFA Classification Head

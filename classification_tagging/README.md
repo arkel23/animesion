@@ -7,9 +7,9 @@ The best vision + tags model, ViLT L-16 reaches a top-1 accuracy of 90.30%!
 
 We hope that this work inspires other researchers to follow and build upon this path. 
 
-Checkpoints and data: [Google Drive](https://drive.google.com/drive/folders/1Tk2e5OoI4mtVBdmjMhfoh2VC-lzW164Q?usp=sharing).
-
-Try it on [Google Colab](https://colab.research.google.com/drive/1mfy45B83qAy3rMdCH1Lcb5dc5K1oqaZk?usp=sharing)!
+Update 2025/04/21:
+This project is no longer being updated. An updated anime character recognition model along with checkpoints are also provided on our newer project, [GLSim](https://github.com/arkel23/GLSim).
+Dataset link: [HuggingFace](https://huggingface.co/datasets/xedwin23x/DAFB)
 
 # IFA Classification Head
 
